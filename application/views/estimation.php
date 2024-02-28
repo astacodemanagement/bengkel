@@ -27,7 +27,7 @@
                                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
                                     <a class="nav-item nav-link active" id="nav-services-tab" data-toggle="tab" href="#nav-services" role="tab" aria-controls="nav-services" aria-selected="true">Services</a>
                                     <a class="nav-item nav-link" id="nav-sparepart-tab" data-toggle="tab" href="#nav-sparepart" role="tab" aria-controls="nav-sparepart" aria-selected="false">Sparepart</a>
-                                    <a class="nav-item nav-link" id="nav-mekanik-tab" data-toggle="tab" href="#nav-mekanik" role="tab" aria-controls="nav-mekanik" aria-selected="false">Mekanik</a>
+                                    <!-- <a class="nav-item nav-link" id="nav-mekanik-tab" data-toggle="tab" href="#nav-mekanik" role="tab" aria-controls="nav-mekanik" aria-selected="false">Mekanik</a> -->
 
                                 </div>
                             </nav>

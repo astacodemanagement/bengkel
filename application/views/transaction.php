@@ -73,7 +73,7 @@
                             </div>
                         </div>
 
-                      
+
 
                     </div>
 
@@ -150,7 +150,7 @@
                             <button type="button" class="btn btn-warning btn-block" onclick="reset()" style="border-radius: 1rem;"><i class="fa fa-undo"></i> Batal</button>
                         </div>
                         <div class="col-6 p-0 pl-1">
-                            <button type="button" class="btn btn-primary btn-block" onclick="saveModal()" style="border-radius: 1rem;"><i class="fa fa-print"></i> Print</button>
+                            <button type="button" class="btn btn-success btn-block" onclick="saveModal()" style="border-radius: 1rem;"><i class="fa fa-save"></i> Simpan</button>
                         </div>
                     </div>
                 </div>
@@ -215,7 +215,7 @@
                     minimumInputLength: 2
                 }).on('select2:select', function(e) {
                     var data = e.params.data;
-                    
+
                     console.log(data)
                     $('#customer').val(data.name)
                     $('#phone').val(data.phone)
@@ -340,7 +340,7 @@
                     countTotal = (countTotal + (item.price * item.qty));
                 })
                 data3.forEach(function(item, index) {
-                    html3 += '<tr><td>' + item.name + '</td><td><input type="number" class="form-control change-cost" min="0" value="'+item.cost+'" data-id="' + item.id + '"></td><td class="text-center"><button type="button" class="btn btn-sm btn-danger" onclick="deleteMekanikCart(' + item.id + ')"><i class="fa fa-times"></i></button></td></tr>';
+                    html3 += '<tr><td>' + item.name + '</td><td><input type="number" class="form-control change-cost" min="0" value="' + item.cost + '" data-id="' + item.id + '"></td><td class="text-center"><button type="button" class="btn btn-sm btn-danger" onclick="deleteMekanikCart(' + item.id + ')"><i class="fa fa-times"></i></button></td></tr>';
                     countMechanicCost = (countMechanicCost + item.cost);
                 })
 
@@ -416,7 +416,7 @@
                 var id = jQuery(this).attr("data-id");
                 let totalMechanicCost = 0
 
-                $('#mekanikCart tbody tr').each(function(){
+                $('#mekanikCart tbody tr').each(function() {
                     totalMechanicCost += parseFloat($(this).find('.change-cost').val())
                 })
 
@@ -448,16 +448,30 @@
             }
 
             function saveModal() {
-                if (!total) {
+                var selectedConsumer = document.getElementById('selectedConsumer');
+                var customerName = document.getElementById('customer').value;
+
+                // Memeriksa apakah consumer telah dipilih atau kosong
+                if (!selectedConsumer.value) {
                     Swal.fire(
                         'Gagal',
-                        'Keranjang kosong',
+                        'Harap pilih pelanggan',
                         'error'
-                    )
+                    );
+                }
+                // Memeriksa apakah nama pelanggan telah diisi atau kosong
+                else if (!customerName.trim()) {
+                    Swal.fire(
+                        'Gagal',
+                        'Nama pelanggan harus diisi',
+                        'error'
+                    );
                 } else {
+                    // Lanjutkan jika semua validasi terpenuhi
                     jQuery("#purchaseModal").modal("toggle");
                 }
             }
+
 
             $("#money").on("keyup", function() {
                 var value = jQuery(this);

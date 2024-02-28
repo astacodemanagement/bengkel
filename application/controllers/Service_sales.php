@@ -56,7 +56,7 @@ class Service_sales extends CI_Controller {
             '<index>',
             '[reformat_date=<get-date>]',
             '<get-customer_name>',
-            '<get-plat>',
+            // '<get-plat>',
             '[rupiah=<get-total>]',
             '<div class="text-center">
                 <button type="button" class="btn btn-sm btn-warning btn-view" data-id="<get-id>" data-total="<get-total>"><i class="fa fa-eye"></i></button>

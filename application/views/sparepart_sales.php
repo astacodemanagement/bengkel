@@ -10,7 +10,7 @@
                 <div class="page-header float-right">
                     <div class="page-title">
                         <ol class="breadcrumb text-right">
-                            <li><a href="<?=base_url("dashboard");?>">Dashboard</a></li>
+                            <li><a href="<?= base_url("dashboard"); ?>">Dashboard</a></li>
                             <li class="active">Riwayat Penjualan</li>
                         </ol>
                     </div>
@@ -72,33 +72,41 @@
         </div>
 
         <script>
-
-        $("#table-detail").DataTable({
-            "processing": true,
-            "serverSide": true,
-            autoWidth: false,
-            info:false,
-            filter:false,
-            lengthChange:false,
-            paging:false,
-            "ajax": {"url": "<?=base_url("sparepart_sales/json_details");?>/"}
+            $("#table-detail").DataTable({
+                "processing": true,
+                "serverSide": true,
+                autoWidth: false,
+                info: false,
+                filter: false,
+                lengthChange: false,
+                paging: false,
+                "ajax": {
+                    "url": "<?= base_url("sparepart_sales/json_details"); ?>/"
+                }
             });
 
-        $("body").on("click",".btn-view",function(){
-            var id = jQuery(this).attr("data-id");
-            var total = jQuery(this).attr("data-total");
+            $("body").on("click", ".btn-view", function() {
+                var id = jQuery(this).attr("data-id");
+                var total = jQuery(this).attr("data-total");
 
-            jQuery("#details .total").html("Rp "+total.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
-            jQuery("#table-detail").DataTable().ajax.url("<?=base_url("sparepart_sales/json_details");?>/"+id).load();
-            jQuery("#details").modal("toggle");
+                // Mengonversi total menjadi angka
+                total = parseFloat(total);
 
-        })
+                jQuery("#details .total").html("Rp " + total.toLocaleString('id-ID'));
+                jQuery("#table-detail").DataTable().ajax.url("<?= base_url("sparepart_sales/json_details"); ?>/" + id).load();
+                jQuery("#details").modal("toggle");
+            })
 
-        $("#data").DataTable({
-            "processing": true,
-            "serverSide": true,
-            "autoWidth":true,
-            "order": [[0,"desc"]],
-            "ajax": {"url": "<?=base_url("sparepart_sales/json");?>"}
-        });
+
+            $("#data").DataTable({
+                "processing": true,
+                "serverSide": true,
+                "autoWidth": true,
+                "order": [
+                    [0, "desc"]
+                ],
+                "ajax": {
+                    "url": "<?= base_url("sparepart_sales/json"); ?>"
+                }
+            });
         </script>

@@ -28,7 +28,7 @@
                                     <th>#</th>
                                     <th>Tanggal</th>
                                     <th>Nama Customer</th>
-                                    <th>No. Plat</th>
+                                    <!-- <th>No. Plat</th> -->
                                     <th>Total</th>
                                     <th>Aksi</th>
                                 </tr>

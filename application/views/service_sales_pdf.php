@@ -77,8 +77,8 @@
             <?php
             //convert image into Binary data
             $img_type = "png";
-            $img_data = fopen ( "././img/logo.png", 'rb' );
-            $img_size = filesize ( "././img/logo.png" );
+            $img_data = fopen ( "././img/1.png", 'rb' );
+            $img_size = filesize ( "././img/1.png" );
             $binary_image = fread ( $img_data, $img_size );
             fclose ( $img_data );
 
@@ -98,14 +98,14 @@
         <div class="col-1">
             <table>
                 <tr>
-                    <td class="no-td">Nama Customer</td>
+                    <td class="no-td">Nama Konsumen</td>
                     <td class="no-td label">:</td>
                     <td class="no-td"><?= $fetch->customer_name ?? '';?></td>
                 </tr>
                 <tr>
-                    <td class="no-td">No. Plat</td>
+                    <td class="no-td">Type</td>
                     <td class="no-td label">:</td>
-                    <td class="no-td"><?=$fetch->plat;?></td>
+                    <td class="no-td"><?=$fetch->type;?></td>
                 </tr>
             </table>
         </div>

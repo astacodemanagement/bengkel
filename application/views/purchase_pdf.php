@@ -55,6 +55,11 @@
                         <td style="border:none;padding: 0 9px 3px 0" valign="top">:</td>
                         <td style="border:none;padding: 0 9px 3px 0" valign="top"><?=$fetch->telephone;?></td>
                     </tr>
+                    <tr>
+                        <td style="border:none;padding: 0 9px 3px 0" valign="top">Keterangan</td>
+                        <td style="border:none;padding: 0 9px 3px 0" valign="top">:</td>
+                        <td style="border:none;padding: 0 9px 3px 0" valign="top"><?=$fetch->description;?></td>
+                    </tr>
                 </table>
             </td>
             <td width="50%" valign="top" style="border:none;padding:0">
