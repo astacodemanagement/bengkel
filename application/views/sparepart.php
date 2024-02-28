@@ -36,6 +36,7 @@
                                     <th style="width:10%">Harga Jual 2</th>
                                     <th style="width:10%">Harga Jual 3</th>
                                     <th>Stok</th>
+                                    <th>Gambar</th>
                                     <th style="width:10%">Aksi</th>
                                 </tr>
                             </thead>
@@ -92,8 +93,8 @@
                             <div class="form-group">
                                 <label>Gambar</label>
                                 <input type="file" name="gambar" class="form-control dropify" id="gambar">
-                                
                             </div>
+                            <div class="image-preview"></div>
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -149,26 +150,30 @@
 
 
             $('.btn-submit').on("click", function() {
-                var form = {
-                    "kode": jQuery("input[name=kode]").val(),
-                    "name": jQuery("input[name=name]").val(),
-                    "price": jQuery("input[name=price]").val(),
-                    "price1": jQuery("input[name=price1]").val(),
-                    "price2": jQuery("input[name=price2]").val(),
-                    "price3": jQuery("input[name=price3]").val(),
-                    "location": jQuery("input[name=location]").val(),
-                    "description": jQuery("textarea[name=description]").val(),
-                    "gambar": jQuery("input[name=gambar]").val()
+                // var form = {
+                //     "kode": jQuery("input[name=kode]").val(),
+                //     "name": jQuery("input[name=name]").val(),
+                //     "price": jQuery("input[name=price]").val(),
+                //     "price1": jQuery("input[name=price1]").val(),
+                //     "price2": jQuery("input[name=price2]").val(),
+                //     "price3": jQuery("input[name=price3]").val(),
+                //     "location": jQuery("input[name=location]").val(),
+                //     "description": jQuery("textarea[name=description]").val(),
+                //     "gambar": jQuery("input[name=gambar]").val()
                     
-                }
+                // }
+
+                const formData = new FormData($('#compose-form')[0]);
 
                 var action = jQuery("#compose-form").attr("action");
 
                 jQuery.ajax({
                     url: action,
                     method: "POST",
-                    data: form,
+                    data: formData,
                     dataType: "json",
+                    processData: false,
+                    contentType: false,
                     success: function(data) {
                         if (data.status) {
                             jQuery("input[name=kode]").val("");
@@ -239,6 +244,12 @@
                 var price3 = jQuery(this).attr("data-price3");
                 var location = jQuery(this).attr("data-location");
                 var description = jQuery(this).attr("data-description");
+                var gambar = jQuery(this).attr("data-gambar");
+                var showGambar = '';
+
+                if (gambar != '') {
+                    showGambar = `<img src="${gambar}" style="height:240px" />`
+                }
 
                 jQuery("#compose .modal-title").html("Edit Sparepart");
                 jQuery("#compose-form").attr("action", "<?= base_url(); ?>spare/update/" + id);
@@ -250,6 +261,7 @@
                 jQuery("input[name=price3]").val(price3);
                 jQuery("input[name=location]").val(location);
                 jQuery("textarea[name=description]").val(description);
+                jQuery(".image-preview").html(showGambar);
 
                 jQuery("#compose").modal("toggle");
             });

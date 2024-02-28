@@ -43,7 +43,8 @@ class Spare extends CI_Controller {
             '[rupiah=<get-price2>]',
             '[rupiah=<get-price3>]',
             '<get-stock>',
-            '<div class="text-center"><button type="button" class="btn btn-primary btn-sm btn-edit" title="Edit Data" data-id="<get-id>" data-kode="<get-kode>" data-name="<get-name>" data-price="<get-price>" data-price1="<get-price1>" data-price2="<get-price2>" data-price3="<get-price3>" data-location="<get-location>" data-description="<get-description>"><i class="fa fa-edit"></i></button>
+            '[showSparepartImageTable=<get-gambar>]',
+            '<div class="text-center"><button type="button" class="btn btn-primary btn-sm btn-edit" title="Edit Data" data-id="<get-id>" data-kode="<get-kode>" data-name="<get-name>" data-price="<get-price>" data-price1="<get-price1>" data-price2="<get-price2>" data-price3="<get-price3>" data-location="<get-location>" data-description="<get-description>" data-gambar="[showSparepartImage=<get-gambar>]"><i class="fa fa-edit"></i></button>
             <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="<get-id>" data-name="<get-name>" title="Delete Data"><i class="fa fa-trash"></i></button></div>'
         ]);
         $this->datatables->setOrdering(["id","name","price","stock",NULL]);
@@ -69,46 +70,87 @@ class Spare extends CI_Controller {
         $price3 = $this->input->post("price3");
         $location = $this->input->post("location");
         $description = $this->input->post("description");
-        $gambar = $this->input->post("gambar");
+        $gambar = null;
 
         if(!$name OR !$price) {
             $response['status'] = FALSE;
             $response['msg'] = "Periksa kembali data yang anda masukkan";
+
+            echo json_encode($response);
         } else {
 
-            
-            $insertData = [
-                "id" => NULL,
-                "kode" => $kode,
-                "name" => $name,
-                "price" => $price,
-                "price1" => $price1,
-                "price2" => $price2,
-                "price3" => $price3,
-                "location" => $location,
-                "description" => $description,
-                "gambar" => $gambar,
-                "type" => "sparepart",
-                "stock" => 0
-            ];
+            try {
+                if (strlen($_FILES['gambar']['tmp_name']) > 0) {
+                    $uploadPath = FCPATH.'uploads/sparepart/';
+    
+                    if (!is_dir($uploadPath)) {
+                        mkdir($uploadPath, 0777, TRUE);
+                    }
+    
+                    $this->load->library('upload');
+    
+                    $config['upload_path']          = $uploadPath;
+                    $config['allowed_types']        = 'gif|jpg|jpeg|png';
+                    $config['overwrite']            = true;
+                    $config['max_size']             = 5120; // 5MB
+                    $config['encrypt_name'] = TRUE;
+    
+                    $this->upload->initialize($config);
+    
+                    if (!$this->upload->do_upload('gambar')) {
+                        $data['error'] = $this->upload->display_errors();
+                        throw new Exception($this->upload->display_errors());
+                    } else {
+                        $gambar = $this->upload->data()['file_name'];
+                    }
 
-            $response['status'] = TRUE;
+                    if ($id != 0) {
+                        $product = $this->db->get_where('products', ['id' => $id])->row();
+                        
+                        if ($product->gambar != null) {
+                            unlink($uploadPath .'/' . $product->gambar);
+                        }
+                    }
+                }
+                
+                $insertData = [
+                    "id" => NULL,
+                    "kode" => $kode,
+                    "name" => $name,
+                    "price" => $price,
+                    "price1" => $price1,
+                    "price2" => $price2,
+                    "price3" => $price3,
+                    "location" => $location,
+                    "description" => $description,
+                    "gambar" => $gambar,
+                    "type" => "sparepart",
+                    "stock" => 0
+                ];
+    
+                $response['status'] = TRUE;
+    
+                if($action == "add") {
+                    $response['msg'] = "Data berhasil ditambahkan";
+                    $this->product_model->post($insertData);
+                } else {
+                    unset($insertData['id']);
+                    unset($insertData['type']);
+                    unset($insertData['stock']);
+    
+                    $response['msg'] = "Data berhasil diedit";
+                    $this->product_model->put($id,$insertData);
+                }
 
-            if($action == "add") {
-                $response['msg'] = "Data berhasil ditambahkan";
-                $this->product_model->post($insertData);
-            } else {
-                unset($insertData['id']);
-                unset($insertData['type']);
-                unset($insertData['stock']);
+                echo json_encode($response);
+            } catch (\Exception $e) {
+                $response['status'] = FALSE;
+                $response['msg'] = $e->getMessage();
 
-                $response['msg'] = "Data berhasil diedit";
-                $this->product_model->put($id,$insertData);
+                echo json_encode($response);
             }
 
         }
-
-        echo json_encode($response);
     }
 
      

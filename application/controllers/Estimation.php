@@ -154,19 +154,19 @@ class Estimation extends CI_Controller {
         $this->datatables->generate();
     }
     public function json_mekanik() {
-        $addFunc = "addSparepartCart({id:<get-id>,name:'<get-name>',price:<get-price>,stock:<get-stock>})";
+        $addFunc = "addMekanikCart({id:<get-id>,name:'<get-name>',price:0,stock:99})";
 
         $this->load->model("datatables");
-        $this->datatables->setTable("products");
+        $this->datatables->setTable("users");
         $this->datatables->setColumn([
             '<get-name>',
-            '[rupiah=<get-price>]',
+            '0',
             '<div class="text-center">
                 <button type="button" class="btn btn-sm btn-success" onclick="'.$addFunc.'"><i class="fa fa-plus"></i></button>
             </div>'
         ]);
-        $this->datatables->setOrdering(["name","price",NULL]);
-        $this->datatables->setWhere("type","sparepart");
+        $this->datatables->setOrdering(["name",NULL]);
+        $this->datatables->setWhere("position","Mekanik");
         $this->datatables->setSearchField("name");
         $this->datatables->generate();
     }

@@ -65,11 +65,11 @@
                             </div>
                             <div class="form-group">
                                 <label>Nama Pelanggan</label>
-                                <input type="text" name="customer" id="customer" class="form-control form-control-sm" readonly>
+                                <input type="text" id="customer" class="form-control form-control-sm" readonly>
                             </div>
                             <div class="form-group">
                                 <label>No. Telephone</label>
-                                <input type="text" name="plat" id="plat" class="form-control form-control-sm" readonly>
+                                <input type="text" id="phone" class="form-control form-control-sm" readonly>
                             </div>
                         </div>
 
@@ -107,6 +107,25 @@
                                         <th>Nama</th>
                                         <th>Harga</th>
                                         <th class="text-center">Qty</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card" id="mekanikCartContainer" style="display:none">
+                        <div class="card-header">
+                            <b>Mekanik</b>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-sm table-bordered" id="mekanikCart">
+                                <thead>
+                                    <tr>
+                                        <th>Nama</th>
+                                        <th width="35%">Upah</th>
+                                        <th class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -159,7 +178,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary btn-save-confirm" disabled>Lanjutkan</button>
+                        <button type="button" class="btn btn-primary btn-save-confirm d-none" disabled>Lanjutkan</button>
                     </div>
                 </div>
             </div>
@@ -181,29 +200,47 @@
                                         delay: 250,
                                         processResults: function(data) {
                                             return {
-                                                results: data
+                                                results: $.map(data.results, function(item) {
+                                                    return {
+                                                        text: item.name,
+                                                        id: item.id,
+                                                        name: item.name,
+                                                        phone: item.telephone
+                                                    };
+                                                })
                                             };
                                         },
                                         cache: true
                                     },
                                     minimumInputLength: 2
+                                }).on('select2:select', function(e) {
+                                    var data = e.params.data;
+                                    
+                                    console.log(data)
+                                    $('#customer').val(data.name)
+                                    $('#phone').val(data.phone)
                                 });
 
-                                $('#selectedConsumer').select2({
-                                    ajax: {
-                                        url: '<?= base_url("Estimation/getConsumerData") ?>',
-                                        dataType: 'json',
-                                        delay: 250,
-                                        processResults: function(data) {
-                                            return {
-                                                results: data
-                                            };
-                                        },
-                                        cache: true
-                                    },
-                                    minimumInputLength: 2,
-                                    dropdownParent: $('#customerContainer') // Atur parent dropdown sesuai dengan container Anda
-                                });
+                                // $('#selectedConsumer').select2({
+                                //     ajax: {
+                                //         url: '<?= base_url("Estimation/getConsumerData") ?>',
+                                //         dataType: 'json',
+                                //         delay: 250,
+                                //         processResults: function(data) {
+                                //             return {
+                                //                 results: $.map(data.results, function(item) {
+                                //                     return {
+                                //                         text: item.name,
+                                //                         id: item.id
+                                //                     };
+                                //                 })
+                                //             };
+                                //         },
+                                //         cache: true
+                                //     },
+                                //     minimumInputLength: 2,
+                                //     dropdownParent: $('#customerContainer') // Atur parent dropdown sesuai dengan container Anda
+                                // });
 
                             });
                         </script>
@@ -226,16 +263,20 @@
 
             $('#nav-services-tab').on("click", function() {
                 jQuery("#dataTable").DataTable().ajax.url("<?= base_url("estimation/json_service"); ?>").load();
+                jQuery("#dataTable").DataTable().columns([1]).visible(true);
             });
             $('#nav-sparepart-tab').on("click", function() {
                 jQuery("#dataTable").DataTable().ajax.url("<?= base_url("estimation/json_sparepart"); ?>").load();
+                jQuery("#dataTable").DataTable().columns([1]).visible(true);
             });
             $('#nav-mekanik-tab').on("click", function() {
                 jQuery("#dataTable").DataTable().ajax.url("<?= base_url("estimation/json_mekanik"); ?>").load();
+                jQuery("#dataTable").DataTable().columns([1]).visible(false);
             });
 
             var ServiceCart = [];
             var SparepartCart = [];
+            var MekanikCart = [];
             var total = 0;
             var type = "";
 
@@ -252,7 +293,7 @@
                 before[data.id]["qty"] = qty;
                 ServiceCart = before;
 
-                refreshServiceCart(ServiceCart, SparepartCart);
+                refreshServiceCart(ServiceCart, SparepartCart, MekanikCart);
             }
 
             function addSparepartCart(data) {
@@ -278,17 +319,47 @@
 
                 SparepartCart = before;
 
-                refreshServiceCart(ServiceCart, SparepartCart);
+                refreshServiceCart(ServiceCart, SparepartCart, MekanikCart);
             }
 
-            function refreshServiceCart(data1, data2) {
+            function addMekanikCart(data) {
+                var before = MekanikCart;
+                var qty = 1;
+
+                if (before[data.id]) {
+                    qty = before[data.id]["qty"] + 1;
+                }
+
+                if (qty <= data.stock) {
+                    if (!before[data.id]) {
+                        before[data.id] = data;
+                    }
+                    before[data.id]["qty"] = qty;
+                } else {
+                    Swal.fire(
+                        'Gagal',
+                        'Stok tidak cukup',
+                        'error'
+                    )
+                }
+
+                MekanikCart = before;
+
+                refreshServiceCart(ServiceCart, SparepartCart, MekanikCart);
+            }
+
+            function refreshServiceCart(data1, data2, data3) {
                 var html1 = "";
                 var html2 = "";
+                var html3 = "";
                 var countTotal = 0;
                 data1 = data1.filter(function(el) {
                     return el != null;
                 });
                 data2 = data2.filter(function(el) {
+                    return el != null;
+                });
+                data3 = data3.filter(function(el) {
                     return el != null;
                 });
 
@@ -300,7 +371,19 @@
                 data2.forEach(function(item, index) {
                     html2 += '<tr><td>' + item.name + '</td><td >Rp ' + item.price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + '</td><td class="text-center"><input type="number" style="width:52px" value="' + item.qty + '" class="change-qty" data-id="' + item.id + '" data-stock="' + item.stock + '"/></td></tr>';
                     countTotal = (countTotal + (item.price * item.qty));
-                    console.log(item.stock);
+                })
+                data3.forEach(function(item, index) {
+                    console.log(item)
+                    html3 += '<tr><td>' + item.name + '</td><td><input type="number" class="form-control change-upah" min="0" value="'+item.price+'" data-id="' + item.id + '"></td><td class="text-center"><button type="button" class="btn btn-sm btn-danger" onclick="deleteMekanikCart(' + item.id + ')"><i class="fa fa-times"></i></button></td></tr>';
+                    // let upah = 0
+
+                    // if ($(`.upah-${index}`).length && $(`.upah-${index}`).val() !== ''){
+                    //     upah = $(`.upah-${index}`).val()
+                    // }
+
+                    // console.log(upah)
+
+                    countTotal = (countTotal + (item.price * item.qty));
                 })
 
                 total = countTotal;
@@ -314,21 +397,35 @@
                     // jQuery("#customerContainer").attr("style", "display:none");
                     type = "sparepart";
                 }
+
                 if (data2.length) {
                     jQuery("#sparepartCartContainer").attr("style", "display:block");
                 } else {
                     jQuery("#sparepartCartContainer").attr("style", "display:none");
                 }
 
+                if (data3.length) {
+                    jQuery("#mekanikCartContainer").attr("style", "display:block");
+                } else {
+                    jQuery("#mekanikCartContainer").attr("style", "display:none");
+                }
+
                 jQuery("#serviceCart tbody").html(html1);
                 jQuery("#sparepartCart tbody").html(html2);
+                jQuery("#mekanikCart tbody").html(html3);
                 jQuery('.total').html("Rp " + total.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
             }
 
             function deleteServiceCart(id) {
                 delete ServiceCart[id];
 
-                refreshServiceCart(ServiceCart, SparepartCart);
+                refreshServiceCart(ServiceCart, SparepartCart, MekanikCart);
+            }
+
+            function deleteMekanikCart(id) {
+                delete MekanikCart[id];
+
+                refreshServiceCart(ServiceCart, SparepartCart, MekanikCart);
             }
 
             $("body").on('change', '.change-qty', function() {
@@ -351,7 +448,18 @@
                 }
                 SparepartCart = before;
 
-                refreshServiceCart(ServiceCart, SparepartCart);
+                refreshServiceCart(ServiceCart, SparepartCart, MekanikCart);
+            })
+
+            $("body").on('change', '.change-upah', function() {
+                var before = MekanikCart;
+                var upah = jQuery(this).val();
+                var id = jQuery(this).attr("data-id");
+
+                before[id]["price"] = upah;
+                MekanikCart = before;
+
+                refreshServiceCart(ServiceCart, SparepartCart, MekanikCart);
             })
 
             function reset() {
@@ -361,7 +469,7 @@
 
                 jQuery("#dataTable").DataTable().ajax.reload(null, true);
 
-                refreshServiceCart(ServiceCart, SparepartCart);
+                refreshServiceCart(ServiceCart, SparepartCart, MekanikCart);
             }
 
             function saveModal() {
@@ -403,9 +511,14 @@
                     return el != null;
                 });
 
+                var itemMekanik = MekanikCart.filter(function(el) {
+                    return el != null;
+                });
+
                 var form = {};
                 form["total"] = total;
                 form["sparepart"] = itemSparepart;
+                form["mekanik"] = itemMekanik;
 
                 if (type == "service") {
                     form["customer"] = jQuery("input[name=customer]").val();

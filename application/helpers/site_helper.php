@@ -33,4 +33,32 @@ function math($ma) {
         return rupiah($p);
     }
 }
+
+function showSparepartImageTable($image) {
+    $sparePartImage = '';
+
+    if ($image != null) {
+        $filepath = 'uploads/sparepart/'.$image;
+
+        if (file_exists($filepath)) {
+            $sparePartImage = '<div class="text-center"><a href="'.$filepath.'" target="_blank"><img src="'.$filepath.'" style="object-fit:cover;object-position:center;width:50px;height:50px"/></a></div>';
+        }
+    }
+
+    return $sparePartImage;
+}
+
+function showSparepartImage($image) {
+    $sparePartImage = '';
+
+    if ($image != null) {
+        $filepath = 'uploads/sparepart/'.$image;
+
+        if (file_exists($filepath)) {
+            $sparePartImage = $filepath;
+        }
+    }
+
+    return $sparePartImage;
+}
 ?>
