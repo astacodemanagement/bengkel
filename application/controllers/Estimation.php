@@ -154,7 +154,7 @@ class Estimation extends CI_Controller {
         $this->datatables->generate();
     }
     public function json_mekanik() {
-        $addFunc = "addMekanikCart({id:<get-id>,name:'<get-name>',price:0,stock:99})";
+        $addFunc = "addMekanikCart({id:<get-id>,name:'<get-name>',upah:0})";
 
         $this->load->model("datatables");
         $this->datatables->setTable("users");

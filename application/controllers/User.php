@@ -100,7 +100,14 @@ class User extends CI_Controller
         $username = $this->input->post("username");
         $password = $this->input->post("password");
     
-        if (!$code || !$name || !$telephone || !$position || !$birthplace || !$birthdate || !$level || !$address || !$username || !$password) {
+        if (!$code || !$name || !$telephone || !$position || !$birthplace || !$birthdate || !$level || !$address || !$username) {
+            
+            $response = [
+                "status" => FALSE,
+                "msg" => "Periksa kembali data yang anda masukkan"
+            ];
+        }
+        else if ($action == "add" && !$password) {
             $response = [
                 "status" => FALSE,
                 "msg" => "Periksa kembali data yang anda masukkan"
@@ -135,6 +142,10 @@ class User extends CI_Controller
                 $response['msg'] = "Data berhasil diedit";
     
                 unset($insertData["id"]);
+                
+                if ($password == '' | $password == null) {
+                    unset($insertData["password"]);
+                }
     
                 $this->user_model->set_user($id, $insertData);
             }

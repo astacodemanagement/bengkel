@@ -78,7 +78,7 @@ class Datatables extends CI_Model {
 
     private function columnReplace($index,$string) {
 
-        preg_match_all("/<get-([A-Za-z0-9]+)>/",$string,$get);
+        preg_match_all("/<get-([A-Za-z0-9_]+)>/",$string,$get);
 
         $index2 = $index + $_GET['start'];
 

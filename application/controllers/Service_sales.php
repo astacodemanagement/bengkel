@@ -55,7 +55,7 @@ class Service_sales extends CI_Controller {
         $this->datatables->setColumn([
             '<index>',
             '[reformat_date=<get-date>]',
-            '<get-customer>',
+            '<get-customer_name>',
             '<get-plat>',
             '[rupiah=<get-total>]',
             '<div class="text-center">

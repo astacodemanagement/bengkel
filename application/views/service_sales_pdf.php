@@ -100,7 +100,7 @@
                 <tr>
                     <td class="no-td">Nama Customer</td>
                     <td class="no-td label">:</td>
-                    <td class="no-td"><?=$fetch->customer;?></td>
+                    <td class="no-td"><?= $fetch->customer_name ?? '';?></td>
                 </tr>
                 <tr>
                     <td class="no-td">No. Plat</td>

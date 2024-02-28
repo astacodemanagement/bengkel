@@ -14,6 +14,10 @@ class Transaction_model extends CI_Model {
         $this->db->insert_batch("details",$data);
     }
 
+    function post_mechanic_details($data) {
+        $this->db->insert_batch("mechanic_details",$data);
+    }
+
     function sparepart_update($data) {
         $this->db->update_batch("products",$data,"id");
     }

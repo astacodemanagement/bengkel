@@ -128,7 +128,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Password</label>
-                                        <input type="text" name="password" id="password" class="form-control" />
+                                        <input type="text" name="password" id="password" class="form-control" autocomplete="off"/>
                                     </div>
                                 </div>
 
@@ -199,7 +199,7 @@
                     jQuery("#compose form input[name=birthdate]").val(data.birthdate);
                     jQuery("#compose form input[name=joindate]").val(data.joindate);
                     jQuery("#compose form input[name=username]").val(data.username);
-                    jQuery("#compose form input[name=password]").val(data.password);
+                    jQuery("#compose form input[name=password]").val('');
                     jQuery("#compose form select[name=level]").val(data.level);
                     jQuery("#compose form textarea[name=address]").val(data.address);
 
