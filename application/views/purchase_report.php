@@ -25,7 +25,7 @@
                         <input type="text" name="start" class="form-control form-control-sm" placeholder="YYYY-MM-DD">
                         <span class="mx-2">-</span>
                         <input type="text" name="end" class="form-control form-control-sm" placeholder="YYYY-MM-DD">
-                        <button type="button" class="btn btn-danger btn-sm ml-3 btn-print"><i class="fa fa-print"></i> PDF</button>
+                        <button type="button" class="btn btn-primary btn-sm ml-3 btn-print" style="border-radius: 1rem;"><i class="fa fa-print"></i> Export PDF</button>
                     </div>
                 </div>
                 <div class="card-body">

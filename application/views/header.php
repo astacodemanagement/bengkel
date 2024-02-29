@@ -140,7 +140,7 @@ if (!isset($authPage)) {
                         </li>
                         <h3 class="menu-title">Setting</h3>
                         <li>
-                            <a href="<?= base_url("report/sales"); ?>"> <i class="menu-icon fa fa-cogs"></i>Pengaturan Umum</a>
+                            <a href=""> <i class="menu-icon fa fa-cogs"></i>Pengaturan Umum</a>
                         </li>
                         <li>
                             <a href="<?= base_url("auth/logout"); ?>"> <i class="menu-icon fa fa-sign-out"></i>Logout</a>
