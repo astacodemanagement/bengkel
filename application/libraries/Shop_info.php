@@ -15,4 +15,12 @@ class Shop_info {
     function get_shop_address() {
         return $this->get_info->address;
     }
+    function get_image()
+    {
+        return $this->get_info->image;
+    }
+    function get_image_url()
+    {
+        return $this->get_info->image != null | $this->get_info->image != '' ? base_url('uploads/images/' . $this->get_info->image) : '';
+    }
 }

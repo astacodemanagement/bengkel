@@ -45,18 +45,37 @@ class Setting extends CI_Controller {
     public function save_info() {
         $name = $this->input->post("name");
         $address = $this->input->post("address");
+        $image = null;
 
         if($name and $address) {
-            $config['upload_path']          = '././img/';
-            $config['allowed_types']        = 'jpeg|jpg|png';
-            $config['max_size']             = 2048;
-            $config['file_name']            = "logo.png";
-            $config['overwrite']            = TRUE;
+            if (strlen($_FILES['image']['tmp_name']) > 0) {
+                $uploadPath = FCPATH . 'uploads/images/';
 
-            $this->load->library('upload', $config);
+                if (!is_dir($uploadPath)) {
+                    mkdir($uploadPath, 0777, TRUE);
+                }
 
-            if ($this->upload->do_upload('userfile'))
-            {
+                $this->load->library('upload');
+
+                $config['upload_path']          = $uploadPath;
+                $config['allowed_types']        = 'gif|jpg|jpeg|png';
+                $config['overwrite']            = true;
+                $config['max_size']             = 5120; // 5MB
+                $config['encrypt_name'] = TRUE;
+
+                $this->upload->initialize($config);
+
+                if ($this->upload->do_upload('image')) {
+                    $shopInfo = $this->db->get('shop_info')->row();
+
+                    if ($shopInfo) {
+                        if ($shopInfo->image != null) {
+                            unlink($uploadPath . '/' . $shopInfo->image);
+                        }
+                    }
+
+                    $image = $this->upload->data()['file_name'];
+                }
             }
 
             $response = [
@@ -64,7 +83,7 @@ class Setting extends CI_Controller {
                 "msg" => "Info bengkel telah diperbaharui"
             ];
 
-            $this->user_model->set_shop(["name" => $name,"address" => $address]);
+            $this->user_model->set_shop(["name" => $name,"address" => $address, 'image' => $image]);
         } else {
             $response = [
                 "status" => FALSE,
