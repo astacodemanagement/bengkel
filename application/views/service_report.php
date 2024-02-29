@@ -35,7 +35,7 @@
                                 <tr>
                                     <th style="width:10%">#</th>
                                     <th>Customer</th>
-                                    <th>Plat</th>
+                                    <th>Nomor Telepon</th>
                                     <th>Tanggal</th>
                                     <th>Total</th>
                                 </tr>

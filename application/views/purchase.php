@@ -51,6 +51,10 @@
                         </button>
                     </div>
                     <div class="modal-body">
+                        <div class="row mb-2">
+                            <div class="col-md-12 mb-1"><b>Keterangan</b></div>
+                            <div class="col-md-12"><textarea class="form-control modal-description bg-white" disabled></textarea></div>
+                        </div>
                         <div class="table-responsive">
                             <table class="table table-bordered" id="table-detail">
                                 <thead>
@@ -110,8 +114,8 @@
                     })
 
                     jQuery("#table-detail .total").html("Rp " + data.total.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
-
                     jQuery("#details").modal("toggle");
+                    jQuery(".modal-description").text(data.description);
                 });
             })
             $("#data").DataTable({

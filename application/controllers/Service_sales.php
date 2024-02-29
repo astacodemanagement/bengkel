@@ -14,6 +14,7 @@ class Service_sales extends CI_Controller {
         $this->load->model("user_model");
         $this->load->model("datatables");
         $this->load->model("transaction_model");
+        $this->load->model("Consumer_model");
 
         $this->dataAdmin = $this->user_model->get(["id" => $this->session->auth['id']])->row();
     }
@@ -21,7 +22,6 @@ class Service_sales extends CI_Controller {
 
 	public function index()
 	{
-
         $push = [
             "pageTitle" => "Riwayat Service",
             "dataAdmin" => $this->dataAdmin 
@@ -37,6 +37,7 @@ class Service_sales extends CI_Controller {
         if($query->num_rows() > 0) {
             $push["fetch"] = $query->row();
             $push["details"] = $this->transaction_model->get_details($id)->result();
+            $push["customer"] = $this->Consumer_model->get($query->row()->customer_id)->row();
 
             $title = "Invoice";
 
@@ -45,7 +46,7 @@ class Service_sales extends CI_Controller {
             $this->pdf->setPaper('A4', 'portrait');
             $this->pdf->filename = $title;
 
-            $this->pdf->load_view("service_sales_pdf",$push);
+            $this->pdf->load_view("service_sales_pdf", $push);
         }
     }
     
@@ -59,7 +60,7 @@ class Service_sales extends CI_Controller {
             // '<get-plat>',
             '[rupiah=<get-total>]',
             '<div class="text-center">
-                <button type="button" class="btn btn-sm btn-warning btn-view" data-id="<get-id>" data-total="<get-total>"><i class="fa fa-eye"></i></button>
+                <button type="button" class="btn btn-sm btn-warning btn-view" data-id="<get-id>" data-total="[number_format=<get-total>]"><i class="fa fa-eye"></i></button>
                 <a href="[base_url=service_sales/print/<get-id>]" class="btn btn-sm btn-primary"><i class="fa fa-print"></i></a>
             </div>'
         ]);

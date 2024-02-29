@@ -43,7 +43,6 @@ class Purchase extends CI_Controller {
 
 	public function new()
 	{
-
         $push = [
             "pageTitle" => "Tambah Pembelian Stock",
             "dataAdmin" => $this->dataAdmin,
@@ -93,7 +92,6 @@ class Purchase extends CI_Controller {
     
     public function create() {
         $data = json_decode($this->input->raw_input_stream,TRUE);
-        $description = $this->input->post("description");
 
         if(!$data['supplier_id'] OR !$data['total']) {
             $response = [
@@ -111,7 +109,7 @@ class Purchase extends CI_Controller {
                 "date" => date("Y-m-d H:i:s"),
                 "total" => $data["total"],
                 "supplier_id" => $data["supplier_id"],
-                "description" => $description
+                "description" => $data['description']
             ];
 
             $purchase_id = $this->purchase_model->post($insertData);

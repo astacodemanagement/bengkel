@@ -1,9 +1,10 @@
 <?php
 class Report_model extends CI_Model {
     function get($type = "sparepart",$start = 0,$end = 0) {
-        $this->db->select("details.*,products.type,DATE(transactions.date) as date,SUM(details.qty * details.price) as total,SUM(qty) as items,transactions.customer,transactions.plat");
+        $this->db->select("details.*,products.type,DATE(transactions.date) as date,SUM(details.qty * details.price) as total,SUM(qty) as items,transactions.customer_name,consumers.telephone");
         $this->db->join("products","`products`.`id` = `details`.`product_id`","left");
         $this->db->join("transactions","`transactions`.`id` = `details`.`transaction_id`","left");
+        $this->db->join("consumers", "`consumers`.`id` = `transactions`.`customer_id`", "left");
         $this->db->where("products.type",$type);
 
         if($start AND $end) {

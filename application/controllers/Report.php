@@ -57,10 +57,11 @@ class Report extends CI_Controller {
     
     function json($type = "sparepart",$start = 0,$end = 0) {
 
-        $this->datatables->setSelect("details.*,products.type,DATE(transactions.date) as date,SUM(details.qty * details.price) as total,SUM(qty) as items,transactions.customer,transactions.plat");
+        $this->datatables->setSelect("details.*,products.type,DATE(transactions.date) as date,SUM(details.qty * details.price) as total,SUM(qty) as items,transactions.customer_name,consumers.telephone");
         $this->datatables->setTable("details");
         $this->datatables->setJoin("products","`products`.`id` = `details`.`product_id`","left");
         $this->datatables->setJoin("transactions","`transactions`.`id` = `details`.`transaction_id`","left");
+        $this->datatables->setJoin("consumers", "`consumers`.`id` = `transactions`.`customer_id`", "left");
         $this->datatables->setWhere("products.type",$type);
 
         if($start AND $end) {
@@ -84,8 +85,8 @@ class Report extends CI_Controller {
         } else {
             $this->datatables->setColumn([
                 '<index>',
-                '<get-customer>',
-                '<get-plat>',
+                '<get-customer_name>',
+                '<get-telephone>',
                 '<get-date>',
                 '[rupiah=<get-total>]'
             ]);

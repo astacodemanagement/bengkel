@@ -59,7 +59,7 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <!-- <label>Cari Pelanggan</label> -->
-                                <select name="selectedConsumer" id="selectedConsumer" class="form-control form-control-sm select2">
+                                <select name="selectedConsumer" id="selectedConsumer" class="form-control form-control-sm select2 customer">
                                     <option value="" disabled selected hidden>--Pilih Pelanggan--</option>
                                 </select>
                             </div>
@@ -73,7 +73,7 @@
                             </div>
                         </div>
 
-                      
+
 
                     </div>
 
@@ -169,7 +169,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label>Bayar</label>
-                            <input type="text" id="money" class="form-control">
+                            <input type="number" id="money" class="form-control">
                         </div>
                         <div class="form-group">
                             <label>Kembalian</label>
@@ -178,7 +178,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary btn-save-confirm d-none" disabled>Lanjutkan</button>
+                        <button type="button" class="btn btn-primary btn-save-confirm" disabled>Lanjutkan</button>
                     </div>
                 </div>
             </div>
@@ -215,32 +215,10 @@
                     minimumInputLength: 2
                 }).on('select2:select', function(e) {
                     var data = e.params.data;
-                    
-                    console.log(data)
+
                     $('#customer').val(data.name)
                     $('#phone').val(data.phone)
                 });
-
-                // $('#selectedConsumer').select2({
-                //     ajax: {
-                //         url: '<?= base_url("Estimation/getConsumerData") ?>',
-                //         dataType: 'json',
-                //         delay: 250,
-                //         processResults: function(data) {
-                //             return {
-                //                 results: $.map(data.results, function(item) {
-                //                     return {
-                //                         text: item.name,
-                //                         id: item.id
-                //                     };
-                //                 })
-                //             };
-                //         },
-                //         cache: true
-                //     },
-                //     minimumInputLength: 2,
-                //     dropdownParent: $('#customerContainer') // Atur parent dropdown sesuai dengan container Anda
-                // });
 
             });
         </script>
@@ -375,7 +353,7 @@
                     countTotal = (countTotal + (item.price * item.qty));
                 })
                 data3.forEach(function(item, index) {
-                    html3 += '<tr><td>' + item.name + '</td><td><input type="number" class="form-control change-upah" min="0" value="'+item.price+'" data-id="' + item.id + '"></td><td class="text-center"><button type="button" class="btn btn-sm btn-danger" onclick="deleteMekanikCart(' + item.id + ')"><i class="fa fa-times"></i></button></td></tr>';
+                    html3 += '<tr><td>' + item.name + '</td><td><input type="number" class="form-control change-upah" min="0" value="' + item.price + '" data-id="' + item.id + '"></td><td class="text-center"><button type="button" class="btn btn-sm btn-danger" onclick="deleteMekanikCart(' + item.id + ')"><i class="fa fa-times"></i></button></td></tr>';
                     countUpah = (countUpah + item.price);
                 })
 
@@ -451,7 +429,7 @@
                 var id = jQuery(this).attr("data-id");
                 let totalUpah = 0
 
-                $('#mekanikCart tbody tr').each(function(){
+                $('#mekanikCart tbody tr').each(function() {
                     totalUpah += parseFloat($(this).find('.change-upah').val())
                 })
 
@@ -490,7 +468,54 @@
                         'error'
                     )
                 } else {
-                    jQuery("#purchaseModal").modal("toggle");
+                    // jQuery("#purchaseModal").modal("toggle");
+                    if (type == "sparepart") {
+                        var url = "<?= base_url("estimation/insert/sparepart"); ?>";
+                    } else {
+                        var url = "<?= base_url("estimation/insert/service"); ?>";
+                    }
+
+                    var itemSparepart = SparepartCart.filter(function(el) {
+                        return el != null;
+                    });
+
+                    var itemMekanik = MekanikCart.filter(function(el) {
+                        return el != null;
+                    });
+
+                    var form = {};
+                    form["total"] = total;
+                    form["sparepart"] = itemSparepart;
+                    form["mekanik"] = itemMekanik;
+
+                    if (type == "service") {
+                        form["customer"] = jQuery("input[name=customer]").val();
+                        form["plat"] = jQuery("input[name=plat]").val();
+                        form["service"] = ServiceCart.filter(function(el) {
+                            return el != null;
+                        });
+                    }
+
+                    form = JSON.stringify(form);
+
+                    jQuery.ajax({
+                        url: url,
+                        method: "POST",
+                        data: form,
+                        dataType: "json",
+                        processData: false,
+                        contentType: false,
+                        success: function(data) {
+                            if (data.status) {
+                                reset();
+                                jQuery("#change").val("");
+                                jQuery("#money").val("");
+                                jQuery(".customer").val("").change();
+
+                                location.href = "<?= base_url("estimation/print"); ?>"
+                            }
+                        }
+                    })
                 }
             }
 
@@ -507,74 +532,5 @@
                 }
 
                 jQuery("#change").val(change.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
-            })
-
-            $(".btn-save-confirm").on("click", function() {
-
-                if (type == "sparepart") {
-                    var url = "<?= base_url("transaction/insert/sparepart"); ?>";
-                } else {
-                    var url = "<?= base_url("transaction/insert/service"); ?>";
-                }
-
-                var itemSparepart = SparepartCart.filter(function(el) {
-                    return el != null;
-                });
-
-                var itemMekanik = MekanikCart.filter(function(el) {
-                    return el != null;
-                });
-
-                var form = {};
-                form["total"] = total;
-                form["sparepart"] = itemSparepart;
-                form["mekanik"] = itemMekanik;
-
-                if (type == "service") {
-                    form["customer"] = jQuery("input[name=customer]").val();
-                    form["plat"] = jQuery("input[name=plat]").val();
-                    form["service"] = ServiceCart.filter(function(el) {
-                        return el != null;
-                    });
-                }
-
-                form = JSON.stringify(form);
-
-                jQuery.ajax({
-                    url: url,
-                    method: "POST",
-                    data: form,
-                    dataType: "json",
-                    processData: false,
-                    contentType: false,
-                    success: function(data) {
-                        if (data.status) {
-                            reset();
-                            jQuery("#purchaseModal").modal("toggle");
-                            jQuery("#change").val("");
-                            jQuery("#money").val("");
-                            if (data.type == "sparepart") {
-                                Swal.fire(
-                                    "Berhasil",
-                                    data.msg,
-                                    "success"
-                                );
-                            } else {
-                                Swal.fire({
-                                    title: 'Berhasil',
-                                    text: data.msg,
-                                    icon: 'success',
-                                    showCancelButton: true,
-                                    confirmButtonColor: '#3085d6',
-                                    cancelButtonColor: '#d33',
-                                    cancelButtonText: 'Lanjutkan',
-                                    confirmButtonText: 'Cetak Invoice'
-                                }).then((result) => {
-                                    location.href = "<?= base_url("service_sales/print"); ?>/" + data.id;
-                                })
-                            }
-                        }
-                    }
-                });
             })
         </script>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Service Sales PDF</title>
@@ -8,38 +9,41 @@
         body {
             font-size: 16px;
         }
+
         .header {
             background: "#CCC";
         }
+
         .heading {
-            float:left;
+            float: left;
             width: 50%;
         }
 
         .heading h1 {
             font-size: 24px;
-            margin:0;
-            padding:0;
+            margin: 0;
+            padding: 0;
         }
-        
+
         .heading h2 {
             font-size: 16px;
             margin: 9px 0;
         }
 
         .title {
-            float:right;
+            float: right;
             border: 1px solid #000;
             padding: 9px 22px;
         }
+
         .header:after {
-            display:block;
+            display: block;
             content: "";
             clear: both;
         }
 
         .no-td {
-            border:none;
+            border: none;
             padding: 0;
         }
 
@@ -48,47 +52,49 @@
         }
 
         .col-wrap:after {
-            clear:both;
-            display:block;
+            clear: both;
+            display: block;
             content: "";
         }
 
         .col-1 {
-            float:left;
+            float: left;
         }
 
         .col-2 {
-            float:right;
+            float: right;
         }
 
         table {
             border-collapse: collapse;
         }
 
-        table th,td {
-            border:1px solid #000;
+        table th,
+        td {
+            border: 1px solid #000;
             padding: 7px 9px;
         }
     </style>
 </head>
+
 <body>
     <div class="header">
         <div class="heading">
             <?php
             //convert image into Binary data
             $img_type = "png";
-            $img_data = fopen ( "././img/1.png", 'rb' );
-            $img_size = filesize ( "././img/1.png" );
-            $binary_image = fread ( $img_data, $img_size );
-            fclose ( $img_data );
+            $img_data = fopen("././img/1.png", 'rb');
+            $img_size = filesize("././img/1.png");
+            $binary_image = fread($img_data, $img_size);
+            fclose($img_data);
 
             //Build the src string to place inside your img tag
-            $img_src = "data:image/".$img_type.";base64,".str_replace ("\n", "", base64_encode ( $binary_image ) );
+            $img_src = "data:image/" . $img_type . ";base64," . str_replace("\n", "", base64_encode($binary_image));
             ?>
-            <img src="<?=$img_src;?>" style="max-width:100px;float:left">
+            <img src="<?= $img_src; ?>" style="max-width:100px;float:left">
             <div style="padding: 0 0 0 112px">
-                <h1><?=$this->shop_info->get_shop_name();?></h1>
-                <h2><?=$this->shop_info->get_shop_address();?></h2>
+                <h1><?= $this->shop_info->get_shop_name(); ?></h1>
+                <h2><?= $this->shop_info->get_shop_address(); ?></h2>
             </div>
         </div>
         <span class="title">Nota Service</span>
@@ -100,12 +106,12 @@
                 <tr>
                     <td class="no-td">Nama Konsumen</td>
                     <td class="no-td label">:</td>
-                    <td class="no-td"><?= $fetch->customer_name ?? '';?></td>
+                    <td class="no-td"><?= $fetch->customer_name ?? ''; ?></td>
                 </tr>
                 <tr>
-                    <td class="no-td">Type</td>
+                    <td class="no-td">No. Telp Konsumen</td>
                     <td class="no-td label">:</td>
-                    <td class="no-td"><?=$fetch->type;?></td>
+                    <td class="no-td"><?= $customer ? $customer->telephone : '-' ?></td>
                 </tr>
             </table>
         </div>
@@ -114,7 +120,7 @@
                 <tr>
                     <td class="no-td">Tanggal</td>
                     <td class="no-td label">:</td>
-                    <td class="no-td"><?=date("d/m/Y",strtotime($fetch->date));?></td>
+                    <td class="no-td"><?= date("d/m/Y", strtotime($fetch->date)); ?></td>
                 </tr>
             </table>
         </div>
@@ -130,27 +136,28 @@
             </tr>
         </thead>
         <tbody>
-        <?php
-        foreach($details as $detail) {
-        ?>
+            <?php
+            foreach ($details as $detail) {
+            ?>
 
-            <tr>
-                <td><?=$detail->name;?></td>
-                <td style="text-align:center"><?=$detail->qty;?></td>
-                <td style="text-align:right"><?=rupiah($detail->price);?></td>
-                <td style="text-align:right"><?=rupiah($detail->price * $detail->qty);?></td>
-            </tr>
+                <tr>
+                    <td><?= $detail->name; ?></td>
+                    <td style="text-align:center"><?= $detail->qty; ?></td>
+                    <td style="text-align:right"><?= rupiah($detail->price); ?></td>
+                    <td style="text-align:right"><?= rupiah($detail->price * $detail->qty); ?></td>
+                </tr>
 
-        <?php
-        }
-        ?>
+            <?php
+            }
+            ?>
         </tbody>
         <tfoot>
             <tr>
                 <td colspan="3" style="text-align:right;border:none">Total : </td>
-                <td style="text-align:right"><?=rupiah($fetch->total);?></td>
+                <td style="text-align:right"><?= rupiah($fetch->total); ?></td>
             </tr>
         </tfoot>
     </table>
 </body>
+
 </html>

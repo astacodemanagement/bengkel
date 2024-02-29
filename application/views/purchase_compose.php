@@ -37,7 +37,7 @@
                         </div>
                         <div class="form-group">
                             <label>Keterangan :</label>
-                            <textarea name="description" id="description" cols="30" rows="2" class="form-control"></textarea>
+                            <textarea name="description" id="description" cols="30" rows="2" class="form-control description"></textarea>
                         </div>
 
                         <label>Barang :</label>
@@ -61,7 +61,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                       
+
                     </form>
                     <button class="btn btn-success btn-sm mb-2 btn-add-row" style="border-radius: 1rem;"><i class="fa fa-plus"></i> Tambah</button>
                 </div>
@@ -175,6 +175,7 @@
                     success: function(data) {
                         if (data.status) {
                             jQuery(".supplier").val("");
+                            jQuery(".description").val("");
                             jQuery("#purchaseForm tbody").html('<tr><td><div class="product-name form-control form-control-sm" data-id="" data-stock="">--Pilih--</div></td><td><input type="number" class="form-control form-control-sm" name="price"></td><td><input type="number" class="form-control form-control-sm" name="qty"></td><td class="text-center"><button type="button" class="btn btn-sm btn-danger btn-del"><i class="fa fa-times"></i></button></td></tr>');
 
                             Swal.fire(

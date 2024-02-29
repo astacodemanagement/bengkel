@@ -216,7 +216,6 @@
                 }).on('select2:select', function(e) {
                     var data = e.params.data;
 
-                    console.log(data)
                     $('#customer').val(data.name)
                     $('#phone').val(data.phone)
                 });
@@ -539,26 +538,22 @@
                             jQuery("#purchaseModal").modal("toggle");
                             jQuery("#change").val("");
                             jQuery("#money").val("");
-                            if (data.type == "sparepart") {
-                                Swal.fire(
-                                    "Berhasil",
-                                    data.msg,
-                                    "success"
-                                );
-                            } else {
-                                Swal.fire({
-                                    title: 'Berhasil',
-                                    text: data.msg,
-                                    icon: 'success',
-                                    showCancelButton: true,
-                                    confirmButtonColor: '#3085d6',
-                                    cancelButtonColor: '#d33',
-                                    cancelButtonText: 'Lanjutkan',
-                                    confirmButtonText: 'Cetak Invoice'
-                                }).then((result) => {
+                            jQuery(".customer").val("").change();
+
+                            Swal.fire({
+                                title: 'Berhasil',
+                                text: data.msg,
+                                icon: 'success',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                cancelButtonText: 'Lanjutkan',
+                                confirmButtonText: 'Cetak Invoice'
+                            }).then((result) => {
+                                if (result.value === true) {
                                     location.href = "<?= base_url("service_sales/print"); ?>/" + data.id;
-                                })
-                            }
+                                }
+                            })
                         }
                     }
                 });

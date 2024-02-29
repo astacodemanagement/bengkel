@@ -43,7 +43,7 @@
 
                 <th>#</th>
                 <th>Customer</th>
-                <th>Plat</th>
+                <th>Nomor Telepon</th>
                 <th>Tanggal</th>
                 <th>Total</th>
 
@@ -74,8 +74,8 @@
 
                 <tr>
                     <td style="text-align:center"><?=$i;?></td>
-                    <td><?=$row->customer;?></td>
-                    <td style="text-align:center"><?=$row->plat;?></td>
+                    <td><?=$row->customer_name;?></td>
+                    <td style="text-align:center"><?=$row->telephone;?></td>
                     <td style="text-align:center"><?=$row->date;?></td>
                     <td style="text-align:center"><?=rupiah($row->total);?></td>
                 </tr>
