@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `consumers` (
   `tipe` varchar(50) DEFAULT NULL,
   `description` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Dumping data for table db_bengkel.consumers: ~3 rows (approximately)
 INSERT INTO `consumers` (`id`, `code`, `name`, `address`, `telephone`, `tipe`, `description`) VALUES
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `details` (
   `price` int NOT NULL,
   `qty` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=latin1;
 
 -- Dumping data for table db_bengkel.details: ~0 rows (approximately)
 
@@ -73,15 +73,15 @@ CREATE TABLE IF NOT EXISTS `products` (
   `jenismobil` varchar(100) DEFAULT NULL,
   `description` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
 
 -- Dumping data for table db_bengkel.products: ~5 rows (approximately)
 INSERT INTO `products` (`id`, `kode`, `name`, `price`, `price1`, `price2`, `price3`, `type`, `stock`, `gambar`, `location`, `jenismobil`, `description`) VALUES
 	(7, '112023', 'Ban Mobil', 120000, 200000, 250000, 300000, 'sparepart', 0, 'ee981f27827378159157bfe86c378eb3.jpg', 'gedung', NULL, 'gaskeun'),
 	(8, '0', 'Ganti Oli', 50000, 0, 0, 0, 'service', NULL, NULL, NULL, 'sample2', NULL),
-	(9, '112024', 'Oli Evalube', 30000, 40000, 50000, 60000, 'sparepart', 7, NULL, 'tokoku.ltpresent.com', NULL, 'ddddd'),
+	(9, '112024', 'Oli Evalube', 30000, 40000, 50000, 60000, 'sparepart', 4, NULL, 'tokoku.ltpresent.com', NULL, 'ddddd'),
 	(12, '0', 'Cairan Pembersih', 30000, 0, 0, 0, 'service', NULL, NULL, NULL, 'sample', NULL),
-	(13, '00001', 'Ban', 50000, 100000, 110000, 120000, 'sparepart', 1, 'c49eb769de7a50c2493cc304c894efc1.jpg', 'Rak 2', NULL, 'BAN Luar tubeless');
+	(13, '00001', 'Ban', 50000, 100000, 110000, 120000, 'sparepart', 3, 'c49eb769de7a50c2493cc304c894efc1.jpg', 'Rak 2', NULL, 'BAN Luar tubeless');
 
 -- Dumping structure for table db_bengkel.purchase
 CREATE TABLE IF NOT EXISTS `purchase` (
@@ -92,12 +92,9 @@ CREATE TABLE IF NOT EXISTS `purchase` (
   `description` text,
   `pic` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
 
--- Dumping data for table db_bengkel.purchase: ~2 rows (approximately)
-INSERT INTO `purchase` (`id`, `date`, `total`, `supplier_id`, `description`, `pic`) VALUES
-	(20, '2024-02-23 13:33:43', 2000000, 1, NULL, NULL),
-	(21, '2024-02-29 10:35:02', 20000, 1, 'tes', NULL);
+-- Dumping data for table db_bengkel.purchase: ~0 rows (approximately)
 
 -- Dumping structure for table db_bengkel.purchase_details
 CREATE TABLE IF NOT EXISTS `purchase_details` (
@@ -107,13 +104,9 @@ CREATE TABLE IF NOT EXISTS `purchase_details` (
   `price` int NOT NULL,
   `qty` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=latin1;
 
--- Dumping data for table db_bengkel.purchase_details: ~3 rows (approximately)
-INSERT INTO `purchase_details` (`id`, `purchase_id`, `product_id`, `price`, `qty`) VALUES
-	(23, 20, 7, 100000, 10),
-	(24, 20, 9, 100000, 10),
-	(25, 21, 13, 10000, 2);
+-- Dumping data for table db_bengkel.purchase_details: ~0 rows (approximately)
 
 -- Dumping structure for table db_bengkel.shop_info
 CREATE TABLE IF NOT EXISTS `shop_info` (
@@ -146,16 +139,20 @@ INSERT INTO `suppliers` (`id`, `name`, `address`, `telephone`, `description`) VA
 -- Dumping structure for table db_bengkel.transactions
 CREATE TABLE IF NOT EXISTS `transactions` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `code` varchar(100) NOT NULL,
   `type` enum('sparepart','service') NOT NULL,
   `total` decimal(20,6) NOT NULL DEFAULT '0.000000',
   `mechanical_costs` decimal(20,6) DEFAULT NULL,
   `date` datetime NOT NULL,
   `customer_id` int DEFAULT NULL,
   `customer_name` varchar(100) DEFAULT NULL,
-  `plat` varchar(15) DEFAULT NULL,
+  `plat` varchar(15) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `car_type` varchar(100) DEFAULT NULL,
   `pic` varchar(50) DEFAULT NULL,
+  `km` int DEFAULT NULL,
+  `description` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=latin1;
 
 -- Dumping data for table db_bengkel.transactions: ~0 rows (approximately)
 

@@ -202,7 +202,7 @@
                             return {
                                 results: $.map(data.results, function(item) {
                                     return {
-                                        text: item.name,
+                                        text: `${item.name} (${item.telephone})`,
                                         id: item.id,
                                         name: item.name,
                                         phone: item.telephone

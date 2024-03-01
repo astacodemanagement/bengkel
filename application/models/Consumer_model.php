@@ -24,7 +24,8 @@ class Consumer_model extends CI_Model {
 
     public function searchConsumer($term) {
         $this->db->select('id, name, telephone');
-        $this->db->like('name', $term); // Ganti 'name' dengan bidang yang ingin Anda gunakan
+        $this->db->like('telephone', $term); // Ganti 'name' dengan bidang yang ingin Anda gunakan
+        $this->db->or_like('name', $term); // Ganti 'name' dengan bidang yang ingin Anda gunakan
         $result = $this->db->get('consumers')->result_array();
         return $result;
     }

@@ -23,7 +23,7 @@ class Service_sales extends CI_Controller {
 	public function index()
 	{
         $push = [
-            "pageTitle" => "Riwayat Service",
+            "pageTitle" => "History Service",
             "dataAdmin" => $this->dataAdmin 
         ];
 

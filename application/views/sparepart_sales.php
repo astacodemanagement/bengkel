@@ -2,7 +2,7 @@
             <div class="col-sm-4">
                 <div class="page-header float-left">
                     <div class="page-title">
-                        <h1>Riwayat Penjualan</h1>
+                        <h1>History Penjualan</h1>
                     </div>
                 </div>
             </div>
@@ -11,7 +11,7 @@
                     <div class="page-title">
                         <ol class="breadcrumb text-right">
                             <li><a href="<?= base_url("dashboard"); ?>">Dashboard</a></li>
-                            <li class="active">Riwayat Penjualan</li>
+                            <li class="active">History Penjualan</li>
                         </ol>
                     </div>
                 </div>

@@ -10,7 +10,7 @@
                 <div class="page-header float-right">
                     <div class="page-title">
                         <ol class="breadcrumb text-right">
-                            <li><a href="<?=base_url("dashboard");?>">Dashboard</a></li>
+                            <li><a href="<?= base_url("dashboard"); ?>">Dashboard</a></li>
                             <li class="active">Laporan Pembelian</li>
                         </ol>
                     </div>
@@ -26,6 +26,7 @@
                         <span class="mx-2">-</span>
                         <input type="text" name="end" class="form-control form-control-sm" placeholder="YYYY-MM-DD">
                         <button type="button" class="btn btn-primary btn-sm ml-3 btn-print" style="border-radius: 1rem;"><i class="fa fa-print"></i> Export PDF</button>
+                        <button type="button" class="btn btn-success btn-sm ml-3 btn-excel" style="border-radius: 1rem;"><i class="fa fa-file-excel-o"></i> Export Excel</button>
                     </div>
                 </div>
                 <div class="card-body">
@@ -46,55 +47,66 @@
             </div>
         </div>
 
+        <script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
         <script>
-        const elem = document.querySelector('.date');
-        const datepicker = new DateRangePicker(elem, {
-            format: "yyyy-mm-dd"
-        });
+            const elem = document.querySelector('.date');
+            const datepicker = new DateRangePicker(elem, {
+                format: "yyyy-mm-dd"
+            });
 
-        $("input[name=end]").on("change",function(){
-            var start = jQuery("input[name=start]").val();
-            var end = jQuery("input[name=end]").val();
+            $("input[name=end]").on("change", function() {
+                var start = jQuery("input[name=start]").val();
+                var end = jQuery("input[name=end]").val();
 
-            jQuery("#data").DataTable().ajax.url("<?=base_url("report/purchase_json");?>/"+start+"/"+end).load();
-        });
+                jQuery("#data").DataTable().ajax.url("<?= base_url("report/purchase_json"); ?>/" + start + "/" + end).load();
+            });
 
-        $("#data").DataTable({
-            "processing": true,
-            "serverSide": true,
-            "autoWidth":true,
-            "order": [],
-            "ajax": {"url": "<?=base_url("report/purchase_json");?>"},
-            "columnDefs": [
-                {
-                    'targets': 0,
-                    'className': "text-center" 
+            let dataTable = $("#data").DataTable({
+                "processing": true,
+                "serverSide": true,
+                "autoWidth": true,
+                "order": [],
+                "ajax": {
+                    "url": "<?= base_url("report/purchase_json"); ?>"
                 },
-                {
-                    'targets': 2,
-                    'className': "text-center" 
-                },
-                {
-                    'targets': 3,
-                    'className': "text-center" 
-                },
-                {
-                    'targets': 4,
-                    'className': "text-center" 
+                "columnDefs": [{
+                        'targets': 0,
+                        'className': "text-center"
+                    },
+                    {
+                        'targets': 2,
+                        'className': "text-center"
+                    },
+                    {
+                        'targets': 3,
+                        'className': "text-center"
+                    },
+                    {
+                        'targets': 4,
+                        'className': "text-center"
+                    }
+                ],
+                buttons: [{
+                    extend: 'excel'
+                }]
+            });
+
+            $(".btn-excel").on("click", function() {
+                dataTable.button('.buttons-excel').trigger();
+            });
+
+            $(".btn-print").on("click", function() {
+                var start = jQuery("input[name=start]").val();
+                var end = jQuery("input[name=end]").val();
+
+                if (start && end) {
+                    var url = "<?= base_url("report/purchase_pdf"); ?>/" + start + "/" + end;
+                } else {
+                    var url = "<?= base_url("report/purchase_pdf"); ?>/";
                 }
-            ]
-        });
 
-        $(".btn-print").on("click",function(){
-            var start = jQuery("input[name=start]").val();
-            var end = jQuery("input[name=end]").val();
-
-            if(start && end) {
-                var url = "<?=base_url("report/purchase_pdf");?>/"+start+"/"+end;
-            } else {
-                var url = "<?=base_url("report/purchase_pdf");?>/";
-            }
-
-            location.href = url;
-        })
+                location.href = url;
+            })
         </script>

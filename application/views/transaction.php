@@ -71,10 +71,23 @@
                                 <label>No. Telephone</label>
                                 <input type="text" id="phone" class="form-control form-control-sm" readonly>
                             </div>
+                            <div class="form-group">
+                                <label>KM</label>
+                                <input type="number" class="form-control form-control-sm km" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Nomor Polisi</label>
+                                <input type="text" class="form-control form-control-sm plat">
+                            </div>
+                            <div class="form-group">
+                                <label>Jenis Mobil</label>
+                                <input type="text" class="form-control form-control-sm car-type">
+                            </div>
+                            <div class="form-group">
+                                <label>Keterangan</label>
+                                <textarea class="form-control description"></textarea>
+                            </div>
                         </div>
-
-
-
                     </div>
 
                     <div class="card" id="serviceCartContainer" style="display:none">
@@ -202,7 +215,7 @@
                             return {
                                 results: $.map(data.results, function(item) {
                                     return {
-                                        text: item.name,
+                                        text: `${item.name} (${item.telephone})`,
                                         id: item.id,
                                         name: item.name,
                                         phone: item.telephone
@@ -437,7 +450,7 @@
             })
 
             function reset() {
-                jQuery("#customerContainer input").val("");
+                jQuery("#customerContainer input,#customerContainer textarea").val("");
                 ServiceCart = [];
                 SparepartCart = [];
 
@@ -514,6 +527,10 @@
                 form["mechanic"] = itemMekanik;
                 form["service"] = itemService
                 form["customer"] = $(".customer").val();
+                form["description"] = $(".description").val();
+                form["km"] = $(".km").val();
+                form["car_type"] = $(".car-type").val();
+                form["plat"] = $(".plat").val();
 
                 // if (type == "service") {
                 //     form["customer"] = jQuery("input[name=customer]").val();
@@ -539,7 +556,6 @@
                             jQuery("#change").val("");
                             jQuery("#money").val("");
                             jQuery(".customer").val("").change();
-
                             Swal.fire({
                                 title: 'Berhasil',
                                 text: data.msg,

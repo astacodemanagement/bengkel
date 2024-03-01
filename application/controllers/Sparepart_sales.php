@@ -22,7 +22,7 @@ class Sparepart_sales extends CI_Controller {
 	{
 
         $push = [
-            "pageTitle" => "Riwayat Penjualan",
+            "pageTitle" => "History Penjualan",
             "dataAdmin" => $this->dataAdmin 
         ];
 

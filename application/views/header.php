@@ -121,10 +121,10 @@ if (!isset($authPage)) {
                             <a href="<?= base_url("transaction"); ?>"> <i class="menu-icon fa fa-fax"></i>Tambah Transaksi</a>
                         </li>
                         <li>
-                            <a href="<?= base_url("sparepart_sales"); ?>"> <i class="menu-icon fa fa-commenting"></i>Riwayat Jual Sparepart</a>
+                            <a href="<?= base_url("sparepart_sales"); ?>"> <i class="menu-icon fa fa-commenting"></i>History Jual Sparepart</a>
                         </li>
                         <li>
-                            <a href="<?= base_url("service_sales"); ?>"> <i class="menu-icon fa fa-wechat"></i>Riwayat Service</a>
+                            <a href="<?= base_url("service_sales"); ?>"> <i class="menu-icon fa fa-wechat"></i>History Service</a>
                         </li>
                         <!-- ----------------------------------- -->
                          

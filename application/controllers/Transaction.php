@@ -63,12 +63,17 @@ class Transaction extends CI_Controller {
         
         $push = [
             "id" => NULL,
+            "code" => $this->generateTransactionCode(),
             "type" => $action,
             "total" => $data['total'],
             "mechanical_costs" => $data['mechanical_costs'],
             "date" => date("Y-m-d H:i:s"),
             "customer_id" => $customer_id,
-            "customer_name" => $customer_name
+            "customer_name" => $customer_name,
+            "plat" => $data['plat'],
+            "km" => $data['km'],
+            "car_type" => $data['car_type'],
+            "description" => $data['description'],
         ];
 
         $transaction_id = $this->transaction_model->create($push);
@@ -192,5 +197,20 @@ class Transaction extends CI_Controller {
         $this->datatables->setWhere("position","Mekanik");
         $this->datatables->setSearchField("name");
         $this->datatables->generate();
+    }
+
+    private function generateTransactionCode()
+    {
+        $transaction = $this->db->order_by('id', 'desc')->get('transactions')->row();
+        $initialCode = 'TRX';
+        $codeLength = 10;
+        $code = '0000000001';
+
+        if ($transaction) {
+            $transactionCode = preg_replace('/[^0-9]/', '', $transaction->code);
+            $code = $transactionCode + 1;
+        }
+
+        return $initialCode . sprintf('%0'.$codeLength.'d', $code);
     }
 }
