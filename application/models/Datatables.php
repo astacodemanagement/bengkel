@@ -60,7 +60,19 @@ class Datatables extends CI_Model {
 
 
         if($_GET['search']['value']) {
-            $this->db->like($this->searchField,$_GET['search']['value']);
+            if (!is_array($this->searchField)) {
+                $this->db->like($this->searchField,$_GET['search']['value']);
+            } else {
+                $this->db->group_start();
+                for($i = 0; $i < count($this->searchField); $i++) {
+                    if ($i == 0) {
+                        $this->db->like($this->searchField[$i],$_GET['search']['value']);
+                    } else {
+                        $this->db->or_like($this->searchField[$i],$_GET['search']['value']);
+                    }
+                }
+                $this->db->group_end();
+            }
         }
 
         if(isset($_GET['order'][0]['column'])) {

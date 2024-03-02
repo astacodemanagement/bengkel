@@ -38,6 +38,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>Nama</th>
+                                                    <th>Kode</th>
                                                     <th>Harga</th>
                                                     <th>Aksi</th>
                                                 </tr>
@@ -250,19 +251,21 @@
                 "ajax": {
                     "url": "<?= base_url("transaction/json_service"); ?>"
                 }
-            });
+            }).columns([1]).visible(false);
 
             $('#nav-services-tab').on("click", function() {
                 jQuery("#dataTable").DataTable().ajax.url("<?= base_url("transaction/json_service"); ?>").load();
-                jQuery("#dataTable").DataTable().columns([1]).visible(true);
+                jQuery("#dataTable").DataTable().columns([1]).visible(false);
             });
             $('#nav-sparepart-tab').on("click", function() {
                 jQuery("#dataTable").DataTable().ajax.url("<?= base_url("transaction/json_sparepart"); ?>").load();
                 jQuery("#dataTable").DataTable().columns([1]).visible(true);
+                jQuery("#dataTable").DataTable().columns([2]).visible(true);
             });
             $('#nav-mekanik-tab').on("click", function() {
                 jQuery("#dataTable").DataTable().ajax.url("<?= base_url("transaction/json_mekanik"); ?>").load();
                 jQuery("#dataTable").DataTable().columns([1]).visible(false);
+                jQuery("#dataTable").DataTable().columns([2]).visible(false);
             });
 
             var ServiceCart = [];

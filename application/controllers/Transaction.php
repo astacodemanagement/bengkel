@@ -154,6 +154,7 @@ class Transaction extends CI_Controller {
         $this->datatables->setTable("products");
         $this->datatables->setColumn([
             '<get-name>',
+            '<get-kode>',
             '[rupiah=<get-price>]',
             '<div class="text-center">
                 <button type="button" class="btn btn-sm btn-success btn-add" onclick="'.$addFunc.'"><i class="fa fa-plus"></i></button>
@@ -171,6 +172,7 @@ class Transaction extends CI_Controller {
         $this->datatables->setTable("products");
         $this->datatables->setColumn([
             '<get-name>',
+            '<get-kode>',
             '[rupiah=<get-price>]',
             '<div class="text-center">
                 <button type="button" class="btn btn-sm btn-success" onclick="'.$addFunc.'"><i class="fa fa-plus"></i></button>
@@ -178,7 +180,7 @@ class Transaction extends CI_Controller {
         ]);
         $this->datatables->setOrdering(["name","price",NULL]);
         $this->datatables->setWhere("type","sparepart");
-        $this->datatables->setSearchField("name");
+        $this->datatables->setSearchField(["name", "kode"]);
         $this->datatables->generate();
     }
     public function json_mekanik() {
@@ -188,6 +190,7 @@ class Transaction extends CI_Controller {
         $this->datatables->setTable("users");
         $this->datatables->setColumn([
             '<get-name>',
+            '',
             '0',
             '<div class="text-center">
                 <button type="button" class="btn btn-sm btn-success" onclick="'.$addFunc.'"><i class="fa fa-plus"></i></button>

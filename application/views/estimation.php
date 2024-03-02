@@ -236,13 +236,13 @@
                 },
                 "lengthChange": false,
                 "ajax": {
-                    "url": "<?= base_url("transaction/json_service"); ?>"
+                    "url": "<?= base_url("estimation/json_service"); ?>"
                 }
-            });
+            }).columns([1]).visible(false);
 
             $('#nav-services-tab').on("click", function() {
                 jQuery("#dataTable").DataTable().ajax.url("<?= base_url("estimation/json_service"); ?>").load();
-                jQuery("#dataTable").DataTable().columns([1]).visible(true);
+                jQuery("#dataTable").DataTable().columns([1]).visible(false);
             });
             $('#nav-sparepart-tab').on("click", function() {
                 jQuery("#dataTable").DataTable().ajax.url("<?= base_url("estimation/json_sparepart"); ?>").load();

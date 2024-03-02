@@ -113,6 +113,7 @@ class Estimation extends CI_Controller
         $this->datatables->setTable("products");
         $this->datatables->setColumn([
             '<get-name>',
+            '<get-kode>',
             '[rupiah=<get-price>]',
             '<div class="text-center">
                 <button type="button" class="btn btn-sm btn-success btn-add" onclick="' . $addFunc . '"><i class="fa fa-plus"></i></button>
@@ -120,12 +121,12 @@ class Estimation extends CI_Controller
         ]);
         $this->datatables->setOrdering(["name", "price", NULL]);
         $this->datatables->setWhere("type", "service");
-        $this->datatables->setSearchField("name");
+        $this->datatables->setSearchField("name","kode");
         $this->datatables->generate();
     }
     public function json_sparepart()
     {
-        $addFunc = "addSparepartCart({id:<get-id>,name:'<get-name>',name:'<get-kode>',price:<get-price>,stock:<get-stock>})";
+        $addFunc = "addSparepartCart({id:<get-id>,name:'<get-name>',kode:'<get-kode>',price:<get-price>,stock:<get-stock>})";
 
         $this->load->model("datatables");
         $this->datatables->setTable("products");
@@ -139,7 +140,7 @@ class Estimation extends CI_Controller
         ]);
         $this->datatables->setOrdering(["name", "price", NULL]);
         $this->datatables->setWhere("type", "sparepart");
-        $this->datatables->setSearchField("name","kode");
+        $this->datatables->setSearchField(["name", "kode"]);
         $this->datatables->generate();
     }
     public function json_mekanik()
