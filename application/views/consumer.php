@@ -55,7 +55,7 @@
                         <form>
                             <div class="form-group">
                                 <label>Kode Konsumen</label>
-                                <input type="text" name="code" class="form-control" />
+                                <input type="text" name="code" id="code" class="form-control" placeholder="Kode Konsumen Sama Dengan Inputan No Telephone" />
                             </div>
                             <div class="form-group">
                                 <label>Nama Konsumen</label>
@@ -67,7 +67,7 @@
                             </div>
                             <div class="form-group">
                                 <label>No. Telp</label>
-                                <input type="text" name="telephone" class="form-control" />
+                                <input type="text" name="telephone" id="telephone" class="form-control" />
                             </div>
                             <div class="form-group">
                                 <label>Keterangan</label>
@@ -111,7 +111,14 @@
                 </div>
             </div>
         </div>
-
+        <script>
+            $(document).ready(function() {
+                $('#telephone').on('input', function() {
+                    var code = $(this).val().toLowerCase().replace(/\s+/g, '-');
+                    $('#code').val(code);
+                });
+            });
+        </script>
         <script>
             $("#data").DataTable({
                 "processing": true,

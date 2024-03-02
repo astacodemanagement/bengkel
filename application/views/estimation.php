@@ -38,6 +38,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>Nama</th>
+                                                    <th>Kode</th>
                                                     <th>Harga</th>
                                                     <th>Aksi</th>
                                                 </tr>
