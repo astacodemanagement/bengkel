@@ -126,9 +126,15 @@ if (!isset($authPage)) {
                         <li>
                             <a href="<?= base_url("service_sales"); ?>"> <i class="menu-icon fa fa-wechat"></i>History Service</a>
                         </li>
+                        <li>
+                            <a href="<?= base_url("absensi"); ?>"> <i class="menu-icon fa fa-users"></i>Absensi</a>
+                        </li>
                         <!-- ----------------------------------- -->
                          
                         <h3 class="menu-title">Laporan</h3>
+                        <li>
+                            <a href="<?= base_url("report/salary"); ?>"> <i class="menu-icon fa fa-file-word-o"></i>Laporan Salary</a>
+                        </li>
                         <li>
                             <a href="<?= base_url("report/sales"); ?>"> <i class="menu-icon fa fa-file-word-o"></i>Laporan Penjualan</a>
                         </li>

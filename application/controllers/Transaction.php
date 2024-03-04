@@ -67,13 +67,15 @@ class Transaction extends CI_Controller {
             "type" => $action,
             "total" => $data['total'],
             "mechanical_costs" => $data['mechanical_costs'],
-            "date" => date("Y-m-d H:i:s"),
+            // "date" => date("Y-m-d H:i:s"),
             "customer_id" => $customer_id,
             "customer_name" => $customer_name,
             "plat" => $data['plat'],
             "km" => $data['km'],
             "car_type" => $data['car_type'],
             "description" => $data['description'],
+            "date" => isset($data['date']) ? $data['date'] : null,
+
         ];
 
         $transaction_id = $this->transaction_model->create($push);
@@ -119,7 +121,8 @@ class Transaction extends CI_Controller {
             $temp["transaction_id"] = $transaction_id;
             $temp["user_id"] = $itemMch["id"];
             $temp["cost"] = $itemMch["cost"];
-            $temp["date"] = date("Y-m-d H:i:s");
+            $temp["date"] = isset($itemMch["date"]) ? $itemMch["date"] : date("Y-m-d H:i:s");
+            // $temp["date"] = date("Y-m-d H:i:s");
 
             $mechanic_batch[] = $temp;
         }
@@ -158,6 +161,7 @@ class Transaction extends CI_Controller {
             '[rupiah=<get-price>]',
             '<div class="text-center">
                 <button type="button" class="btn btn-sm btn-success btn-add" onclick="'.$addFunc.'"><i class="fa fa-plus"></i></button>
+                
             </div>'
         ]);
         $this->datatables->setOrdering(["name","price",NULL]);
@@ -166,7 +170,10 @@ class Transaction extends CI_Controller {
         $this->datatables->generate();
     }
     public function json_sparepart() {
-        $addFunc = "addSparepartCart({id:<get-id>,name:'<get-name>',price:<get-price>,stock:<get-stock>})";
+        $base_url = $this->config->base_url();
+        $addFunc = "addSparepartCart({id:<get-id>,name:'<get-name>',price:<get-price>,stock:<get-stock>,gambar:'$base_url/uploads/sparepart/<get-gambar>'})";
+        $detailData = "detailData({id:<get-id>,name:'<get-name>',location:'<get-location>',description:'<get-description>',gambar:'$base_url/uploads/sparepart/<get-gambar>'})";
+    
 
         $this->load->model("datatables");
         $this->datatables->setTable("products");
@@ -176,6 +183,8 @@ class Transaction extends CI_Controller {
             '[rupiah=<get-price>]',
             '<div class="text-center">
                 <button type="button" class="btn btn-sm btn-success" onclick="'.$addFunc.'"><i class="fa fa-plus"></i></button>
+                <button type="button" class="btn btn-sm btn-primary" onclick="'.$detailData.'"><i class="fa fa-eye"></i></button>
+                
             </div>'
         ]);
         $this->datatables->setOrdering(["name","price",NULL]);
@@ -183,6 +192,7 @@ class Transaction extends CI_Controller {
         $this->datatables->setSearchField(["name", "kode"]);
         $this->datatables->generate();
     }
+
     public function json_mekanik() {
         $addFunc = "addMekanikCart({id:<get-id>,name:'<get-name>',cost:0})";
 

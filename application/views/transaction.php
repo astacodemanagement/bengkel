@@ -59,6 +59,22 @@
                         </div>
                         <div class="card-body">
                             <div class="form-group">
+                                <label>Tanggal Transaksi</label>
+                                <input type="date" class="form-control form-control-sm date" id="transactionDate">
+                            </div>
+
+                            <script>
+                                // Mendapatkan tanggal hari ini
+                                var today = new Date();
+
+                                // Mendapatkan tanggal dalam format YYYY-MM-DD
+                                var formattedDate = today.toISOString().split('T')[0];
+
+                                // Set nilai default pada input tanggal
+                                document.getElementById('transactionDate').value = formattedDate;
+                            </script>
+
+                            <div class="form-group">
                                 <!-- <label>Cari Pelanggan</label> -->
                                 <select id="selectedConsumer" name="customer" class="form-control form-control-sm select2 customer">
                                     <option value="" disabled selected hidden>--Pilih Pelanggan--</option>
@@ -198,6 +214,29 @@
             </div>
         </div>
 
+
+        <!-- modal detail -->
+        <div id="detailModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Detail Sparepart</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <img id="modalImage" src="" alt="Image" style="max-width: 100%;">
+                        <p id="modalName">Nama: </p>
+                        <p id="modalLokasi">Lokasi: </p>
+                        <p id="modalKeterangan">Keterangan: </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+
+
         <!-- Tambahkan di bagian head atau sebelum penutup tag body -->
         <!-- Pada bagian head atau sebelum penutup tag body -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
@@ -316,6 +355,18 @@
 
                 refreshServiceCart(ServiceCart, SparepartCart, MekanikCart);
             }
+
+            function detailData(data) {
+                // Set modal content
+                document.getElementById('modalName').innerHTML = 'Nama: ' + data.name;
+                document.getElementById('modalLokasi').innerHTML = 'Lokasi: ' + data.location;
+                document.getElementById('modalKeterangan').innerHTML = 'Keterangan: ' + data.description;
+                document.getElementById('modalImage').src = data.gambar;
+
+                // Show the modal
+                $('#detailModal').modal('show');
+            }
+
 
             function addMekanikCart(data) {
                 var before = MekanikCart;
@@ -534,6 +585,7 @@
                 form["km"] = $(".km").val();
                 form["car_type"] = $(".car-type").val();
                 form["plat"] = $(".plat").val();
+                form["date"] = $(".date").val();
 
                 // if (type == "service") {
                 //     form["customer"] = jQuery("input[name=customer]").val();
