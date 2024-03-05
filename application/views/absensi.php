@@ -28,11 +28,16 @@
                         <table class="table table-bordered" id="data">
                             <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th>Kode Absensi</th>
-                                    <th>Nama Absensi</th>
-                                    <th>Alamat</th>
-                                    <th>No. Telp</th>
+                                    <th>No</th>
+                                    <th>Tanggal</th>
+                                    <th>Jumlah Hari Kerja</th>
+                                    <th>Jumlah Masuk Kerja</th>
+                                    <th>Jumlah Absen Kerja</th>
+                                    <th>Uang Harian</th>
+                                    <th>Bonus</th>
+                                    <th>Kasbon</th>
+                                    <th>Total Gaji</th>
+                                    <th>Keterangan</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -53,6 +58,10 @@
                     </div>
                     <div class="modal-body">
                         <form>
+                            <div class="form-group">
+                                <label>Tanggal</label>
+                                <input type="date" name="tanggal" class="form-control" />
+                            </div>
                             <div class="form-group">
                                 <label>Nama Karyawan</label>
                                 <br>
@@ -76,21 +85,28 @@
                                 <label>Uang Harian</label>
                                 <input type="number" name="uang_harian" class="form-control" />
                             </div>
-                            <div class="form-group">
-                                <label>Bonus</label>
-                                <input type="number" name="bonus" class="form-control" />
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Bonus</label>
+                                        <input type="number" name="bonus" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Kasbon</label>
+                                        <input type="number" name="kasbon" class="form-control" />
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label>Kasbon</label>
-                                <input type="number" name="kasbon" class="form-control" />
-                            </div>
+
                             <div class="form-group">
                                 <label>Total Gaji</label>
-                                <input type="number" name="total_gaji" class="form-control" readonly/>
+                                <input type="number" name="total_gaji" class="form-control" readonly />
                             </div>
                             <div class="form-group">
                                 <label>Keterangan</label>
-                                <textarea name="description" id="description" cols="30" rows="3" class="form-control"></textarea>
+                                <textarea name="keterangan" id="keterangan" cols="30" rows="2" class="form-control"></textarea>
                             </div>
 
                         </form>
@@ -154,7 +170,7 @@
 
                 jQuery.getJSON("<?= base_url("absensi/get"); ?>/" + id, function(data) {
                     jQuery("#compose form").attr("action", "<?= base_url("absensi/edit"); ?>/" + id);
-                    jQuery("#compose form input[name=code]").val(data.code);
+                    jQuery("#compose form input[name=tanggal]").val(data.tanggal);
                     jQuery("#compose form input[name=name]").val(data.name);
                     jQuery("#compose form input[name=telephone]").val(data.telephone);
                     jQuery("#compose form textarea[name=address]").val(data.address);
