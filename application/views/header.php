@@ -78,7 +78,7 @@ if (!isset($authPage)) {
                         <i class="fa fa-bars"></i>
                     </button>
                     <br>
-                    <img src="<?= base_url(); ?>/img/1.png" alt="" style="border-radius:1rem;">
+                    <img src="<?= bengkelLogo(); ?>" alt="" style="border-radius:1rem;">
                     <a class="navbar-brand" href="<?= base_url(); ?>"><?= $this->shop_info->get_shop_name(); ?></a>
                     
                     <a class="navbar-brand hidden" href="<?= base_url(); ?>">B</a>

@@ -36,10 +36,15 @@ class Absensi extends CI_Controller {
         $this->datatables->setTable("absensi");
         $this->datatables->setColumn([
             '<index>',
-            '<get-code>',
-            '<get-name>',
-            '<get-address>',
-            '<get-telephone>',
+            '<get-tanggal>',
+            '<get-jumlah_hari_kerja>',
+            '<get-jumlah_masuk_kerja>',
+            '<get-jumlah_absen_kerja>',
+            '[number_format=<get-uang_harian>]',
+            '[number_format=<get-bonus>]',
+            '[number_format=<get-kasbon>]',
+            '[number_format=<get-total_gaji>]',
+            '<get-keterangan>',
             '<div class="text-center"><button type="button" class="btn btn-primary btn-sm btn-edit" title="Edit Data" data-id="<get-id>"><i class="fa fa-edit"></i></button>
             <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="<get-id>" data-name="<get-name>" title="Delete Data"><i class="fa fa-trash"></i></button></div>'
         ]);
@@ -75,14 +80,18 @@ class Absensi extends CI_Controller {
     }
 
     private function proccess($action = "add",$id = 0) {
-        $code = $this->input->post("code");
-        $name = $this->input->post("name");
-        $address = $this->input->post("address");
-        $telephone = $this->input->post("telephone");
-        $description = $this->input->post("description");
-        $tipe = $this->input->post("tipe");
+        $tanggal = $this->input->post("tanggal");
+        $user = $this->input->post("user");
+        $jumlah_hari_kerja = $this->input->post("jumlah_hari_kerja");
+        $jumlah_masuk_kerja = $this->input->post("jumlah_masuk_kerja");
+        $jumlah_absen_kerja = $this->input->post("jumlah_absen_kerja");
+        $uang_harian = $this->input->post("uang_harian");
+        $bonus = $this->input->post("bonus");
+        $kasbon = $this->input->post("kasbon");
+        $keterangan = $this->input->post("keterangan");
+        $total_gaji = 0;
 
-        if(!$name OR !$address OR !$telephone OR !$description OR !$tipe) {
+        if($tanggal == null OR $user == null OR $jumlah_hari_kerja == null OR $jumlah_masuk_kerja == null OR $jumlah_absen_kerja == null OR $uang_harian == null OR $bonus == null OR $kasbon == null) {
             $response = [
                 "status" => FALSE,
                 "msg" => "Periksa kembali data yang anda masukkan"
@@ -90,12 +99,16 @@ class Absensi extends CI_Controller {
         } else {
             $insertData = [
                 "id" => NULL,
-                "code" => $code,
-                "name" => $name,
-                "address" => $address,
-                "telephone" => $telephone,
-                "description" => $description,
-                "tipe" => $tipe
+                "tanggal" => $tanggal,
+                "users_id" => $user,
+                "jumlah_hari_kerja" => $jumlah_hari_kerja,
+                "jumlah_masuk_kerja" => $jumlah_masuk_kerja,
+                "jumlah_absen_kerja" => $jumlah_absen_kerja,
+                "uang_harian" => $uang_harian,
+                "bonus" => $bonus,
+                "kasbon" => $kasbon,
+                "total_gaji" => $total_gaji,
+                "keterangan" => $keterangan
             ];
 
             $response["status"] = TRUE;

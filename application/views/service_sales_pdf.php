@@ -82,16 +82,16 @@
         <div class="heading">
             <?php
             //convert image into Binary data
-            $img_type = "png";
-            $img_data = fopen("././img/1.png", 'rb');
-            $img_size = filesize("././img/1.png");
-            $binary_image = fread($img_data, $img_size);
-            fclose($img_data);
+            // $img_type = "png";
+            // $img_data = fopen("././img/1.png", 'rb');
+            // $img_size = filesize("././img/1.png");
+            // $binary_image = fread($img_data, $img_size);
+            // fclose($img_data);
 
             //Build the src string to place inside your img tag
-            $img_src = "data:image/" . $img_type . ";base64," . str_replace("\n", "", base64_encode($binary_image));
+            // $img_src = "data:image/" . $img_type . ";base64," . str_replace("\n", "", base64_encode($binary_image));
             ?>
-            <img src="<?= $img_src; ?>" style="max-width:100px;float:left">
+            <img src="<?= bengkelLogoBase64(); ?>" style="max-width:100px;float:left">
             <div style="padding: 0 0 0 112px">
                 <h1><?= $this->shop_info->get_shop_name(); ?></h1>
                 <h2><?= $this->shop_info->get_shop_address(); ?></h2>

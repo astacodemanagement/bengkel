@@ -126,7 +126,9 @@ class Estimation extends CI_Controller
     }
     public function json_sparepart()
     {
+        $base_url = $this->config->base_url();
         $addFunc = "addSparepartCart({id:<get-id>,name:'<get-name>',kode:'<get-kode>',price:<get-price>,stock:<get-stock>})";
+        $detailData = "detailData({id:<get-id>,name:'<get-name>',location:'<get-location>',description:'<get-description>',gambar:'$base_url/uploads/sparepart/<get-gambar>'})";
 
         $this->load->model("datatables");
         $this->datatables->setTable("products");
@@ -136,6 +138,7 @@ class Estimation extends CI_Controller
             '[rupiah=<get-price>]',
             '<div class="text-center">
                 <button type="button" class="btn btn-sm btn-success" onclick="' . $addFunc . '"><i class="fa fa-plus"></i></button>
+                <button type="button" class="btn btn-sm btn-primary" onclick="'.$detailData.'"><i class="fa fa-eye"></i></button>
             </div>'
         ]);
         $this->datatables->setOrdering(["name", "price", NULL]);

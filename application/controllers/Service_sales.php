@@ -60,6 +60,7 @@ class Service_sales extends CI_Controller {
             // '<get-plat>',
             '[rupiah=<get-total>]',
             '<div class="text-center">
+                <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="<get-id>"><i class="fa fa-trash"></i></button>
                 <button type="button" class="btn btn-sm btn-warning btn-view" data-id="<get-id>" data-total="[number_format=<get-total>]"><i class="fa fa-eye"></i></button>
                 <a href="[base_url=service_sales/print/<get-id>]" class="btn btn-sm btn-primary"><i class="fa fa-print"></i></a>
             </div>'
@@ -82,5 +83,28 @@ class Service_sales extends CI_Controller {
         $this->datatables->setOrdering(["id","name","price",NULL]);
         $this->datatables->setSearchField("name");
         $this->datatables->generate();
+    }
+
+    function delete($id = 0) {
+        if($id) {
+            $response["status"] = TRUE;
+            $response["msg"] = "Data berhasil dihapus";
+
+            // $this->supplier_model->delete($id);
+            $detail = $this->db->get_where('details', ['transaction_id' => $id])->result();
+
+            foreach ($detail as $dt) {
+                $sparepart = $this->db->get_where('products', ['id' => $dt->product_id, 'type' => 'sparepart'])->row();
+
+                if ($sparepart) {
+                    $this->db->where(['id' => $dt->product_id])->update('products', ['stock' => ($sparepart->stock + $dt->qty)]);
+                }
+            }
+
+            $this->db->delete('details', ['transaction_id' => $id]);
+            $this->db->delete('transactions', ['id' => $id]);
+
+            echo json_encode($response);
+        }
     }
 }

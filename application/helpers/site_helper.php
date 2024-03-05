@@ -10,7 +10,6 @@ function reformat_date($date) {
     return date("d-m-Y",$date);
 }
 
-
 function math($ma) {
     if(preg_match('/(\d+)(?:\s*)([\+\-\*\/])(?:\s*)(\d+)/', $ma, $matches) !== FALSE){
         $operator = $matches[2];
@@ -61,4 +60,23 @@ function showSparepartImage($image) {
 
     return $sparePartImage;
 }
+
+function bengkelLogo()
+{
+    $CI =& get_instance();
+    $shopInfo = $CI->db->order_by('id', 'asc')->get('shop_info')->row();
+
+    return $shopInfo ? base_url('uploads/images/' . $shopInfo->image) : base_url('img/1.png');
+}
+
+function bengkelLogoBase64(){
+    $path = bengkelLogo();
+
+    $info = pathinfo($path, PATHINFO_EXTENSION);
+    $data = file_get_contents($path);
+    $base64 = 'data:image/' . $info . ';base64,' . base64_encode($data);
+
+    return $base64;
+}
+
 ?>

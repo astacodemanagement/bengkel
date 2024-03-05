@@ -65,7 +65,7 @@
                             <div class="form-group">
                                 <label>Nama Karyawan</label>
                                 <br>
-                                <select id="selectedUser" name="user" class="form-control select2 user">
+                                <select id="selectedUser" name="user" class="form-control select2 user" style="width:100%">
                                     <option value="" disabled selected hidden>--Pilih karyawan--</option>
                                 </select>
                             </div>
@@ -75,34 +75,34 @@
                             </div>
                             <div class="form-group">
                                 <label>Jumlah Masuk Kerja</label>
-                                <input type="number" name="jumlah_masuk_kerja" class="form-control" />
+                                <input type="number" name="jumlah_masuk_kerja" class="form-control hari-masuk" />
                             </div>
                             <div class="form-group">
-                                <label>Jumlah Absesn Kerja</label>
+                                <label>Jumlah Absen Kerja</label>
                                 <input type="number" name="jumlah_absen_kerja" class="form-control" />
                             </div>
                             <div class="form-group">
                                 <label>Uang Harian</label>
-                                <input type="number" name="uang_harian" class="form-control" />
+                                <input type="number" name="uang_harian" class="form-control uang-harian" />
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Bonus</label>
-                                        <input type="number" name="bonus" class="form-control" />
+                                        <input type="number" name="bonus" class="form-control bonus" />
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Kasbon</label>
-                                        <input type="number" name="kasbon" class="form-control" />
+                                        <input type="number" name="kasbon" class="form-control kasbon" />
                                     </div>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label>Total Gaji</label>
-                                <input type="number" name="total_gaji" class="form-control" readonly />
+                                <input type="number" class="form-control total-gaji" readonly />
                             </div>
                             <div class="form-group">
                                 <label>Keterangan</label>
@@ -183,12 +183,15 @@
 
             $(".btn-confirm").on("click", function() {
                 var form = {
-                    "code": jQuery("#compose input[name=code]").val(),
-                    "name": jQuery("#compose input[name=name]").val(),
-                    "address": jQuery("#compose textarea[name=address]").val(),
-                    "description": jQuery("#compose textarea[name=description]").val(),
-                    "tipe": jQuery("#compose select[name=tipe]").val(),
-                    "telephone": jQuery("#compose input[name=telephone]").val()
+                    "tanggal": jQuery("#compose input[name=tanggal]").val(),
+                    "user": jQuery("#compose select[name=user]").val(),
+                    "jumlah_hari_kerja": jQuery("#compose input[name=jumlah_hari_kerja]").val(),
+                    "jumlah_masuk_kerja": jQuery("#compose input[name=jumlah_masuk_kerja]").val(),
+                    "jumlah_absen_kerja": jQuery("#compose input[name=jumlah_absen_kerja]").val(),
+                    "uang_harian": jQuery("#compose input[name=uang_harian]").val(),
+                    "bonus": jQuery("#compose input[name=bonus]").val(),
+                    "kasbon": jQuery("#compose input[name=kasbon]").val(),
+                    "keterangan": jQuery("#compose textarea[name=keterangan]").val()
                 }
 
                 var action = jQuery("#compose form").attr("action");
@@ -240,6 +243,20 @@
 
                 jQuery("#delete .btn-del-confirm").attr("onclick", "deleteData(" + id + ")");
             })
+
+            $('.hari-masuk, .uang-harian, .bonus, .kasbon').on('change', function(){
+                hitungGaji();
+            })
+
+            function hitungGaji() {
+                let hariMasuk = $('.hari-masuk').val()
+                let uangHarian = $('.uang-harian').val()
+                let bonus = $('.bonus').val()
+                let kasbon = $('.kasbon').val()
+                let totalGaji = (parseFloat(hariMasuk) * parseFloat(uangHarian)) + parseFloat(bonus) - parseFloat(kasbon)
+
+                $('.total-gaji').val(totalGaji)
+            }
         </script>
 
 

@@ -73,6 +73,26 @@
             </div>
         </div>
 
+        <div class="modal" id="delete" tabindex="-1" role="dialog" aria-labelledby="largeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="largeModalLabel">Konfirmasi?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary btn-del-confirm">Hapus</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script>
             $("#table-detail").DataTable({
                 "processing": true,
@@ -102,4 +122,27 @@
                 "order": [[0,"desc"]],
                 "ajax": {"url": "<?=base_url("service_sales/json");?>"}
             });
+
+            $('body').on("click",".btn-delete",function() {
+                var id = jQuery(this).attr("data-id");
+
+                jQuery("#delete .modal-body").html("Anda yakin ingin menghapus penjualan?");
+                jQuery("#delete").modal("toggle");
+
+                jQuery("#delete .btn-del-confirm").attr("onclick","deleteData("+id+")");
+            })
+
+            function deleteData(id) {
+                jQuery.getJSON("<?=base_url("service_sales/delete");?>/"+id,function(data){
+                    if(data.status) {
+                        jQuery("#data").DataTable().ajax.reload(null,true);
+                        jQuery("#delete").modal("toggle");
+                        Swal.fire(
+                            "Berhasil",
+                            data.msg,
+                            "success"
+                        );
+                    }
+                });
+            }
         </script>
