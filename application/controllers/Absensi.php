@@ -1,13 +1,15 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Absensi extends CI_Controller {
+class Absensi extends CI_Controller
+{
     private $dataAdmin;
 
-    function __construct() {
+    function __construct()
+    {
         parent::__construct();
 
-        if(!$this->session->auth) {
+        if (!$this->session->auth) {
             redirect(base_url("auth/login"));
         }
 
@@ -18,20 +20,21 @@ class Absensi extends CI_Controller {
     }
 
 
-	public function index()
-	{
+    public function index()
+    {
 
         $push = [
             "pageTitle" => "Absensi",
-            "dataAdmin" => $this->dataAdmin 
+            "dataAdmin" => $this->dataAdmin
         ];
 
-		$this->load->view('header',$push);
-		$this->load->view('absensi',$push);
-		$this->load->view('footer',$push);
+        $this->load->view('header', $push);
+        $this->load->view('absensi', $push);
+        $this->load->view('footer', $push);
     }
-    
-    public function json() {
+
+    public function json()
+    {
         $this->load->model("datatables");
         $this->datatables->setTable("absensi");
         $this->datatables->setColumn([
@@ -48,28 +51,32 @@ class Absensi extends CI_Controller {
             '<div class="text-center"><button type="button" class="btn btn-primary btn-sm btn-edit" title="Edit Data" data-id="<get-id>"><i class="fa fa-edit"></i></button>
             <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="<get-id>" data-name="<get-name>" title="Delete Data"><i class="fa fa-trash"></i></button></div>'
         ]);
-        $this->datatables->setOrdering(["id","name","address","telephone",NULL]);
+        $this->datatables->setOrdering(["id", "name", "address", "telephone", NULL]);
         $this->datatables->setSearchField("name");
         $this->datatables->generate();
     }
 
-    function get($id = 0) {
+    function get($id = 0)
+    {
         $query = $this->absensi_model->get($id);
-        if($query->num_rows()) {
+        if ($query->num_rows()) {
             echo json_encode($query->row_array());
         }
     }
 
-    function insert() {
+    function insert()
+    {
         $this->proccess();
     }
 
-    function edit($id = 0) {
-        $this->proccess("edit",$id);
+    function edit($id = 0)
+    {
+        $this->proccess("edit", $id);
     }
 
-    function delete($id = 0) {
-        if($id) {
+    function delete($id = 0)
+    {
+        if ($id) {
             $response["status"] = TRUE;
             $response["msg"] = "Data berhasil dihapus";
 
@@ -79,7 +86,8 @@ class Absensi extends CI_Controller {
         }
     }
 
-    private function proccess($action = "add",$id = 0) {
+    private function proccess($action = "add", $id = 0)
+    {
         $tanggal = $this->input->post("tanggal");
         $user = $this->input->post("user");
         $jumlah_hari_kerja = $this->input->post("jumlah_hari_kerja");
@@ -89,9 +97,11 @@ class Absensi extends CI_Controller {
         $bonus = $this->input->post("bonus");
         $kasbon = $this->input->post("kasbon");
         $keterangan = $this->input->post("keterangan");
-        $total_gaji = 0;
+        $totalUangHarian = $jumlah_masuk_kerja * $uang_harian;
+        $totalPotongPersen = ($totalUangHarian * 20) / 100;
+        $total_gaji = $totalUangHarian - $totalPotongPersen + $bonus - $kasbon;
 
-        if($tanggal == null OR $user == null OR $jumlah_hari_kerja == null OR $jumlah_masuk_kerja == null OR $jumlah_absen_kerja == null OR $uang_harian == null OR $bonus == null OR $kasbon == null) {
+        if ($tanggal == null or $user == null or $jumlah_hari_kerja == null or $jumlah_masuk_kerja == null or $jumlah_absen_kerja == null or $uang_harian == null or $bonus == null or $kasbon == null) {
             $response = [
                 "status" => FALSE,
                 "msg" => "Periksa kembali data yang anda masukkan"
@@ -113,18 +123,17 @@ class Absensi extends CI_Controller {
 
             $response["status"] = TRUE;
 
-            if($action == "add") {
+            if ($action == "add") {
                 $response['msg'] = "Data berhasil ditambahkan";
-    
+
                 $this->absensi_model->post($insertData);
             } else {
                 $response['msg'] = "Data berhasil diedit";
 
                 unset($insertData["id"]);
-    
-                $this->absensi_model->put($id,$insertData);
-            }
 
+                $this->absensi_model->put($id, $insertData);
+            }
         }
 
         echo json_encode($response);

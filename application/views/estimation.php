@@ -63,6 +63,7 @@
                                 <select name="selectedConsumer" id="selectedConsumer" class="form-control form-control-sm select2 customer">
                                     <option value="" disabled selected hidden>--Pilih Pelanggan--</option>
                                 </select>
+                                <input type="text" class="tipe-pelanggan">
                             </div>
                             <div class="form-group">
                                 <label>Nama Pelanggan</label>
@@ -73,9 +74,6 @@
                                 <input type="text" id="phone" class="form-control form-control-sm" readonly>
                             </div>
                         </div>
-
-
-
                     </div>
 
                     <div class="card" id="serviceCartContainer" style="display:none">
@@ -225,7 +223,8 @@
                                         text: `${item.name} (${item.telephone})`,
                                         id: item.id,
                                         name: item.name,
-                                        phone: item.telephone
+                                        phone: item.telephone,
+                                        type: item.tipe
                                     };
                                 })
                             };
@@ -236,6 +235,7 @@
                 }).on('select2:select', function(e) {
                     var data = e.params.data;
 
+                    $('.tipe-pelanggan').val(data.type)
                     $('#customer').val(data.name)
                     $('#phone').val(data.phone)
                 });

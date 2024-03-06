@@ -102,7 +102,7 @@
 
                             <div class="form-group">
                                 <label>Total Gaji</label>
-                                <input type="number" class="form-control total-gaji" readonly />
+                                <input type="text" class="form-control total-gaji" readonly />
                             </div>
                             <div class="form-group">
                                 <label>Keterangan</label>
@@ -138,6 +138,7 @@
                 </div>
             </div>
         </div>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
         <script>
             $(document).ready(function() {
                 $('#telephone').on('input', function() {
@@ -238,24 +239,27 @@
             $('body').on("click", ".btn-delete", function() {
                 var id = jQuery(this).attr("data-id");
                 var name = jQuery(this).attr("data-name");
-                jQuery("#delete .modal-body").html("Anda yakin ingin menghapus <b>" + name + "</b>");
+                jQuery("#delete .modal-body").html("Anda yakin ingin menghapus absensi?");
                 jQuery("#delete").modal("toggle");
 
                 jQuery("#delete .btn-del-confirm").attr("onclick", "deleteData(" + id + ")");
             })
 
-            $('.hari-masuk, .uang-harian, .bonus, .kasbon').on('change', function(){
+            $('.hari-masuk, .uang-harian, .bonus, .kasbon').on('change', function() {
                 hitungGaji();
             })
 
             function hitungGaji() {
-                let hariMasuk = $('.hari-masuk').val()
-                let uangHarian = $('.uang-harian').val()
-                let bonus = $('.bonus').val()
-                let kasbon = $('.kasbon').val()
-                let totalGaji = (parseFloat(hariMasuk) * parseFloat(uangHarian)) + parseFloat(bonus) - parseFloat(kasbon)
+                let hariMasuk = $('.hari-masuk').val() !== '' ? $('.hari-masuk').val() : 0;
+                let uangHarian = $('.uang-harian').val() !== '' ? $('.uang-harian').val() : 0
+                let bonus = $('.bonus').val() !== '' ? $('.bonus').val() : 0
+                let kasbon = $('.kasbon').val() !== '' ? $('.kasbon').val() : 0
+                let totalUangHarian = (parseFloat(hariMasuk) * parseFloat(uangHarian))
+                let totalUangHarianPersen = (totalUangHarian * 20) / 100
+                let totalGaji = totalUangHarian - totalUangHarianPersen + parseFloat(bonus) - parseFloat(kasbon)
 
-                $('.total-gaji').val(totalGaji)
+                console.log(totalUangHarian, totalUangHarianPersen, totalGaji)
+                $('.total-gaji').val(numeral(totalGaji).format('0,0'))
             }
         </script>
 

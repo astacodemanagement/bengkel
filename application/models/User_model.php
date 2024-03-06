@@ -44,19 +44,33 @@ class User_model extends CI_Model
         return $result;
     }
 
+    public function searchUserWhere($term, $where)
+    {
+        $this->db->select('id, name, telephone');
+
+        $this->db->group_start();
+        $this->db->like('telephone', $term); // Ganti 'name' dengan bidang yang ingin Anda gunakan
+        $this->db->or_like('name', $term); // Ganti 'name' dengan bidang yang ingin Anda gunakan
+        $this->db->group_end();
+        $this->db->where($where);
+
+        $result = $this->db->get('users')->result_array();
+
+        return $result;
+    }
+
     public function getFilteredData($start_date, $end_date, $user_id)
     {
         $this->db->select('transactions.*, mechanic_details.user_id'); // Sesuaikan dengan bidang yang Anda butuhkan
         $this->db->from('transactions');
         $this->db->join('mechanic_details', 'mechanic_details.transaction_id = transactions.id');
-        
+
         // Tambahkan kondisi WHERE sesuai dengan kebutuhan filter
         $this->db->where('transactions.date >=', $start_date);
         $this->db->where('transactions.date <=', $end_date);
         $this->db->where('mechanic_details.user_id', $user_id);
-    
+
         $result = $this->db->get()->result_array();
         return $result;
     }
-    
 }

@@ -74,10 +74,10 @@ class Report extends CI_Controller
         $this->load->view('footer', $push);
     }
 
-    public function getUserData()
+    public function getUserMekanikData()
     {
         $term = $this->input->get('term');
-        $data = $this->user_model->searchUser($term);
+        $data = $this->user_model->searchUserWhere($term, ['position' => 'Mekanik']);
 
         echo json_encode(['results' => $data]); // Sesuaikan format respons sesuai kebutuhan Select2
     }
