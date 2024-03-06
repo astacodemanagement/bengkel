@@ -71,7 +71,7 @@ class Report extends CI_Controller
 
         if ($startDate != null && $endDate != null) {
             $where['transactions.date >='] = $startDate;
-            $where['transactions.date <='] = $startDate;
+            $where['transactions.date <='] = $endDate;
         }
 
         if ($user != null) {
@@ -97,6 +97,14 @@ class Report extends CI_Controller
     {
         $term = $this->input->get('term');
         $data = $this->user_model->searchUserWhere($term, ['position' => 'Mekanik']);
+
+        echo json_encode(['results' => $data]); // Sesuaikan format respons sesuai kebutuhan Select2
+    }
+
+    public function getUserData()
+    {
+        $term = $this->input->get('term');
+        $data = $this->user_model->searchUser($term);
 
         echo json_encode(['results' => $data]); // Sesuaikan format respons sesuai kebutuhan Select2
     }
@@ -276,7 +284,7 @@ class Report extends CI_Controller
 
         if ($startDate != null && $endDate != null) {
             $where['transactions.date >='] = $startDate;
-            $where['transactions.date <='] = $startDate;
+            $where['transactions.date <='] = $endDate;
         }
 
         if ($user != null) {

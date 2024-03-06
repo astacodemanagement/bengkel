@@ -7,7 +7,7 @@
 <div class="sufee-login d-flex align-content-center flex-wrap">
     <div class="container">
         <div class="login-content">
-        <img src="<?= base_url(); ?>/img/1.png" alt="" style="border-radius:1rem;">
+            <img src="<?= bengkelLogo() ?>" alt="" style="border-radius:1rem;">
             <div class="login-logo">
                 <a href="#" style="color:#FFF;font-size: 28px"> Aplikasi Bengkel
                     <?= $this->shop_info->get_shop_name(); ?>

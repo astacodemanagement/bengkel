@@ -138,4 +138,12 @@ class Absensi extends CI_Controller
 
         echo json_encode($response);
     }
+
+    public function getUserData()
+    {
+        $term = $this->input->get('term');
+        $data = $this->user_model->searchUser($term);
+
+        echo json_encode(['results' => $data]); // Sesuaikan format respons sesuai kebutuhan Select2
+    }
 }

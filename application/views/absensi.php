@@ -269,7 +269,7 @@
                 // Inisialisasi Select2 dengan opsi pencarian
                 $('#selectedUser').select2({
                     ajax: {
-                        url: '<?= base_url("report/getUserData") ?>',
+                        url: '<?= base_url("absensi/getUserData") ?>',
                         dataType: 'json',
                         delay: 250,
                         processResults: function(data) {
