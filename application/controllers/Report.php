@@ -17,6 +17,7 @@ class Report extends CI_Controller
         $this->load->model("report_model");
         $this->load->model("datatables");
         $this->load->model("transaction_model");
+        $this->load->model("User_model", 'user');
 
 
         $this->dataAdmin = $this->user_model->get(["id" => $this->session->auth['id']])->row();
@@ -61,12 +62,30 @@ class Report extends CI_Controller
 
     public function salary()
     {
-        $transactions = $this->transaction_model->getSalaryData(); // Assuming you have a function in Transaction_model.php to fetch salary data
+        $startDate = $this->input->get('start_date');
+        $endDate = $this->input->get('end_date');
+        $user = $this->input->get('user');
+
+        $where = null;
+        $userData = null;
+
+        if ($startDate != null && $endDate != null) {
+            $where['transactions.date >='] = $startDate;
+            $where['transactions.date <='] = $startDate;
+        }
+
+        if ($user != null) {
+            $where['mechanic_details.user_id'] = $user;
+            $userData = $this->user->get(['id' => $user])->row();
+        }
+
+        $transactions = $this->transaction_model->getSalaryData($where); // Assuming you have a function in Transaction_model.php to fetch salary data
 
         $push = [
             "pageTitle" => "Laporan Salary",
             "dataAdmin" => $this->dataAdmin,
             "transactions" => $transactions,
+            "user" => $userData
         ];
 
         $this->load->view('header', $push);
@@ -245,6 +264,45 @@ class Report extends CI_Controller
             $this->pdf->setPaper('A4', 'portrait');
             $this->pdf->filename = $title;
             $this->pdf->load_view('report_pdf', $push);
+        }
+    }
+
+    function salary_pdf($startDate = null, $endDate = null)
+    {
+        $user = $this->input->get('user');
+
+        $where = null;
+        $userData = null;
+
+        if ($startDate != null && $endDate != null) {
+            $where['transactions.date >='] = $startDate;
+            $where['transactions.date <='] = $startDate;
+        }
+
+        if ($user != null) {
+            $where['mechanic_details.user_id'] = $user;
+        }
+
+        $transactions = $this->transaction_model->getSalaryData($where); // Assuming you have a function in Transaction_model.php to fetch salary data
+
+        if (count($transactions) > 0) {
+            $push = [
+                "fetch" => $transactions
+            ];
+
+            if ($startDate and $endDate) {
+                $push["subtitle"] = date("l, d F Y", strtotime($startDate . " 00:00:00")) . " - " . date("l, d F Y", strtotime($endDate . " 00:00:00"));
+            } else {
+                $push["subtitle"] = '';
+            }
+
+            $title = "Laporan_salary";
+
+            $this->load->library("pdf");
+
+            $this->pdf->setPaper('A4', 'portrait');
+            $this->pdf->filename = $title;
+            $this->pdf->load_view('salary_report_pdf', $push);
         }
     }
 }

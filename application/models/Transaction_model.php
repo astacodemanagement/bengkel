@@ -44,13 +44,18 @@ class Transaction_model extends CI_Model
 
     // Transaction_model.php
 
-    public function getSalaryData()
+    public function getSalaryData($where = null)
     {
         $this->db->select('transactions.*, users.name as mechanic_name');
         $this->db->from('transactions');
         $this->db->join('mechanic_details', 'mechanic_details.transaction_id = transactions.id');
         $this->db->join('users', 'users.id = mechanic_details.user_id');
         $this->db->where('transactions.type', 'service'); // Sesuaikan dengan kondisi yang sesuai
+
+        if ($where) {
+            $this->db->where($where);
+        }
+
         $query = $this->db->get();
 
         return $query->result();
