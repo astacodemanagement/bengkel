@@ -22,11 +22,11 @@
             <div class="card">
                 <div class="card-header">
                     <form class="date form-inline">
-                        <input type="date" name="start_date" id="start_date" class="form-control form-control-sm datepicker" placeholder="Start Date" value="<?= $this->input->get('start_date') ?>">
+                        <input type="date" name="start_date" id="start_date" class="form-control form-control datepicker" placeholder="Start Date" value="<?= $this->input->get('start_date') ?>">
                         <span class="mx-2">-</span>
-                        <input type="date" name="end_date" id="end_date" class="form-control form-control-sm datepicker" placeholder="End Date" value="<?= $this->input->get('end_date') ?>">
+                        <input type="date" name="end_date" id="end_date" class="form-control form-control datepicker" placeholder="End Date" value="<?= $this->input->get('end_date') ?>">
 
-                        <div style="margin-left: 5px;">
+                        <div style="margin-left:10px;">
                             <select id="selectedUser" name="user" class="form-control form-control-sm select2 user">
                                 <option value="" disabled selected hidden>--Pilih mekanik--</option>
                                 <?php if ($this->input->get('user')) : ?>
@@ -339,5 +339,6 @@
 
 
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+            <link rel="stylesheet" href="<?= base_url('assets/css/custom-select2.css') ?>">
             <!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
             <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>

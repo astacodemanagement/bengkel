@@ -240,6 +240,7 @@
         <!-- Tambahkan di bagian head atau sebelum penutup tag body -->
         <!-- Pada bagian head atau sebelum penutup tag body -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+        <link rel="stylesheet" href="<?= base_url('assets/css/custom-select2.css') ?>">
         <!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
