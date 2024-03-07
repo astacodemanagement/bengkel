@@ -24,7 +24,7 @@
                     <div class="card">
                         <div class="card-body">
                             <nav>
-                                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                <div class="nav nav-tabs" id="nav-tab" role="tablist" data-recent-tab="1">
                                     <a class="nav-item nav-link active" id="nav-services-tab" data-toggle="tab" href="#nav-services" role="tab" aria-controls="nav-services" aria-selected="true">Services</a>
                                     <a class="nav-item nav-link" id="nav-sparepart-tab" data-toggle="tab" href="#nav-sparepart" role="tab" aria-controls="nav-sparepart" aria-selected="false">Sparepart</a>
                                     <!-- <a class="nav-item nav-link" id="nav-mekanik-tab" data-toggle="tab" href="#nav-mekanik" role="tab" aria-controls="nav-mekanik" aria-selected="false">Mekanik</a> -->
@@ -210,41 +210,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
         <script>
-            $(document).ready(function() {
-                // Inisialisasi Select2 dengan opsi pencarian
-                $('#selectedConsumer').select2({
-                    ajax: {
-                        url: '<?= base_url("estimation/getConsumerData") ?>',
-                        dataType: 'json',
-                        delay: 250,
-                        processResults: function(data) {
-                            return {
-                                results: $.map(data.results, function(item) {
-                                    return {
-                                        text: `${item.name} (${item.telephone})`,
-                                        id: item.id,
-                                        name: item.name,
-                                        phone: item.telephone,
-                                        type: item.tipe
-                                    };
-                                })
-                            };
-                        },
-                        cache: true
-                    },
-                    minimumInputLength: 2
-                }).on('select2:select', function(e) {
-                    var data = e.params.data;
-
-                    $('.tipe-pelanggan').val(data.type)
-                    $('#customer').val(data.name)
-                    $('#phone').val(data.phone)
-                });
-
-            });
-        </script>
-
-        <script>
             $("#dataTable").DataTable({
                 "processing": true,
                 "serverSide": true,
@@ -263,14 +228,56 @@
             $('#nav-services-tab').on("click", function() {
                 jQuery("#dataTable").DataTable().ajax.url("<?= base_url("estimation/json_service"); ?>").load();
                 jQuery("#dataTable").DataTable().columns([1]).visible(false);
+                $('.nav-tabs').attr('data-recent-tab', 1)
             });
             $('#nav-sparepart-tab').on("click", function() {
-                jQuery("#dataTable").DataTable().ajax.url("<?= base_url("estimation/json_sparepart"); ?>").load();
+                let customerType = $('.tipe-pelanggan').val()
+
+                jQuery("#dataTable").DataTable().ajax.url("<?= base_url("estimation/json_sparepart?type="); ?>" + customerType).load();
                 jQuery("#dataTable").DataTable().columns([1]).visible(true);
+                $('.nav-tabs').attr('data-recent-tab', 2)
             });
             $('#nav-mekanik-tab').on("click", function() {
                 jQuery("#dataTable").DataTable().ajax.url("<?= base_url("estimation/json_mekanik"); ?>").load();
                 jQuery("#dataTable").DataTable().columns([1]).visible(false);
+                $('.nav-tabs').attr('data-recent-tab', 3)
+            });
+
+            // Inisialisasi Select2 dengan opsi pencarian
+            $('#selectedConsumer').select2({
+                ajax: {
+                    url: '<?= base_url("estimation/getConsumerData") ?>',
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data.results, function(item) {
+                                return {
+                                    text: `${item.name} (${item.telephone})`,
+                                    id: item.id,
+                                    name: item.name,
+                                    phone: item.telephone,
+                                    type: item.tipe
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 2
+            }).on('select2:select', function(e) {
+                var data = e.params.data;
+                let recentTab = $('.nav-tabs').attr('data-recent-tab')
+
+                $('.tipe-pelanggan').val(data.type)
+                $('#customer').val(data.name)
+                $('#phone').val(data.phone)
+
+                refreshServiceCart(ServiceCart, SparepartCart, MekanikCart);
+
+                if (recentTab === '2') {
+                    jQuery("#dataTable").DataTable().ajax.url("<?= base_url("estimation/json_sparepart?type="); ?>" + data.type).load();
+                }
             });
 
             var ServiceCart = [];
@@ -365,6 +372,7 @@
                 var html3 = "";
                 var countTotal = 0;
                 var countUpah = 0;
+                const customerType = $('.tipe-pelanggan').val()
 
                 data1 = data1.filter(function(el) {
                     return el != null;
@@ -381,8 +389,19 @@
                     countTotal = (countTotal + (item.price * item.qty));
                 })
                 data2.forEach(function(item, index) {
-                    html2 += '<tr><td>' + item.name + '</td><td >Rp ' + item.price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + '</td><td class="text-center"><input type="number" style="width:52px" value="' + item.qty + '" class="change-qty" data-id="' + item.id + '" data-stock="' + item.stock + '"/></td></tr>';
-                    countTotal = (countTotal + (item.price * item.qty));
+                    let price = item.price3
+                    let priceText = item.price3.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+
+                    if (customerType == 'Platinum') {
+                        price = item.price1
+                        priceText = item.price1.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+                    } else if (customerType == 'Gold') {
+                        price = item.price2
+                        priceText = item.price2.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+                    }
+
+                    html2 += '<tr><td>' + item.name + '</td><td >Rp ' + priceText + '</td><td class="text-center"><input type="number" style="width:52px" value="' + item.qty + '" class="change-qty" data-id="' + item.id + '" data-stock="' + item.stock + '"/></td></tr>';
+                    countTotal = (countTotal + (price * item.qty));
                 })
                 data3.forEach(function(item, index) {
                     html3 += '<tr><td>' + item.name + '</td><td><input type="number" class="form-control change-upah" min="0" value="' + item.price + '" data-id="' + item.id + '"></td><td class="text-center"><button type="button" class="btn btn-sm btn-danger" onclick="deleteMekanikCart(' + item.id + ')"><i class="fa fa-times"></i></button></td></tr>';
@@ -519,14 +538,15 @@
                     form["total"] = total;
                     form["sparepart"] = itemSparepart;
                     form["mekanik"] = itemMekanik;
+                    form["customer"] = $(".customer").val();
 
-                    if (type == "service") {
-                        form["customer"] = jQuery("input[name=customer]").val();
-                        form["plat"] = jQuery("input[name=plat]").val();
-                        form["service"] = ServiceCart.filter(function(el) {
-                            return el != null;
-                        });
-                    }
+                    // if (type == "service") {
+                    //     form["customer"] = jQuery("input[name=customer]").val();
+                    //     form["plat"] = jQuery("input[name=plat]").val();
+                    //     form["service"] = ServiceCart.filter(function(el) {
+                    //         return el != null;
+                    //     });
+                    // }
 
                     form = JSON.stringify(form);
 

@@ -50,6 +50,7 @@ class Estimation extends CI_Controller
 
         $customer_id = null;
         $customer_name = null;
+        $customer_type = null;
 
         if (isset($data['customer'])) {
             if ($data['customer'] != null) {
@@ -58,6 +59,7 @@ class Estimation extends CI_Controller
                 if ($customer) {
                     $customer_id = $customer->id;
                     $customer_name = $customer->name;
+                    $customer_type = $customer->tipe;
                 }
             }
         }
@@ -72,24 +74,38 @@ class Estimation extends CI_Controller
 
         $detail_batch = [];
 
-        foreach ($data['sparepart'] as $itemSp) {
-            $temp = array();
-            $temp["product_id"] = $itemSp["id"];
-            $temp["name"] = $itemSp["name"];
-            $temp["price"] = $itemSp["price"];
-            $temp["qty"] = $itemSp["qty"];
+        if (isset($data['sparepart'])) {
+            foreach ($data['sparepart'] as $itemSp) {
+                $temp = array();
+                $price = $itemSp["price3"];
 
-            $detail_batch[] = $temp;
+                if ($customer_type == 'Platinum') {
+                    $price = $itemSp["price1"];
+                }
+
+                if ($customer_type == 'Gold') {
+                    $price = $itemSp["price2"];
+                }
+
+                $temp["product_id"] = $itemSp["id"];
+                $temp["name"] = $itemSp["name"];
+                $temp["price"] = $price;
+                $temp["qty"] = $itemSp["qty"];
+
+                $detail_batch[] = $temp;
+            }
         }
 
-        foreach ($data['service'] as $itemSrv) {
-            $temp = array();
-            $temp["product_id"] = $itemSrv["id"];
-            $temp["name"] = $itemSrv["name"];
-            $temp["price"] = $itemSrv["price"];
-            $temp["qty"] = $itemSrv["qty"];
+        if (isset($data['service'])) {
+            foreach ($data['service'] as $itemSrv) {
+                $temp = array();
+                $temp["product_id"] = $itemSrv["id"];
+                $temp["name"] = $itemSrv["name"];
+                $temp["price"] = $itemSrv["price"];
+                $temp["qty"] = $itemSrv["qty"];
 
-            $detail_batch[] = $temp;
+                $detail_batch[] = $temp;
+            }
         }
 
         $this->session->set_userdata('estimation_detail', $detail_batch);
@@ -127,15 +143,25 @@ class Estimation extends CI_Controller
     public function json_sparepart()
     {
         $base_url = $this->config->base_url();
-        $addFunc = "addSparepartCart({id:<get-id>,name:'<get-name>',kode:'<get-kode>',price:<get-price>,stock:<get-stock>})";
+        $addFunc = "addSparepartCart({id:<get-id>,name:'<get-name>',kode:'<get-kode>',price:<get-price>,price1:<get-price1>,price2:<get-price2>,price3:<get-price3>,stock:<get-stock>})";
         $detailData = "detailData({id:<get-id>,name:'<get-name>',location:'<get-location>',description:'<get-description>',gambar:'$base_url/uploads/sparepart/<get-gambar>'})";
+
+        $price = 'price3';
+
+        if ($this->input->get('type') == 'Platinum')  {
+            $price = 'price1';
+        }
+
+        if ($this->input->get('type') == 'Gold') {
+            $price = 'price2';
+        }
 
         $this->load->model("datatables");
         $this->datatables->setTable("products");
         $this->datatables->setColumn([
             '<get-name>',
             '<get-kode>',
-            '[rupiah=<get-price>]',
+            '[rupiah=<get-'.$price.'>]',
             '<div class="text-center">
                 <button type="button" class="btn btn-sm btn-success" onclick="' . $addFunc . '"><i class="fa fa-plus"></i></button>
                 <button type="button" class="btn btn-sm btn-primary" onclick="'.$detailData.'"><i class="fa fa-eye"></i></button>

@@ -43,6 +43,7 @@ class Transaction extends CI_Controller {
 
         $customer_id = null;
         $customer_name = null;
+        $customer_type = null;
 
         if ($data['customer'] != null) {
             $customer = $this->Consumer_model->get($data['customer'])->row();
@@ -50,6 +51,7 @@ class Transaction extends CI_Controller {
             if ($customer) {
                 $customer_id = $customer->id;
                 $customer_name = $customer->name;
+                $customer_type = $customer->tipe;
             }
         }
 
@@ -87,12 +89,21 @@ class Transaction extends CI_Controller {
 
         foreach($data['sparepart'] as $itemSp) {
             $temp = array();
+            $price = $itemSp["price3"];
+
+            if ($customer_type == 'Platinum') {
+                $price = $itemSp["price1"];
+            }
+
+            if ($customer_type == 'Gold') {
+                $price = $itemSp["price2"];
+            }
 
             $temp["id"] = NULL;
             $temp["transaction_id"] = $transaction_id;
             $temp["product_id"] = $itemSp["id"];
             $temp["name"] = $itemSp["name"];
-            $temp["price"] = $itemSp["price"];
+            $temp["price"] = $price;
             $temp["qty"] = $itemSp["qty"];
 
             $stocktmp = array();
@@ -171,16 +182,25 @@ class Transaction extends CI_Controller {
     }
     public function json_sparepart() {
         $base_url = $this->config->base_url();
-        $addFunc = "addSparepartCart({id:<get-id>,name:'<get-name>',price:<get-price>,stock:<get-stock>,gambar:'$base_url/uploads/sparepart/<get-gambar>'})";
+        $addFunc = "addSparepartCart({id:<get-id>,name:'<get-name>',price:<get-price>,price1:<get-price1>,price2:<get-price2>,price3:<get-price3>,stock:<get-stock>,gambar:'$base_url/uploads/sparepart/<get-gambar>'})";
         $detailData = "detailData({id:<get-id>,name:'<get-name>',location:'<get-location>',description:'<get-description>',gambar:'$base_url/uploads/sparepart/<get-gambar>'})";
-    
+
+        $price = 'price3';
+
+        if ($this->input->get('type') == 'Platinum') {
+            $price = 'price1';
+        }
+
+        if ($this->input->get('type') == 'Gold') {
+            $price = 'price2';
+        }
 
         $this->load->model("datatables");
         $this->datatables->setTable("products");
         $this->datatables->setColumn([
             '<get-name>',
             '<get-kode>',
-            '[rupiah=<get-price>]',
+            '[rupiah=<get-' . $price . '>]',
             '<div class="text-center">
                 <button type="button" class="btn btn-sm btn-success" onclick="'.$addFunc.'"><i class="fa fa-plus"></i></button>
                 <button type="button" class="btn btn-sm btn-primary" onclick="'.$detailData.'"><i class="fa fa-eye"></i></button>
