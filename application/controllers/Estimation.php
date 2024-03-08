@@ -169,7 +169,7 @@ class Estimation extends CI_Controller
         ]);
         $this->datatables->setOrdering(["name", "price", NULL]);
         $this->datatables->setWhere("type", "sparepart");
-        $this->datatables->setSearchField(["name", "kode"]);
+        $this->datatables->setSearchField(["name", "kode", "description"]);
         $this->datatables->generate();
     }
     public function json_mekanik()
