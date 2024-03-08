@@ -40,6 +40,7 @@
                                                     <th>Nama</th>
                                                     <th>Kode</th>
                                                     <th>Harga</th>
+                                                    <th>Keterangan</th>
                                                     <th>Aksi</th>
                                                 </tr>
                                             </thead>
@@ -223,23 +224,23 @@
                 "ajax": {
                     "url": "<?= base_url("estimation/json_service"); ?>"
                 }
-            }).columns([1]).visible(false);
+            }).columns([1, 3]).visible(false);
 
             $('#nav-services-tab').on("click", function() {
                 jQuery("#dataTable").DataTable().ajax.url("<?= base_url("estimation/json_service"); ?>").load();
-                jQuery("#dataTable").DataTable().columns([1]).visible(false);
+                jQuery("#dataTable").DataTable().columns([1, 3]).visible(false);
                 $('.nav-tabs').attr('data-recent-tab', 1)
             });
             $('#nav-sparepart-tab').on("click", function() {
                 let customerType = $('.tipe-pelanggan').val()
 
                 jQuery("#dataTable").DataTable().ajax.url("<?= base_url("estimation/json_sparepart?type="); ?>" + customerType).load();
-                jQuery("#dataTable").DataTable().columns([1]).visible(true);
+                jQuery("#dataTable").DataTable().columns([1, 3]).visible(true);
                 $('.nav-tabs').attr('data-recent-tab', 2)
             });
             $('#nav-mekanik-tab').on("click", function() {
                 jQuery("#dataTable").DataTable().ajax.url("<?= base_url("estimation/json_mekanik"); ?>").load();
-                jQuery("#dataTable").DataTable().columns([1]).visible(false);
+                jQuery("#dataTable").DataTable().columns([1, 3]).visible(false);
                 $('.nav-tabs').attr('data-recent-tab', 3)
             });
 

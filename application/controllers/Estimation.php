@@ -131,6 +131,7 @@ class Estimation extends CI_Controller
             '<get-name>',
             '<get-kode>',
             '[rupiah=<get-price>]',
+            '<get-description>',
             '<div class="text-center">
                 <button type="button" class="btn btn-sm btn-success btn-add" onclick="' . $addFunc . '"><i class="fa fa-plus"></i></button>
             </div>'
@@ -162,6 +163,7 @@ class Estimation extends CI_Controller
             '<get-name>',
             '<get-kode>',
             '[rupiah=<get-'.$price.'>]',
+            '<get-description>',
             '<div class="text-center">
                 <button type="button" class="btn btn-sm btn-success" onclick="' . $addFunc . '"><i class="fa fa-plus"></i></button>
                 <button type="button" class="btn btn-sm btn-primary" onclick="'.$detailData.'"><i class="fa fa-eye"></i></button>
