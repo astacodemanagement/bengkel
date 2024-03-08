@@ -44,6 +44,7 @@ class Setting extends CI_Controller {
 
     public function save_info() {
         $name = $this->input->post("name");
+        $uang_harian = $this->input->post("uang_harian");
         $address = $this->input->post("address");
         $image = null;
 
@@ -83,7 +84,7 @@ class Setting extends CI_Controller {
                 "msg" => "Info bengkel telah diperbaharui"
             ];
 
-            $this->user_model->set_shop(["name" => $name,"address" => $address, 'image' => $image]);
+            $this->user_model->set_shop(["name" => $name,"address" => $address, "uang_harian" => $uang_harian, 'image' => $image]);
         } else {
             $response = [
                 "status" => FALSE,

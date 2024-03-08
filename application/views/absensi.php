@@ -22,6 +22,7 @@
             <div class="card">
                 <div class="card-header">
                     <button type="button" class="btn btn-sm btn-success btn-add" style="border-radius: 1rem;"><i class="fa fa-plus"></i> Tambah Absensi</button>
+                    <input type="hidden" value="<?= $uangHarian ?>" id="uang_harian_asal" class="form-control uang-harian" />
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -81,9 +82,31 @@
                                 <label>Jumlah Absen Kerja</label>
                                 <input type="number" name="jumlah_absen_kerja" class="form-control" />
                             </div>
+
+                            <script>
+                                $(document).ready(function() {
+                                    // Fungsi untuk menghitung jumlah_absen_kerja saat nilai jumlah_masuk_kerja berubah
+                                    $(".hari-masuk").on("change", function() {
+                                        // Ambil nilai dari jumlah_hari_kerja
+                                        var jumlahHariKerja = parseInt($("[name='jumlah_hari_kerja']").val()) || 0;
+
+                                        // Ambil nilai dari jumlah_masuk_kerja
+                                        var jumlahMasukKerja = parseInt($(this).val()) || 0;
+
+                                        // Hitung jumlah_absen_kerja
+                                        var jumlahAbsenKerja = jumlahHariKerja - jumlahMasukKerja;
+
+                                        // Set nilai jumlah_absen_kerja pada input
+                                        $("[name='jumlah_absen_kerja']").val(jumlahAbsenKerja);
+                                    });
+                                });
+                            </script>
+
+
+
                             <div class="form-group">
                                 <label>Uang Harian</label>
-                                <input type="number" name="uang_harian" class="form-control uang-harian" />
+                                <input type="number" name="uang_harian" id="uang_harian" class="form-control" />
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
@@ -138,6 +161,11 @@
                 </div>
             </div>
         </div>
+
+
+
+
+
         <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
         <script>
             $(document).ready(function() {
@@ -159,11 +187,21 @@
             });
 
             $(".btn-add").on("click", function() {
+                // Set judul modal dan action form
                 jQuery("#compose .modal-title").html("Tambah Absensi");
                 jQuery("#compose form").attr("action", "<?= base_url("absensi/insert"); ?>");
-                jQuery("#compose form input,textarea").val("");
+
+                // Kosongkan semua input dan textarea pada modal
+                jQuery("#compose form input, textarea").val("");
+
+                // Isi input dengan nilai dari input asal
+                var nilaiAsal = jQuery("#uang_harian_asal").val();
+                jQuery("#uang_harian").val(nilaiAsal);
+
+                // Tampilkan modal
                 jQuery("#compose").modal("toggle");
-            })
+            });
+
 
             $("body").on("click", ".btn-edit", function() {
                 var id = jQuery(this).attr("data-id");

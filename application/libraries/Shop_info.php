@@ -12,6 +12,9 @@ class Shop_info {
     function get_shop_name() {
         return $this->get_info->name;
     }
+    function get_shop_uang_harian() {
+        return $this->get_info->uang_harian;
+    }
     function get_shop_address() {
         return $this->get_info->address;
     }

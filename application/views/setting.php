@@ -34,6 +34,10 @@
                                 <label>Alamat</label>
                                 <textarea name="address" class="form-control"><?= $this->shop_info->get_shop_address(); ?></textarea>
                             </div>
+                            <div class="form-group">
+                                <label>Uang Harian</label>
+                                <input type="text" name="uang_harian" class="form-control" value="<?= $this->shop_info->get_shop_uang_harian(); ?>">
+                            </div>
                         </div>
                     </div>
 
@@ -46,6 +50,7 @@
             $(".btn-save").on("click", function() {
                 var form = new FormData();
                 form.append("name", jQuery('input[name=name]').val());
+                form.append("uang_harian", jQuery('input[name=uang_harian]').val());
                 form.append("address", jQuery('textarea[name=address]').val());
                 form.append("image", jQuery('.dropify')[0].files[0]);
 

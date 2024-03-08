@@ -17,20 +17,41 @@ class Absensi extends CI_Controller
         $this->load->model("absensi_model");
 
         $this->dataAdmin = $this->user_model->get(["id" => $this->session->auth['id']])->row();
+
+        // Load the Shop_info library
+        $this->load->library('Shop_info');
     }
 
 
     public function index()
     {
-
+        $uangHarian = $this->shop_info->get_shop_uang_harian();
         $push = [
             "pageTitle" => "Absensi",
+            "uangHarian" => $uangHarian,
             "dataAdmin" => $this->dataAdmin
         ];
 
         $this->load->view('header', $push);
         $this->load->view('absensi', $push);
         $this->load->view('footer', $push);
+    }
+
+    public function getUserData()
+    {
+        $term = $this->input->get('term');
+        $data = $this->user_model->searchUser($term);
+
+        // Mendapatkan data uang_harian berdasarkan user_id
+        $uangHarian = $this->Shop_info_model->getUangHarianByUserId($data['id']);
+
+        $response = [
+            'id' => $data['id'],
+            'text' => $data['name'],
+            'uang_harian' => $uangHarian
+        ];
+
+        echo json_encode($response);
     }
 
     public function json()
@@ -139,11 +160,5 @@ class Absensi extends CI_Controller
         echo json_encode($response);
     }
 
-    public function getUserData()
-    {
-        $term = $this->input->get('term');
-        $data = $this->user_model->searchUser($term);
-
-        echo json_encode(['results' => $data]); // Sesuaikan format respons sesuai kebutuhan Select2
-    }
+  
 }
