@@ -117,6 +117,7 @@ class Absensi extends CI_Controller
             $maxWaktu = '08:15';
             $status = 'MASUK';
             $bonusAbsen = $this->input->post("bonus_absen");
+            $keterangan = $this->input->post("keterangan");
             $uangHarian = $this->shop_info->get_shop_uang_harian() ?? 0;
 
             if (strtotime(date('Y-m-d H:i')) > strtotime(date('Y-m-d') . ' ' . $maxWaktu)) {
@@ -132,7 +133,7 @@ class Absensi extends CI_Controller
                 "bonus_absen" => $bonusAbsen,
                 "uang_harian" => $uangHarian,
                 "status" => $status,
-                "keterangan" => $this->input->post("keterangan")
+                "keterangan" => $keterangan
             ];
 
             $response["status"] = TRUE;

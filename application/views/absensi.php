@@ -36,7 +36,7 @@
                     </div>
                     <div class="row mt-2">
                         <div class="col-md-7">
-                            <textarea name="" id="" class="form-control keterangan" placeholder="Keterangan"></textarea>
+                            <textarea name="keterangan" id="keterangan" class="form-control keterangan" placeholder="Keterangan"></textarea>
                         </div>
                         <input type="hidden" class="d-none action" value="show">
                         <input type="hidden" class="d-none user-name">
@@ -149,7 +149,7 @@
                         data: {
                             user: $('.user').val(),
                             bonus_absen: $('.bonus-absen').val(),
-                            keterangan: $('keterangan').val()
+                            keterangan: $('.keterangan').val()
                         },
                         dataType: "json",
                         success: function(data) {
