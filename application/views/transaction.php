@@ -227,15 +227,18 @@
                     </div>
                     <div class="modal-body">
                         <img id="modalImage" src="" alt="Image" style="max-width: 100%;">
+                        <hr>
                         <p id="modalName">Nama: </p>
                         <p id="modalLokasi">Lokasi: </p>
+                        <p id="modalPrice">Harga Beli : </p>
+                        <p id="modalPrice1">Harga Jual 1: </p>
+                        <p id="modalPrice2">Harga Jual 2: </p>
                         <p id="modalKeterangan">Keterangan: </p>
                     </div>
 
                 </div>
             </div>
         </div>
-
 
 
 
@@ -375,15 +378,28 @@
             }
 
             function detailData(data) {
-                // Set modal content
-                document.getElementById('modalName').innerHTML = 'Nama: ' + data.name;
-                document.getElementById('modalLokasi').innerHTML = 'Lokasi: ' + data.location;
-                document.getElementById('modalKeterangan').innerHTML = 'Keterangan: ' + data.description;
-                document.getElementById('modalImage').src = data.gambar;
+    // Set modal content
+    document.getElementById('modalName').innerHTML = 'Nama : ' + data.name;
+    document.getElementById('modalLokasi').innerHTML = 'Lokasi : ' + data.location;
+    document.getElementById('modalKeterangan').innerHTML = 'Keterangan : ' + data.description;
 
-                // Show the modal
-                $('#detailModal').modal('show');
-            }
+    // Format prices with thousand separators
+    document.getElementById('modalPrice').innerHTML = 'Harga Beli : ' + 'Rp. ' + formatNumber(parseInt(data.price));
+    document.getElementById('modalPrice1').innerHTML = 'Harga Jual 1 : ' + 'Rp. ' + formatNumber(parseInt(data.price1));
+    document.getElementById('modalPrice2').innerHTML = 'Harga Jual 2 : ' + 'Rp. ' + formatNumber(parseInt(data.price2));
+
+    document.getElementById('modalImage').src = data.gambar;
+
+    // Show the modal
+    $('#detailModal').modal('show');
+}
+
+// Function to format number with thousand separators
+function formatNumber(number) {
+    return number.toLocaleString('id-ID'); // Adjust 'id-ID' based on your desired locale
+}
+
+
 
 
             function addMekanikCart(data) {

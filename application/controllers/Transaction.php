@@ -184,7 +184,8 @@ class Transaction extends CI_Controller {
     public function json_sparepart() {
         $base_url = $this->config->base_url();
         $addFunc = "addSparepartCart({id:<get-id>,name:'<get-name>',price:<get-price>,price1:<get-price1>,price2:<get-price2>,price3:<get-price3>,stock:<get-stock>,gambar:'$base_url/uploads/sparepart/<get-gambar>'})";
-        $detailData = "detailData({id:<get-id>,name:'<get-name>',location:'<get-location>',description:'<get-description>',gambar:'$base_url/uploads/sparepart/<get-gambar>'})";
+        $detailData = "detailData({id:<get-id>,name:'<get-name>',location:'<get-location>',description:'<get-description>',price:'<get-price>',price1:'<get-price1>',price2:'<get-price2>',gambar:'$base_url/uploads/sparepart/<get-gambar>'})";
+
 
         $price = 'price3';
 
