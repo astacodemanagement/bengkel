@@ -137,7 +137,7 @@ class Estimation extends CI_Controller
             </div>'
         ]);
         $this->datatables->setOrdering(["name", "price", NULL]);
-        $this->datatables->setWhere("type", "service");
+        $this->datatables->("type", "service");
         $this->datatables->setSearchField("name","kode");
         $this->datatables->generate();
     }

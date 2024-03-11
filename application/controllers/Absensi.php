@@ -42,39 +42,47 @@ class Absensi extends CI_Controller
         $term = $this->input->get('term');
         $data = $this->user_model->searchUser($term);
 
-        // Mendapatkan data uang_harian berdasarkan user_id
-        $uangHarian = $this->Shop_info_model->getUangHarianByUserId($data['id']);
-
-        $response = [
-            'id' => $data['id'],
-            'text' => $data['name'],
-            'uang_harian' => $uangHarian
-        ];
-
-        echo json_encode($response);
+        echo json_encode($data);
     }
 
     public function json()
     {
         $this->load->model("datatables");
         $this->datatables->setTable("absensi");
+
+        if ($this->input->get('action') == 'filter' && $this->input->get('start_date') && $this->input->get('end_date')) {
+            $this->datatables->setWhere("tanggal >=", $this->input->get('start_date'));
+            $this->datatables->setWhere("tanggal <=", $this->input->get('end_date'));
+        }
+        
+        $this->datatables->setWhere("user_id", $this->input->get('user'));
+
         $this->datatables->setColumn([
-            '<index>',
-            '<get-tanggal>',
-            '<get-jumlah_hari_kerja>',
-            '<get-jumlah_masuk_kerja>',
-            '<get-jumlah_absen_kerja>',
-            '[number_format=<get-uang_harian>]',
-            '[number_format=<get-bonus>]',
-            '[number_format=<get-kasbon>]',
-            '[number_format=<get-total_gaji>]',
-            '<get-keterangan>',
-            '<div class="text-center"><button type="button" class="btn btn-primary btn-sm btn-edit" title="Edit Data" data-id="<get-id>"><i class="fa fa-edit"></i></button>
-            <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="<get-id>" data-name="<get-name>" title="Delete Data"><i class="fa fa-trash"></i></button></div>'
+            '<div class="text-center"><index></div>',
+            '<div class="text-center"><get-tanggal></div>',
+            '<div class="text-center">[waktuAbsen=<get-waktu>]</div>',
+            '<div class="text-center">[statusAbsen=<get-status>]</div>',
+            '<div class="text-center"><get-keterangan></div>'
         ]);
-        $this->datatables->setOrdering(["id", "name", "address", "telephone", NULL]);
-        $this->datatables->setSearchField("name");
+        $this->datatables->setOrdering(["id", "tanggal", "waktu", "status", NULL]);
+        $this->datatables->setSearchField(['tanggal', 'status', 'keterangan']);
         $this->datatables->generate();
+    }
+
+    public function hitung_absen()
+    {
+        header('Content-Type: application/json');
+
+        $this->db->select('SUM(bonus_absen) as bonus_absen, count(id) as jumlah_masuk');
+        $this->db->where(['user_id' => $this->input->get('user'), 'status' => 'MASUK']);
+
+        if ($this->input->get('action') == 'filter' && $this->input->get('start_date') && $this->input->get('end_date')) {
+            $this->db->where(["tanggal >=" => $this->input->get('start_date'), "tanggal <=" => $this->input->get('end_date')]);
+        }
+
+        $absen = $this->db->get('absensi')->row();
+
+        echo json_encode($absen);
     }
 
     function get($id = 0)
@@ -85,80 +93,55 @@ class Absensi extends CI_Controller
         }
     }
 
-    function insert()
+    function checkin()
     {
         $this->proccess();
     }
 
-    function edit($id = 0)
+    private function proccess()
     {
-        $this->proccess("edit", $id);
-    }
-
-    function delete($id = 0)
-    {
-        if ($id) {
-            $response["status"] = TRUE;
-            $response["msg"] = "Data berhasil dihapus";
-
-            $this->absensi_model->delete($id);
-
-            echo json_encode($response);
-        }
-    }
-
-    private function proccess($action = "add", $id = 0)
-    {
-        $tanggal = $this->input->post("tanggal");
         $user = $this->input->post("user");
-        $jumlah_hari_kerja = $this->input->post("jumlah_hari_kerja");
-        $jumlah_masuk_kerja = $this->input->post("jumlah_masuk_kerja");
-        $jumlah_absen_kerja = $this->input->post("jumlah_absen_kerja");
-        $uang_harian = $this->input->post("uang_harian");
-        $bonus = $this->input->post("bonus");
-        $kasbon = $this->input->post("kasbon");
-        $keterangan = $this->input->post("keterangan");
-        $totalUangHarian = $jumlah_masuk_kerja * $uang_harian;
-        $totalPotongPersen = ($totalUangHarian * 20) / 100;
-        $total_gaji = $totalUangHarian - $totalPotongPersen + $bonus - $kasbon;
+        $userAbsen = $this->db->get_where('absensi', ['user_id' => $user, 'tanggal' => date('Y-m-d')])->row();
 
-        if ($tanggal == null or $user == null or $jumlah_hari_kerja == null or $jumlah_masuk_kerja == null or $jumlah_absen_kerja == null or $uang_harian == null or $bonus == null or $kasbon == null) {
+        if ($user == null) {
             $response = [
                 "status" => FALSE,
                 "msg" => "Periksa kembali data yang anda masukkan"
             ];
+        } else if ($userAbsen) {
+            $response = [
+                "status" => FALSE,
+                "msg" => "Karyawan sudah melakukan absensi"
+            ];
         } else {
+            $maxWaktu = '08:15';
+            $status = 'MASUK';
+            $bonusAbsen = $this->input->post("bonus_absen");
+            $uangHarian = $this->shop_info->get_shop_uang_harian() ?? 0;
+
+            if (strtotime(date('Y-m-d H:i')) > strtotime(date('Y-m-d') . ' ' . $maxWaktu)) {
+                $status = 'TERLAMBAT';
+                $bonusAbsen = 0;
+            }
+
             $insertData = [
                 "id" => NULL,
-                "tanggal" => $tanggal,
-                "users_id" => $user,
-                "jumlah_hari_kerja" => $jumlah_hari_kerja,
-                "jumlah_masuk_kerja" => $jumlah_masuk_kerja,
-                "jumlah_absen_kerja" => $jumlah_absen_kerja,
-                "uang_harian" => $uang_harian,
-                "bonus" => $bonus,
-                "kasbon" => $kasbon,
-                "total_gaji" => $total_gaji,
-                "keterangan" => $keterangan
+                "tanggal" => date('Y-m-d'),
+                "user_id" => $user,
+                "waktu" => date("H:i"),
+                "bonus_absen" => $bonusAbsen,
+                "uang_harian" => $uangHarian,
+                "status" => $status,
+                "keterangan" => $this->input->post("keterangan")
             ];
 
             $response["status"] = TRUE;
 
-            if ($action == "add") {
-                $response['msg'] = "Data berhasil ditambahkan";
+            $response['msg'] = "Data berhasil ditambahkan";
 
-                $this->absensi_model->post($insertData);
-            } else {
-                $response['msg'] = "Data berhasil diedit";
-
-                unset($insertData["id"]);
-
-                $this->absensi_model->put($id, $insertData);
-            }
+            $this->absensi_model->post($insertData);
         }
 
         echo json_encode($response);
     }
-
-  
 }

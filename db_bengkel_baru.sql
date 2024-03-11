@@ -2,7 +2,7 @@
 -- Host:                         127.0.0.1
 -- Server version:               8.0.30 - MySQL Community Server - GPL
 -- Server OS:                    Win64
--- HeidiSQL Version:             12.1.0.6537
+-- HeidiSQL Version:             12.6.0.6765
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -18,18 +18,14 @@
 CREATE TABLE IF NOT EXISTS `absensi` (
   `id` int NOT NULL AUTO_INCREMENT,
   `tanggal` date DEFAULT NULL,
-  `users_id` varchar(50) NOT NULL DEFAULT '0',
-  `name` varchar(50) NOT NULL DEFAULT '0',
-  `jumlah_hari_kerja` varchar(50) NOT NULL DEFAULT '0',
-  `jumlah_masuk_kerja` varchar(50) NOT NULL DEFAULT '0',
-  `jumlah_absen_kerja` varchar(50) NOT NULL DEFAULT '0',
-  `uang_harian` varchar(50) NOT NULL DEFAULT '0',
-  `bonus` varchar(50) NOT NULL DEFAULT '0',
-  `kasbon` varchar(50) NOT NULL DEFAULT '0',
-  `total_gaji` varchar(50) NOT NULL DEFAULT '0',
-  `keterangan` text NOT NULL,
+  `waktu` time NOT NULL,
+  `user_id` int NOT NULL DEFAULT '0',
+  `uang_harian` decimal(20,3) NOT NULL DEFAULT (0),
+  `bonus_absen` decimal(20,3) NOT NULL DEFAULT (0),
+  `keterangan` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `status` varchar(29) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Dumping data for table db_bengkel.absensi: ~0 rows (approximately)
 
@@ -47,9 +43,9 @@ CREATE TABLE IF NOT EXISTS `consumers` (
 
 -- Dumping data for table db_bengkel.consumers: ~3 rows (approximately)
 INSERT INTO `consumers` (`id`, `code`, `name`, `address`, `telephone`, `tipe`, `description`) VALUES
-	(1, '1111', 'Koperasi Satu', 'Perumahan CGM Sukarindik Kecamatan Bungursari. Blok C31. RT/RW 02/11. Kota Tasikmalaya\nJl. Tajur Indah', '085320555394', NULL, NULL),
-	(2, '2222', 'Koperasi Dua', 'Perumahan CGM Sukarindik Kecamatan Bungursari. Blok C31. RT/RW 02/11. Kota Tasikmalaya\nJl. Tajur Indah', '085320555394', NULL, NULL),
-	(3, '3333', 'Koperasi Tiga', 'Perumahan CGM Sukarindik Kecamatan Bungursari. Blok C31. RT/RW 02/11. Kota Tasikmalaya\nJl. Tajur Indah', '085320555394', NULL, NULL);
+	(1, '1111', 'Koperasi Satu', 'Perumahan CGM Sukarindik Kecamatan Bungursari. Blok C31. RT/RW 02/11. Kota Tasikmalaya\nJl. Tajur Indah', '085320555394', 'Platinum', 'Keterangan customer'),
+	(2, '2222', 'Koperasi Dua', 'Perumahan CGM Sukarindik Kecamatan Bungursari. Blok C31. RT/RW 02/11. Kota Tasikmalaya\nJl. Tajur Indah', '085320555394', 'Gold', 'konsumen gold'),
+	(3, '3333', 'Koperasi Tiga', 'Perumahan CGM Sukarindik Kecamatan Bungursari. Blok C31. RT/RW 02/11. Kota Tasikmalaya\nJl. Tajur Indah', '085320555394', 'Non Member', 'non member');
 
 -- Dumping structure for table db_bengkel.details
 CREATE TABLE IF NOT EXISTS `details` (
@@ -60,9 +56,9 @@ CREATE TABLE IF NOT EXISTS `details` (
   `price` int NOT NULL,
   `qty` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=latin1;
 
--- Dumping data for table db_bengkel.details: ~7 rows (approximately)
+-- Dumping data for table db_bengkel.details: ~28 rows (approximately)
 INSERT INTO `details` (`id`, `transaction_id`, `product_id`, `name`, `price`, `qty`) VALUES
 	(47, 31, 8, 'Ganti Oli', 50000, 1),
 	(48, 31, 12, 'Cairan Pembersih', 30000, 1),
@@ -91,7 +87,10 @@ INSERT INTO `details` (`id`, `transaction_id`, `product_id`, `name`, `price`, `q
 	(71, 42, 9, 'Oli Evalube', 30000, 1),
 	(72, 42, 13, 'Ban', 50000, 1),
 	(73, 42, 8, 'Ganti Oli', 50000, 2),
-	(74, 42, 12, 'Cairan Pembersih', 30000, 2);
+	(74, 42, 12, 'Cairan Pembersih', 30000, 2),
+	(75, 43, 7, 'Ban Mobil', 200000, 1),
+	(76, 43, 9, 'Oli Evalube', 40000, 1),
+	(77, 43, 13, 'Ban', 100000, 1);
 
 -- Dumping structure for table db_bengkel.mechanic_details
 CREATE TABLE IF NOT EXISTS `mechanic_details` (
@@ -103,7 +102,7 @@ CREATE TABLE IF NOT EXISTS `mechanic_details` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=armscii8 COLLATE=armscii8_bin;
 
--- Dumping data for table db_bengkel.mechanic_details: ~4 rows (approximately)
+-- Dumping data for table db_bengkel.mechanic_details: ~12 rows (approximately)
 INSERT INTO `mechanic_details` (`id`, `transaction_id`, `user_id`, `cost`, `date`) VALUES
 	(8, 31, 4, 80000.000000, '2024-03-01 14:40:15'),
 	(9, 32, 4, 40000.000000, '2024-03-03 01:10:44'),
@@ -138,11 +137,11 @@ CREATE TABLE IF NOT EXISTS `products` (
 
 -- Dumping data for table db_bengkel.products: ~5 rows (approximately)
 INSERT INTO `products` (`id`, `kode`, `name`, `price`, `price1`, `price2`, `price3`, `type`, `stock`, `gambar`, `location`, `jenismobil`, `description`) VALUES
-	(7, '112023', 'Ban Mobil', 120000, 200000, 250000, 300000, 'sparepart', 9, 'ee981f27827378159157bfe86c378eb3.jpg', 'gedung', NULL, 'gaskeun'),
+	(7, '112023', 'Ban Mobil', 120000, 200000, 250000, 300000, 'sparepart', 8, 'ee981f27827378159157bfe86c378eb3.jpg', 'gedung', NULL, 'gaskeun'),
 	(8, '0', 'Ganti Oli', 50000, 0, 0, 0, 'service', NULL, NULL, NULL, 'sample2', NULL),
-	(9, '112024', 'Oli Evalube', 30000, 40000, 50000, 60000, 'sparepart', 9, NULL, 'rak', NULL, 'ddddd'),
+	(9, '112024', 'Oli Evalube', 30000, 40000, 50000, 60000, 'sparepart', 8, NULL, 'rak', NULL, 'ddddd'),
 	(12, '0', 'Cairan Pembersih', 30000, 0, 0, 0, 'service', NULL, NULL, NULL, 'sample', NULL),
-	(13, '00001', 'Ban', 50000, 100000, 110000, 120000, 'sparepart', 9, '21eda0b4980a803f99c2e154b8dc6d9f.png', 'Rak 2', NULL, 'BAN Luar tubeless');
+	(13, '00001', 'Ban', 50000, 100000, 110000, 120000, 'sparepart', 8, '21eda0b4980a803f99c2e154b8dc6d9f.png', 'Rak 2', NULL, 'BAN Luar tubeless');
 
 -- Dumping structure for table db_bengkel.purchase
 CREATE TABLE IF NOT EXISTS `purchase` (
@@ -169,7 +168,7 @@ CREATE TABLE IF NOT EXISTS `purchase_details` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=latin1;
 
--- Dumping data for table db_bengkel.purchase_details: ~0 rows (approximately)
+-- Dumping data for table db_bengkel.purchase_details: ~3 rows (approximately)
 INSERT INTO `purchase_details` (`id`, `purchase_id`, `product_id`, `price`, `qty`) VALUES
 	(27, 23, 13, 100000, 10),
 	(28, 23, 7, 100000, 10),
@@ -181,12 +180,13 @@ CREATE TABLE IF NOT EXISTS `shop_info` (
   `name` varchar(150) NOT NULL,
   `address` varchar(300) NOT NULL,
   `image` varchar(255) DEFAULT NULL,
+  `uang_harian` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
--- Dumping data for table db_bengkel.shop_info: ~0 rows (approximately)
-INSERT INTO `shop_info` (`id`, `name`, `address`, `image`) VALUES
-	(1, 'Daesan Jaya Autocare', 'Jl. Mencari Cinta Sejati', NULL);
+-- Dumping data for table db_bengkel.shop_info: ~1 rows (approximately)
+INSERT INTO `shop_info` (`id`, `name`, `address`, `image`, `uang_harian`) VALUES
+	(1, 'Daesan Jaya Autocare', 'Jl. Mencari Cinta Sejati', NULL, '150000');
 
 -- Dumping structure for table db_bengkel.suppliers
 CREATE TABLE IF NOT EXISTS `suppliers` (
@@ -219,14 +219,15 @@ CREATE TABLE IF NOT EXISTS `transactions` (
   `km` int DEFAULT NULL,
   `description` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=latin1;
 
 -- Dumping data for table db_bengkel.transactions: ~4 rows (approximately)
 INSERT INTO `transactions` (`id`, `code`, `type`, `total`, `mechanical_costs`, `date`, `customer_id`, `customer_name`, `plat`, `car_type`, `pic`, `km`, `description`) VALUES
 	(39, 'TRX0000000001', 'service', 50000.000000, 50000.000000, '2024-03-04 00:00:00', 1, 'Koperasi Satu', '9', '9', NULL, 9, '9'),
 	(40, 'TRX0000000002', 'service', 30000.000000, 30000.000000, '2024-03-01 00:00:00', 3, 'Koperasi Tiga', '1', '1', NULL, 1, '1'),
 	(41, 'TRX0000000003', 'service', 160000.000000, 160000.000000, '2024-03-04 00:00:00', 1, 'Koperasi Satu', '1', '1', NULL, 1, '1'),
-	(42, 'TRX0000000004', 'service', 360000.000000, 0.000000, '2024-03-05 00:00:00', 1, 'Koperasi Satu', '123', '123', NULL, 123, '123');
+	(42, 'TRX0000000004', 'service', 360000.000000, 0.000000, '2024-03-05 00:00:00', 1, 'Koperasi Satu', '123', '123', NULL, 123, '123'),
+	(43, 'TRX0000000005', 'sparepart', 340000.000000, 0.000000, '2024-03-07 00:00:00', 1, 'Koperasi Satu', '', '', NULL, 0, '');
 
 -- Dumping structure for table db_bengkel.users
 CREATE TABLE IF NOT EXISTS `users` (
@@ -245,7 +246,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
--- Dumping data for table db_bengkel.users: ~3 rows (approximately)
+-- Dumping data for table db_bengkel.users: ~4 rows (approximately)
 INSERT INTO `users` (`id`, `code`, `name`, `telephone`, `position`, `birthplace`, `birthdate`, `level`, `joindate`, `address`, `username`, `password`) VALUES
 	(2, 'K001', 'Koperasi Satu', '085320555394', '1', '1', '2024-02-20', 'Superadmin', NULL, 'Perumahan CGM Sukarindik Kecamatan Bungursari. Blok C31. RT/RW 02/11. Kota Tasikmalaya\nJl. Tajur Indah', 'admin', '$2y$10$tjaLcH9H8s0sEMgFAilvBu9.czn8JT3DpXEneInFWQLNJmg95/UZu'),
 	(3, 'K002', 'Koperasi Dua', '085320555394', '1', '1', '1994-02-22', 'Superadmin', '2024-02-22', 'Perumahan CGM Sukarindik Kecamatan Bungursari. Blok C31. RT/RW 02/11. Kota Tasikmalaya\nJl. Tajur Indah', 'kasir', '$2y$10$RWH//svpdDjSJSc9uJ/W2.MgH/ZiueM4lpTQE2AF7rfmDiaexydbG'),

@@ -21,290 +21,158 @@
         <div class="content mt-3">
             <div class="card">
                 <div class="card-header">
-                    <button type="button" class="btn btn-sm btn-success btn-add" style="border-radius: 1rem;"><i class="fa fa-plus"></i> Tambah Absensi</button>
-                    <input type="hidden" value="<?= $uangHarian ?>" id="uang_harian_asal" class="form-control uang-harian" />
+                    <div class="row">
+                        <div class="col-md-3">
+                            <select id="selectedUser" name="user" class="form-control select2 user" style="width:100%">
+                                <option value="">PILIH KARYAWAN</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 pt-1">
+                            <button type="button" class="btn btn-sm btn-success w-100 btn-check-in" style="border-radius: 1rem;">CHECK IN</button>
+                        </div>
+                        <div class="col-md-2 pt-1">
+                            <button type="button" class="btn btn-sm btn-primary w-100 btn-view" style="border-radius: 1rem;">VIEW</button>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-7">
+                            <textarea name="" id="" class="form-control keterangan" placeholder="Keterangan"></textarea>
+                        </div>
+                        <input type="hidden" class="d-none action" value="show">
+                        <input type="hidden" class="d-none user-name">
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <div class="form-inline">
+                                <input type="date" class="form-control start-date">
+                                <span class="mx-2">-</span>
+                                <input type="date" class="form-control end-date">
+                                <button class="btn btn-danger btn-sm ml-3 btn-pdf" style="border-radius: 1rem;">EXPORT PDF</button>
+                                <button class="btn btn-success btn-sm ml-3 btn-excel" style="border-radius: 1rem;">EXPORT EXCEL</button>
+                                <label for="" class="ml-3">Bonus Absen</label>
+                                <input type="number" class="form-control ml-3 bonus-absen">
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered" id="data">
+                        <table class="table table-bordered" id="data" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Tanggal</th>
-                                    <th>Jumlah Hari Kerja</th>
-                                    <th>Jumlah Masuk Kerja</th>
-                                    <th>Jumlah Absen Kerja</th>
-                                    <th>Uang Harian</th>
-                                    <th>Bonus</th>
-                                    <th>Kasbon</th>
-                                    <th>Total Gaji</th>
-                                    <th>Keterangan</th>
-                                    <th>Aksi</th>
+                                    <th width="2%" class="text-center">No</th>
+                                    <th width="23%" class="text-center">TANGGAL</th>
+                                    <th width="25%" class="text-center">WAKTU</th>
+                                    <th width="25%" class="text-center">STATUS</th>
+                                    <th width="25%" class="text-center">KETERANGAN</th>
                                 </tr>
                             </thead>
+                            <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th class="text-center">JUMLAH MASUK</th>
+                                    <th class="text-jumlah-masuk text-center">0</th>
+                                    <th class="text-bonus-absen text-center">0</th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="modal" id="compose" tabindex="-1" role="dialog" aria-labelledby="largeModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-md" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="largeModalLabel">Tambah Absensi</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="form-group">
-                                <label>Tanggal</label>
-                                <input type="date" name="tanggal" class="form-control" />
-                            </div>
-                            <div class="form-group">
-                                <label>Nama Karyawan</label>
-                                <br>
-                                <select id="selectedUser" name="user" class="form-control select2 user" style="width:100%">
-                                    <option value="" disabled selected hidden>--Pilih karyawan--</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Jumlah Hari Kerja</label>
-                                <input type="number" name="jumlah_hari_kerja" class="form-control" />
-                            </div>
-                            <div class="form-group">
-                                <label>Jumlah Masuk Kerja</label>
-                                <input type="number" name="jumlah_masuk_kerja" class="form-control hari-masuk" />
-                            </div>
-                            <div class="form-group">
-                                <label>Jumlah Absen Kerja</label>
-                                <input type="number" name="jumlah_absen_kerja" class="form-control" />
-                            </div>
-
-                            <script>
-                                $(document).ready(function() {
-                                    // Fungsi untuk menghitung jumlah_absen_kerja saat nilai jumlah_masuk_kerja berubah
-                                    $(".hari-masuk").on("change", function() {
-                                        // Ambil nilai dari jumlah_hari_kerja
-                                        var jumlahHariKerja = parseInt($("[name='jumlah_hari_kerja']").val()) || 0;
-
-                                        // Ambil nilai dari jumlah_masuk_kerja
-                                        var jumlahMasukKerja = parseInt($(this).val()) || 0;
-
-                                        // Hitung jumlah_absen_kerja
-                                        var jumlahAbsenKerja = jumlahHariKerja - jumlahMasukKerja;
-
-                                        // Set nilai jumlah_absen_kerja pada input
-                                        $("[name='jumlah_absen_kerja']").val(jumlahAbsenKerja);
-                                    });
-                                });
-                            </script>
-
-
-
-                            <div class="form-group">
-                                <label>Uang Harian</label>
-                                <input type="number" name="uang_harian" id="uang_harian" class="form-control" />
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Bonus</label>
-                                        <input type="number" name="bonus" class="form-control bonus" />
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Kasbon</label>
-                                        <input type="number" name="kasbon" class="form-control kasbon" />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Total Gaji</label>
-                                <input type="text" class="form-control total-gaji" readonly />
-                            </div>
-                            <div class="form-group">
-                                <label>Keterangan</label>
-                                <textarea name="keterangan" id="keterangan" cols="30" rows="2" class="form-control"></textarea>
-                            </div>
-
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-warning" data-dismiss="modal" style="border-radius: 1rem;"><i class="fa fa-undo"></i> Cancel</button>
-                        <button type="button" class="btn btn-primary btn-confirm" style="border-radius: 1rem;"><i class="fa fa-save"></i> Simpan</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal" id="delete" tabindex="-1" role="dialog" aria-labelledby="largeModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-md" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="largeModalLabel">Konfirmasi?</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary btn-del-confirm">Hapus</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
-
-
         <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
         <script>
             $(document).ready(function() {
-                $('#telephone').on('input', function() {
-                    var code = $(this).val().toLowerCase().replace(/\s+/g, '-');
-                    $('#code').val(code);
-                });
-            });
-        </script>
-        <script>
-            $("#data").DataTable({
-                "processing": true,
-                "serverSide": true,
-                "autoWidth": true,
-                "order": [],
-                "ajax": {
-                    "url": "<?= base_url("absensi/json"); ?>"
-                }
-            });
-
-            $(".btn-add").on("click", function() {
-                // Set judul modal dan action form
-                jQuery("#compose .modal-title").html("Tambah Absensi");
-                jQuery("#compose form").attr("action", "<?= base_url("absensi/insert"); ?>");
-
-                // Kosongkan semua input dan textarea pada modal
-                jQuery("#compose form input, textarea").val("");
-
-                // Isi input dengan nilai dari input asal
-                var nilaiAsal = jQuery("#uang_harian_asal").val();
-                jQuery("#uang_harian").val(nilaiAsal);
-
-                // Tampilkan modal
-                jQuery("#compose").modal("toggle");
-            });
-
-
-            $("body").on("click", ".btn-edit", function() {
-                var id = jQuery(this).attr("data-id");
-                jQuery("#compose .modal-title").html("Edit Absensi");
-
-                jQuery.getJSON("<?= base_url("absensi/get"); ?>/" + id, function(data) {
-                    jQuery("#compose form").attr("action", "<?= base_url("absensi/edit"); ?>/" + id);
-                    jQuery("#compose form input[name=tanggal]").val(data.tanggal);
-                    jQuery("#compose form input[name=name]").val(data.name);
-                    jQuery("#compose form input[name=telephone]").val(data.telephone);
-                    jQuery("#compose form textarea[name=address]").val(data.address);
-                    jQuery("#compose form textarea[name=description]").val(data.description);
-                    jQuery("#compose form select[name=tipe]").val(data.tipe);
-
-                    jQuery("#compose").modal("toggle");
-                })
-            })
-
-            $(".btn-confirm").on("click", function() {
-                var form = {
-                    "tanggal": jQuery("#compose input[name=tanggal]").val(),
-                    "user": jQuery("#compose select[name=user]").val(),
-                    "jumlah_hari_kerja": jQuery("#compose input[name=jumlah_hari_kerja]").val(),
-                    "jumlah_masuk_kerja": jQuery("#compose input[name=jumlah_masuk_kerja]").val(),
-                    "jumlah_absen_kerja": jQuery("#compose input[name=jumlah_absen_kerja]").val(),
-                    "uang_harian": jQuery("#compose input[name=uang_harian]").val(),
-                    "bonus": jQuery("#compose input[name=bonus]").val(),
-                    "kasbon": jQuery("#compose input[name=kasbon]").val(),
-                    "keterangan": jQuery("#compose textarea[name=keterangan]").val()
-                }
-
-                var action = jQuery("#compose form").attr("action");
-
-                jQuery.ajax({
-                    url: action,
-                    method: "POST",
-                    data: form,
-                    dataType: "json",
-                    success: function(data) {
-                        if (data.status) {
-                            jQuery("#data").DataTable().ajax.reload(null, true);
-                            jQuery("#compose").modal("toggle");
-                            Swal.fire(
-                                "Berhasil",
-                                data.msg,
-                                "success"
-                            );
-                        } else {
-                            Swal.fire(
-                                "Gagal",
-                                data.msg,
-                                "error"
-                            );
+                let datatable = $("#data").DataTable({
+                    "processing": true,
+                    "serverSide": true,
+                    "autoWidth": true,
+                    "order": [],
+                    "ajax": {
+                        "async": false,
+                        "url": "<?= base_url("absensi/json"); ?>",
+                        "data": function(d) {
+                            d.user = $('.user').val()
+                            d.start_date = $('.start-date').val()
+                            d.end_date = $('.end-date').val()
+                            d.action = $('.action').val()
                         }
-                    }
+                    },
+                    buttons: [{
+                        extend: 'excel',
+                        footer: true,
+                        filename: function() {
+                            return '<?= strtotime(date('Y-m-d H:i:s')) ?> - Absensi ' + $('.user-name').val()
+                        },
+                        title: function() {
+                            return 'Absensi ' + $('.user-name').val()
+                        }
+                    }, {
+                        extend: 'pdfHtml5',
+                        orientation: 'potrait',
+                        pageSize: 'A4',
+                        footer: true,
+                        customize: function(doc) {
+                            doc.content[1].table.widths =
+                                Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+                        },
+                        filename: function() {
+                            return '<?= strtotime(date('Y-m-d H:i:s')) ?> - Absensi ' + $('.user-name').val()
+                        },
+                        title: function() {
+                            return 'Absensi ' + $('.user-name').val()
+                        }
+                    }]
                 });
-            })
 
-            function deleteData(id) {
-                jQuery.getJSON("<?= base_url("absensi/delete"); ?>/" + id, function(data) {
-                    if (data.status) {
-                        jQuery("#data").DataTable().ajax.reload(null, true);
-                        jQuery("#delete").modal("toggle");
-                        Swal.fire(
-                            "Berhasil",
-                            data.msg,
-                            "success"
-                        );
-                    }
-                });
-            }
+                $('.btn-view').on('click', function() {
+                    $('.action').val('show')
 
-            $('body').on("click", ".btn-delete", function() {
-                var id = jQuery(this).attr("data-id");
-                var name = jQuery(this).attr("data-name");
-                jQuery("#delete .modal-body").html("Anda yakin ingin menghapus absensi?");
-                jQuery("#delete").modal("toggle");
+                    hitungAbsen()
+                    datatable.ajax.reload()
+                })
 
-                jQuery("#delete .btn-del-confirm").attr("onclick", "deleteData(" + id + ")");
-            })
+                $('.btn-check-in').on('click', function() {
+                    $('.action').val('show')
 
-            $('.hari-masuk, .uang-harian, .bonus, .kasbon').on('change', function() {
-                hitungGaji();
-            })
+                    jQuery.ajax({
+                        url: '<?= base_url('absensi/checkin') ?>',
+                        method: "POST",
+                        data: {
+                            user: $('.user').val(),
+                            bonus_absen: $('.bonus-absen').val(),
+                            keterangan: $('keterangan').val()
+                        },
+                        dataType: "json",
+                        success: function(data) {
+                            if (data.status) {
+                                datatable.ajax.reload()
+                                hitungAbsen()
 
-            function hitungGaji() {
-                let hariMasuk = $('.hari-masuk').val() !== '' ? $('.hari-masuk').val() : 0;
-                let uangHarian = $('.uang-harian').val() !== '' ? $('.uang-harian').val() : 0
-                let bonus = $('.bonus').val() !== '' ? $('.bonus').val() : 0
-                let kasbon = $('.kasbon').val() !== '' ? $('.kasbon').val() : 0
-                let totalUangHarian = (parseFloat(hariMasuk) * parseFloat(uangHarian))
-                let totalUangHarianPersen = (totalUangHarian * 20) / 100
-                let totalGaji = totalUangHarian - totalUangHarianPersen + parseFloat(bonus) - parseFloat(kasbon)
+                                Swal.fire(
+                                    "Berhasil",
+                                    data.msg,
+                                    "success"
+                                );
+                            } else {
+                                Swal.fire(
+                                    "Gagal",
+                                    data.msg,
+                                    "error"
+                                );
+                            }
+                        }
+                    });
+                })
 
-                console.log(totalUangHarian, totalUangHarianPersen, totalGaji)
-                $('.total-gaji').val(numeral(totalGaji).format('0,0'))
-            }
-        </script>
-
-
-        <script>
-            $(document).ready(function() {
-                // Inisialisasi Select2 dengan opsi pencarian
                 $('#selectedUser').select2({
                     ajax: {
                         url: '<?= base_url("absensi/getUserData") ?>',
@@ -312,7 +180,7 @@
                         delay: 250,
                         processResults: function(data) {
                             return {
-                                results: $.map(data.results, function(item) {
+                                results: $.map(data, function(item) {
                                     return {
                                         text: `${item.name} (${item.telephone})`,
                                         id: item.id,
@@ -328,10 +196,61 @@
                 }).on('select2:select', function(e) {
                     var data = e.params.data;
 
-                    // $('#user').val(data.name)
-                    // $('#phone').val(data.phone)
+                    $('.user-name').val(data.name)
                 });
 
+                $('.btn-pdf').on('click', function() {
+                    if ($('.user').val() === '') {
+                        Swal.fire(
+                            "Gagal",
+                            "Silahkan pilih karyawan terlebih dahulu",
+                            "error"
+                        )
+                        return false
+                    }
+
+                    $('.action').val('filter')
+                    hitungAbsen()
+                    datatable.ajax.reload()
+                    datatable.button('.buttons-pdf').trigger();
+                })
+
+                $('.btn-excel').on('click', function() {
+                    if ($('.user').val() === '') {
+                        Swal.fire(
+                            "Gagal",
+                            "Silahkan pilih karyawan terlebih dahulu",
+                            "error"
+                        )
+                        return false
+                    }
+
+                    $('.action').val('filter')
+                    hitungAbsen()
+                    datatable.ajax.reload()
+                    datatable.button('.buttons-excel').trigger();
+                })
+
+                function hitungAbsen() {
+                    $.ajax({
+                        url: '<?= base_url("absensi/hitung_absen") ?>',
+                        type: 'GET',
+                        async: false,
+                        data: {
+                            user: $('.user').val(),
+                            start_date: $('.start-date').val(),
+                            end_date: $('.end-date').val(),
+                            action: $('.action').val()
+                        },
+                        success: function(response) {
+                            $('.text-jumlah-masuk').text(numeral(response.jumlah_masuk).format('0,0'))
+                            $('.text-bonus-absen').text(numeral(response.bonus_absen).format('0,0'))
+                        },
+                        error: function() {
+                            console.error('Error fetching transaction details');
+                        }
+                    });
+                }
             });
         </script>
 
@@ -339,5 +258,4 @@
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
         <link rel="stylesheet" href="<?= base_url('assets/css/custom-select2.css') ?>">
-        <!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
