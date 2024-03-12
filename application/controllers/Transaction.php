@@ -1,13 +1,15 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Transaction extends CI_Controller {
+class Transaction extends CI_Controller
+{
     private $dataAdmin;
 
-    function __construct() {
+    function __construct()
+    {
         parent::__construct();
 
-        if(!$this->session->auth) {
+        if (!$this->session->auth) {
             redirect(base_url("auth/login"));
         }
 
@@ -17,29 +19,31 @@ class Transaction extends CI_Controller {
 
         $this->dataAdmin = $this->user_model->get(["id" => $this->session->auth['id']])->row();
     }
-    
-    public function getConsumerData() {
+
+    public function getConsumerData()
+    {
         $term = $this->input->get('term');
         $data = $this->Consumer_model->searchConsumer($term);
-    
+
         echo json_encode(['results' => $data]); // Sesuaikan format respons sesuai kebutuhan Select2
     }
 
-	public function index()
-	{
+    public function index()
+    {
 
         $push = [
             "pageTitle" => "Transaksi",
-            "dataAdmin" => $this->dataAdmin 
+            "dataAdmin" => $this->dataAdmin
         ];
 
-		$this->load->view('header',$push);
-		$this->load->view('transaction',$push);
-		$this->load->view('footer',$push);
+        $this->load->view('header', $push);
+        $this->load->view('transaction', $push);
+        $this->load->view('footer', $push);
     }
 
-    function insert($action = "sparepart") {
-        $data = json_decode($this->input->raw_input_stream,TRUE);
+    function insert($action = "sparepart")
+    {
+        $data = json_decode($this->input->raw_input_stream, TRUE);
 
         $customer_id = null;
         $customer_name = null;
@@ -62,7 +66,7 @@ class Transaction extends CI_Controller {
         //     $customer = $data['customer'];
         //     $plat = $data['plat'];
         // }
-        
+
         $push = [
             "id" => NULL,
             "code" => $this->generateTransactionCode(),
@@ -87,7 +91,7 @@ class Transaction extends CI_Controller {
         $stock_batch = [];
         $mechanic_batch = [];
 
-        foreach($data['sparepart'] as $itemSp) {
+        foreach ($data['sparepart'] as $itemSp) {
             $temp = array();
             $price = $itemSp["price3"];
 
@@ -114,7 +118,7 @@ class Transaction extends CI_Controller {
             $stock_batch[] = $stocktmp;
         }
 
-        foreach($data['service'] as $itemSrv) {
+        foreach ($data['service'] as $itemSrv) {
             $temp = array();
             $temp["id"] = NULL;
             $temp["transaction_id"] = $transaction_id;
@@ -126,7 +130,7 @@ class Transaction extends CI_Controller {
             $service_batch[] = $temp;
         }
 
-        foreach($data['mechanic'] as $itemMch) {
+        foreach ($data['mechanic'] as $itemMch) {
             $temp = array();
             $temp["id"] = NULL;
             $temp["transaction_id"] = $transaction_id;
@@ -138,16 +142,16 @@ class Transaction extends CI_Controller {
             $mechanic_batch[] = $temp;
         }
 
-        if($sparepart_batch) {
+        if ($sparepart_batch) {
             $this->transaction_model->post_details($sparepart_batch);
             $this->transaction_model->sparepart_update($stock_batch);
         }
 
-        if($service_batch) {
+        if ($service_batch) {
             $this->transaction_model->post_details($service_batch);
         }
 
-        if($mechanic_batch) {
+        if ($mechanic_batch) {
             $this->transaction_model->post_mechanic_details($mechanic_batch);
         }
 
@@ -160,8 +164,9 @@ class Transaction extends CI_Controller {
 
         echo json_encode($response);
     }
-    
-    public function json_service() {
+
+    public function json_service()
+    {
         $addFunc = "addServiceCart({id:<get-id>,name:'<get-name>',price:<get-price>})";
 
         $this->load->model("datatables");
@@ -172,16 +177,17 @@ class Transaction extends CI_Controller {
             '[rupiah=<get-price>]',
             '<get-description>',
             '<div class="text-center">
-                <button type="button" class="btn btn-sm btn-success btn-add" onclick="'.$addFunc.'"><i class="fa fa-plus"></i></button>
+                <button type="button" class="btn btn-sm btn-success btn-add" onclick="' . $addFunc . '"><i class="fa fa-plus"></i></button>
                 
             </div>'
         ]);
-        $this->datatables->setOrdering(["name","price",NULL]);
-        $this->datatables->setWhere("type","service");
+        $this->datatables->setOrdering(["name", "price", NULL]);
+        $this->datatables->setWhere("type", "service");
         $this->datatables->setSearchField("name");
         $this->datatables->generate();
     }
-    public function json_sparepart() {
+    public function json_sparepart()
+    {
         $base_url = $this->config->base_url();
         $addFunc = "addSparepartCart({id:<get-id>,name:'<get-name>',price:<get-price>,price1:<get-price1>,price2:<get-price2>,price3:<get-price3>,stock:<get-stock>,gambar:'$base_url/uploads/sparepart/<get-gambar>'})";
         $detailData = "detailData({id:<get-id>,name:'<get-name>',location:'<get-location>',description:'<get-description>',price:'<get-price>',price1:'<get-price1>',price2:'<get-price2>',gambar:'$base_url/uploads/sparepart/<get-gambar>'})";
@@ -205,33 +211,34 @@ class Transaction extends CI_Controller {
             '[rupiah=<get-' . $price . '>]',
             '<get-description>',
             '<div class="text-center">
-                <button type="button" class="btn btn-sm btn-success" onclick="'.$addFunc.'"><i class="fa fa-plus"></i></button>
-                <button type="button" class="btn btn-sm btn-primary" onclick="'.$detailData.'"><i class="fa fa-eye"></i></button>
+                <button type="button" class="btn btn-sm btn-success" onclick="' . $addFunc . '"><i class="fa fa-plus"></i></button>
+                <button type="button" class="btn btn-sm btn-primary" onclick="' . $detailData . '"><i class="fa fa-eye"></i></button>
             </div>'
         ]);
-        $this->datatables->setOrdering(["name","price",NULL]);
-        $this->datatables->setWhere("type","sparepart");
-        $this->datatables->setSearchField(["name","kode", "description"]);
+        $this->datatables->setOrdering(["name", "price", NULL]);
+        $this->datatables->setWhere("type", "sparepart");
+        $this->datatables->setSearchField(["name", "kode", "description"]);
         $this->datatables->generate();
     }
 
-    public function json_mekanik() {
+    public function json_mekanik()
+    {
         $addFunc = "addMekanikCart({id:<get-id>,name:'<get-name>',cost:0})";
 
         $this->load->model("datatables");
         $this->datatables->setTable("users");
         $this->datatables->setColumn([
             '<get-name>',
-            '',
+            '<get-code>',
             '0',
             '',
             '<div class="text-center">
-                <button type="button" class="btn btn-sm btn-success" onclick="'.$addFunc.'"><i class="fa fa-plus"></i></button>
+                <button type="button" class="btn btn-sm btn-success" onclick="' . $addFunc . '"><i class="fa fa-plus"></i></button>
             </div>'
         ]);
-        $this->datatables->setOrdering(["name",NULL]);
-        $this->datatables->setWhere("position","Mekanik");
-        $this->datatables->setSearchField("name");
+        $this->datatables->setOrdering(["name", NULL]);
+        $this->datatables->setWhere("position", "Mekanik");
+        $this->datatables->setSearchField(["name", "code"]);
         $this->datatables->generate();
     }
 
@@ -247,6 +254,6 @@ class Transaction extends CI_Controller {
             $code = $transactionCode + 1;
         }
 
-        return $initialCode . sprintf('%0'.$codeLength.'d', $code);
+        return $initialCode . sprintf('%0' . $codeLength . 'd', $code);
     }
 }

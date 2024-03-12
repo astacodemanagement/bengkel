@@ -285,7 +285,8 @@
             });
             $('#nav-mekanik-tab').on("click", function() {
                 jQuery("#dataTable").DataTable().ajax.url("<?= base_url("transaction/json_mekanik"); ?>").load();
-                jQuery("#dataTable").DataTable().columns([1, 2, 3]).visible(false);
+                jQuery("#dataTable").DataTable().columns([2, 3]).visible(false);
+                jQuery("#dataTable").DataTable().columns([1]).visible(true);
                 $('.nav-tabs').attr('data-recent-tab', 3)
             });
 
@@ -378,26 +379,26 @@
             }
 
             function detailData(data) {
-    // Set modal content
-    document.getElementById('modalName').innerHTML = 'Nama : ' + data.name;
-    document.getElementById('modalLokasi').innerHTML = 'Lokasi : ' + data.location;
-    document.getElementById('modalKeterangan').innerHTML = 'Keterangan : ' + data.description;
+                // Set modal content
+                document.getElementById('modalName').innerHTML = 'Nama : ' + data.name;
+                document.getElementById('modalLokasi').innerHTML = 'Lokasi : ' + data.location;
+                document.getElementById('modalKeterangan').innerHTML = 'Keterangan : ' + data.description;
 
-    // Format prices with thousand separators
-    document.getElementById('modalPrice').innerHTML = 'Harga Beli : ' + 'Rp. ' + formatNumber(parseInt(data.price));
-    document.getElementById('modalPrice1').innerHTML = 'Harga Jual 1 : ' + 'Rp. ' + formatNumber(parseInt(data.price1));
-    document.getElementById('modalPrice2').innerHTML = 'Harga Jual 2 : ' + 'Rp. ' + formatNumber(parseInt(data.price2));
+                // Format prices with thousand separators
+                document.getElementById('modalPrice').innerHTML = 'Harga Beli : ' + 'Rp. ' + formatNumber(parseInt(data.price));
+                document.getElementById('modalPrice1').innerHTML = 'Harga Jual 1 : ' + 'Rp. ' + formatNumber(parseInt(data.price1));
+                document.getElementById('modalPrice2').innerHTML = 'Harga Jual 2 : ' + 'Rp. ' + formatNumber(parseInt(data.price2));
 
-    document.getElementById('modalImage').src = data.gambar;
+                document.getElementById('modalImage').src = data.gambar;
 
-    // Show the modal
-    $('#detailModal').modal('show');
-}
+                // Show the modal
+                $('#detailModal').modal('show');
+            }
 
-// Function to format number with thousand separators
-function formatNumber(number) {
-    return number.toLocaleString('id-ID'); // Adjust 'id-ID' based on your desired locale
-}
+            // Function to format number with thousand separators
+            function formatNumber(number) {
+                return number.toLocaleString('id-ID'); // Adjust 'id-ID' based on your desired locale
+            }
 
 
 
