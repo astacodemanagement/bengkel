@@ -22,10 +22,10 @@ CREATE TABLE IF NOT EXISTS `absensi` (
   `user_id` int NOT NULL DEFAULT '0',
   `uang_harian` decimal(20,3) NOT NULL DEFAULT (0),
   `bonus_absen` decimal(20,3) NOT NULL DEFAULT (0),
-  `keterangan` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `keterangan` text CHARACTER SET utf8mb4,
   `status` varchar(29) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
 
 -- Dumping data for table db_bengkel.absensi: ~0 rows (approximately)
 
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `consumers` (
   `tipe` varchar(50) DEFAULT NULL,
   `description` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
 -- Dumping data for table db_bengkel.consumers: ~3 rows (approximately)
 INSERT INTO `consumers` (`id`, `code`, `name`, `address`, `telephone`, `tipe`, `description`) VALUES

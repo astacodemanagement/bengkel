@@ -35,6 +35,7 @@
                                     <th style="width:10%">Harga Jual 1</th>
                                     <th style="width:10%">Harga Jual 2</th>
                                     <th style="width:10%">Harga Jual 3</th>
+                                    <th>Keterangan</th>
                                     <th>Stok</th>
                                     <th>Gambar</th>
                                     <th style="width:10%">Aksi</th>

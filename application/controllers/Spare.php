@@ -42,6 +42,7 @@ class Spare extends CI_Controller {
             '[rupiah=<get-price1>]',
             '[rupiah=<get-price2>]',
             '[rupiah=<get-price3>]',
+            '<get-description>',
             '<get-stock>',
             '[showSparepartImageTable=<get-gambar>]',
             '<div class="text-center"><button type="button" class="btn btn-primary btn-sm btn-edit" title="Edit Data" data-id="<get-id>" data-kode="<get-kode>" data-name="<get-name>" data-price="<get-price>" data-price1="<get-price1>" data-price2="<get-price2>" data-price3="<get-price3>" data-location="<get-location>" data-description="<get-description>" data-gambar="[showSparepartImage=<get-gambar>]"><i class="fa fa-edit"></i></button>
@@ -49,7 +50,7 @@ class Spare extends CI_Controller {
         ]);
         $this->datatables->setOrdering(["id","name","price","stock",NULL]);
         $this->datatables->setWhere("type","sparepart");
-        $this->datatables->setSearchField("name");
+        $this->datatables->setSearchField(["name","description"]);
         $this->datatables->generate();
     }
 
