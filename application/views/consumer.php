@@ -62,6 +62,14 @@
                                 <input type="text" name="name" class="form-control" />
                             </div>
                             <div class="form-group">
+                                <label>Tempat Lahir</label>
+                                <input type="text" name="birthplace" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label>Tanggal Lahir</label>
+                                <input type="date" name="birthdate" class="form-control" />
+                            </div>
+                            <div class="form-group">
                                 <label>Alamat</label>
                                 <textarea name="address" class="form-control"></textarea>
                             </div>
@@ -144,6 +152,8 @@
                 jQuery.getJSON("<?= base_url("consumer/get"); ?>/" + id, function(data) {
                     jQuery("#compose form").attr("action", "<?= base_url("consumer/edit"); ?>/" + id);
                     jQuery("#compose form input[name=code]").val(data.code);
+                    jQuery("#compose form input[name=birthplace]").val(data.birthplace);
+                    jQuery("#compose form input[name=birthdate]").val(data.birthdate);
                     jQuery("#compose form input[name=name]").val(data.name);
                     jQuery("#compose form input[name=telephone]").val(data.telephone);
                     jQuery("#compose form textarea[name=address]").val(data.address);
@@ -158,6 +168,8 @@
                 var form = {
                     "code": jQuery("#compose input[name=code]").val(),
                     "name": jQuery("#compose input[name=name]").val(),
+                    "birthplace": jQuery("#compose input[name=birthplace]").val(),
+                    "birthdate": jQuery("#compose input[name=birthdate]").val(),
                     "address": jQuery("#compose textarea[name=address]").val(),
                     "description": jQuery("#compose textarea[name=description]").val(),
                     "tipe": jQuery("#compose select[name=tipe]").val(),

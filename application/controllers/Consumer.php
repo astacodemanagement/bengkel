@@ -77,6 +77,8 @@ class Consumer extends CI_Controller {
     private function proccess($action = "add",$id = 0) {
         $code = $this->input->post("code");
         $name = $this->input->post("name");
+        $birthplace = $this->input->post("birthplace");
+        $birthdate = $this->input->post("birthdate");
         $address = $this->input->post("address");
         $telephone = $this->input->post("telephone");
         $description = $this->input->post("description");
@@ -92,6 +94,8 @@ class Consumer extends CI_Controller {
                 "id" => NULL,
                 "code" => $code,
                 "name" => $name,
+                "birthplace" => $birthplace,
+                "birthdate" => $birthdate,
                 "address" => $address,
                 "telephone" => $telephone,
                 "description" => $description,

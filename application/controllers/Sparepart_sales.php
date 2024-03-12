@@ -45,12 +45,16 @@ class Sparepart_sales extends CI_Controller {
         $this->datatables->setSearchField("name");
         $this->datatables->generate();
     }
+
+ 
+    
     
     public function json() {
         $this->datatables->setTable("transactions");
         $this->datatables->setWhere("type","sparepart");
         $this->datatables->setColumn([
             '<index>',
+            '<get-customer_id>',
             '[reformat_date=<get-date>]',
             '[rupiah=<get-total>]',
             '<div class="text-center">

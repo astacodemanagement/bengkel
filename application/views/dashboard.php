@@ -17,7 +17,7 @@
             </div>
         </div>
 
-        <!-- <div class="content mt-3">
+        <div class="content mt-3">
             <div class="row">
                 <div class="col-sm-6 col-lg-3">
                     <div class="card text-white bg-success">
@@ -94,7 +94,7 @@
                     </div>
                 </div>
             </div>
-        </div> -->
+        </div>
                 <script>
                     var ctx1 = document.getElementById('myChart1').getContext('2d');
                     var ctx2 = document.getElementById('myChart2').getContext('2d');

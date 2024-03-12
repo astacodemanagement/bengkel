@@ -50,7 +50,7 @@ class User extends CI_Controller
         ]);
         
         $this->datatables->setOrdering(["id", "name", "address", "telephone", NULL]);
-        $this->datatables->setSearchField("name");
+        $this->datatables->setSearchField(["name","code"]);
         $this->datatables->generate();
     }
 

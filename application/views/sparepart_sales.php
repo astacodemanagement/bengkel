@@ -26,6 +26,7 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
+                                    <th>Konsumen</th>
                                     <th>Tanggal</th>
                                     <th>Total</th>
                                     <th>Aksi</th>
@@ -53,6 +54,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Nama Barang</th>
+                                        
                                         <th>Harga</th>
                                         <th>Qty</th>
                                         <th>Sub</th>
