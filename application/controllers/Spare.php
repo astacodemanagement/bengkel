@@ -45,12 +45,15 @@ class Spare extends CI_Controller {
             '<get-description>',
             '<get-stock>',
             '[showSparepartImageTable=<get-gambar>]',
-            '<div class="text-center"><button type="button" class="btn btn-primary btn-sm btn-edit" title="Edit Data" data-id="<get-id>" data-kode="<get-kode>" data-name="<get-name>" data-price="<get-price>" data-price1="<get-price1>" data-price2="<get-price2>" data-price3="<get-price3>" data-location="<get-location>" data-description="<get-description>" data-gambar="[showSparepartImage=<get-gambar>]"><i class="fa fa-edit"></i></button>
-            <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="<get-id>" data-name="<get-name>" title="Delete Data"><i class="fa fa-trash"></i></button></div>'
+            '<div class="text-center">
+            <button type="button" class="btn btn-secondary btn-sm btn-detail" title="Detail Data" data-id="<get-id>" data-kode="<get-kode>" data-name="<get-name>" data-price="<get-price>" data-price1="<get-price1>" data-price2="<get-price2>" data-price3="<get-price3>" data-location="<get-location>" data-description="<get-description>" data-gambar="[showSparepartImage=<get-gambar>]"><i class="fa fa-eye"></i></button>
+            <button type="button" class="btn btn-primary btn-sm btn-edit" title="Edit Data" data-id="<get-id>" data-kode="<get-kode>" data-name="<get-name>" data-price="<get-price>" data-price1="<get-price1>" data-price2="<get-price2>" data-price3="<get-price3>" data-location="<get-location>" data-description="<get-description>" data-gambar="[showSparepartImage=<get-gambar>]"><i class="fa fa-edit"></i></button>
+            <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="<get-id>" data-name="<get-name>" title="Delete Data"><i class="fa fa-trash"></i></button>
+            </div>'
         ]);
         $this->datatables->setOrdering(["id","name","price","stock",NULL]);
         $this->datatables->setWhere("type","sparepart");
-        $this->datatables->setSearchField(["name","description"]);
+        $this->datatables->setSearchField(["name","description","kode"]);
         $this->datatables->generate();
     }
 
@@ -71,7 +74,6 @@ class Spare extends CI_Controller {
         $price3 = $this->input->post("price3");
         $location = $this->input->post("location");
         $description = $this->input->post("description");
-        $gambar = null;
 
         if(!$name OR !$price) {
             $response['status'] = FALSE;
@@ -81,6 +83,20 @@ class Spare extends CI_Controller {
         } else {
 
             try {
+                $insertData = [
+                    "id" => NULL,
+                    "kode" => $kode,
+                    "name" => $name,
+                    "price" => $price,
+                    "price1" => $price1,
+                    "price2" => $price2,
+                    "price3" => $price3,
+                    "location" => $location,
+                    "description" => $description,
+                    "type" => "sparepart",
+                    "stock" => 0
+                ];
+
                 if (strlen($_FILES['gambar']['tmp_name']) > 0) {
                     $uploadPath = FCPATH.'uploads/sparepart/';
     
@@ -102,32 +118,19 @@ class Spare extends CI_Controller {
                         $data['error'] = $this->upload->display_errors();
                         throw new Exception($this->upload->display_errors());
                     } else {
-                        $gambar = $this->upload->data()['file_name'];
+                        $insertData['gambar'] = $this->upload->data()['file_name'];
                     }
 
                     if ($id != 0) {
                         $product = $this->db->get_where('products', ['id' => $id])->row();
                         
                         if ($product->gambar != null) {
-                            unlink($uploadPath .'/' . $product->gambar);
+                            if (file_exists($uploadPath . '/' . $product->gambar)) {
+                                unlink($uploadPath . '/' . $product->gambar);
+                            }
                         }
                     }
                 }
-                
-                $insertData = [
-                    "id" => NULL,
-                    "kode" => $kode,
-                    "name" => $name,
-                    "price" => $price,
-                    "price1" => $price1,
-                    "price2" => $price2,
-                    "price3" => $price3,
-                    "location" => $location,
-                    "description" => $description,
-                    "gambar" => $gambar,
-                    "type" => "sparepart",
-                    "stock" => 0
-                ];
     
                 $response['status'] = TRUE;
     

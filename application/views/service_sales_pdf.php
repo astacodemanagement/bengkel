@@ -152,6 +152,12 @@
             ?>
         </tbody>
         <tfoot>
+            <?php if ($fetch->discount > 0) : ?>
+                <tr>
+                    <td colspan="3" style="text-align:right;border:none">Diskon : </td>
+                    <td style="text-align:right"><?= rupiah($fetch->discount); ?></td>
+                </tr>
+            <?php endif ?>
             <tr>
                 <td colspan="3" style="text-align:right;border:none">Total : </td>
                 <td style="text-align:right"><?= rupiah($fetch->total); ?></td>

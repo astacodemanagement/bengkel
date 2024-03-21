@@ -124,6 +124,7 @@ class Estimation extends CI_Controller
     public function json_service()
     {
         $addFunc = "addServiceCart({id:<get-id>,name:'<get-name>',price:<get-price>})";
+        $detailData = "detailDataService({id:<get-id>,name:'<get-name>',description:'<get-description>',price:'<get-price>',jenismobil:'<get-jenismobil>'})";
 
         $this->load->model("datatables");
         $this->datatables->setTable("products");
@@ -134,11 +135,12 @@ class Estimation extends CI_Controller
             '<get-description>',
             '<div class="text-center">
                 <button type="button" class="btn btn-sm btn-success btn-add" onclick="' . $addFunc . '"><i class="fa fa-plus"></i></button>
+                <button type="button" class="btn btn-sm btn-primary" onclick="' . $detailData . '"><i class="fa fa-eye"></i></button>
             </div>'
         ]);
         $this->datatables->setOrdering(["name", "price", NULL]);
-        $this->datatables->setWhere("type","service");
-        $this->datatables->setSearchField("name","kode");
+        $this->datatables->setWhere("type", "service");
+        $this->datatables->setSearchField("name", "kode");
         $this->datatables->generate();
     }
     public function json_sparepart()
@@ -149,7 +151,7 @@ class Estimation extends CI_Controller
 
         $price = 'price3';
 
-        if ($this->input->get('type') == 'Platinum')  {
+        if ($this->input->get('type') == 'Platinum') {
             $price = 'price1';
         }
 
@@ -162,11 +164,11 @@ class Estimation extends CI_Controller
         $this->datatables->setColumn([
             '<get-name>',
             '<get-kode>',
-            '[rupiah=<get-'.$price.'>]',
+            '[rupiah=<get-' . $price . '>]',
             '<get-description>',
             '<div class="text-center">
                 <button type="button" class="btn btn-sm btn-success" onclick="' . $addFunc . '"><i class="fa fa-plus"></i></button>
-                <button type="button" class="btn btn-sm btn-primary" onclick="'.$detailData.'"><i class="fa fa-eye"></i></button>
+                <button type="button" class="btn btn-sm btn-primary" onclick="' . $detailData . '"><i class="fa fa-eye"></i></button>
             </div>'
         ]);
         $this->datatables->setOrdering(["name", "price", NULL]);
@@ -197,7 +199,7 @@ class Estimation extends CI_Controller
     {
         $arrDetail = [];
 
-        foreach($this->session->userdata('estimation_detail') as $sess) {
+        foreach ($this->session->userdata('estimation_detail') as $sess) {
             $arrDetail[] = (object)$sess;
         }
 

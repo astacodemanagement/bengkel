@@ -72,6 +72,7 @@ class Transaction extends CI_Controller
             "code" => $this->generateTransactionCode(),
             "type" => $action,
             "total" => $data['total'],
+            "discount" => $data['discount'],
             "mechanical_costs" => $data['mechanical_costs'],
             // "date" => date("Y-m-d H:i:s"),
             "customer_id" => $customer_id,
@@ -168,6 +169,7 @@ class Transaction extends CI_Controller
     public function json_service()
     {
         $addFunc = "addServiceCart({id:<get-id>,name:'<get-name>',price:<get-price>})";
+        $detailData = "detailDataService({id:<get-id>,name:'<get-name>',description:'<get-description>',price:'<get-price>',jenismobil:'<get-jenismobil>'})";
 
         $this->load->model("datatables");
         $this->datatables->setTable("products");
@@ -178,7 +180,7 @@ class Transaction extends CI_Controller
             '<get-description>',
             '<div class="text-center">
                 <button type="button" class="btn btn-sm btn-success btn-add" onclick="' . $addFunc . '"><i class="fa fa-plus"></i></button>
-                
+                <button type="button" class="btn btn-sm btn-primary" onclick="' . $detailData . '"><i class="fa fa-eye"></i></button>
             </div>'
         ]);
         $this->datatables->setOrdering(["name", "price", NULL]);

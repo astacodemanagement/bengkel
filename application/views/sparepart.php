@@ -38,7 +38,7 @@
                                     <th>Keterangan</th>
                                     <th>Stok</th>
                                     <th>Gambar</th>
-                                    <th style="width:10%">Aksi</th>
+                                    <th style="width:15%">Aksi</th>
                                 </tr>
                             </thead>
                         </table>
@@ -85,7 +85,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Lokasi</label>
-                                <input type="text" name="location"  id="location" class="form-control">
+                                <input type="text" name="location" id="location" class="form-control">
                             </div>
                             <div class="form-group">
                                 <label>Keterangan</label>
@@ -105,6 +105,7 @@
                 </div>
             </div>
         </div>
+
         <div class="modal" id="delete" tabindex="-1" role="dialog" aria-labelledby="largeModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-md" role="document">
                 <div class="modal-content">
@@ -137,6 +138,8 @@
                 jQuery("textarea[name=description]").val("");
                 jQuery("#compose .modal-title").html("Tambah Sparepart");
                 jQuery("#compose-form").attr("action", "<?= base_url("spare/insert"); ?>");
+                jQuery("#compose-form").find('input, select, textarea').prop('disabled', false).removeClass('bg-white')
+                jQuery("#compose").find('.btn-submit').removeClass('d-none')
             });
 
             $("#data").DataTable({
@@ -161,7 +164,7 @@
                 //     "location": jQuery("input[name=location]").val(),
                 //     "description": jQuery("textarea[name=description]").val(),
                 //     "gambar": jQuery("input[name=gambar]").val()
-                    
+
                 // }
 
                 const formData = new FormData($('#compose-form')[0]);
@@ -254,6 +257,7 @@
 
                 jQuery("#compose .modal-title").html("Edit Sparepart");
                 jQuery("#compose-form").attr("action", "<?= base_url(); ?>spare/update/" + id);
+                jQuery("#compose-form").find('input, select, textarea').prop('disabled', false).removeClass('bg-white')
                 jQuery("input[name=kode]").val(kode);
                 jQuery("input[name=name]").val(name);
                 jQuery("input[name=price]").val(price);
@@ -264,6 +268,40 @@
                 jQuery("textarea[name=description]").val(description);
                 jQuery(".image-preview").html(showGambar);
 
+                jQuery("#compose").find('.btn-submit').removeClass('d-none')
+                jQuery("#compose").modal("toggle");
+            });
+
+            $("body").on("click", ".btn-detail", function() {
+                var id = jQuery(this).attr("data-id");
+                var name = jQuery(this).attr("data-name");
+                var kode = jQuery(this).attr("data-kode");
+                var price = jQuery(this).attr("data-price");
+                var price1 = jQuery(this).attr("data-price1");
+                var price2 = jQuery(this).attr("data-price2");
+                var price3 = jQuery(this).attr("data-price3");
+                var location = jQuery(this).attr("data-location");
+                var description = jQuery(this).attr("data-description");
+                var gambar = jQuery(this).attr("data-gambar");
+                var showGambar = '';
+
+                if (gambar != '') {
+                    showGambar = `<img src="${gambar}" style="height:240px" />`
+                }
+
+                jQuery("#compose .modal-title").html("Detail Sparepart");
+                jQuery("#compose-form").find('input, select, textarea').prop('disabled', true).addClass('bg-white')
+                jQuery("input[name=kode]").val(kode);
+                jQuery("input[name=name]").val(name);
+                jQuery("input[name=price]").val(price);
+                jQuery("input[name=price1]").val(price1);
+                jQuery("input[name=price2]").val(price2);
+                jQuery("input[name=price3]").val(price3);
+                jQuery("input[name=location]").val(location);
+                jQuery("textarea[name=description]").val(description);
+                jQuery(".image-preview").html(showGambar);
+
+                jQuery("#compose").find('.btn-submit').addClass('d-none')
                 jQuery("#compose").modal("toggle");
             });
         </script>

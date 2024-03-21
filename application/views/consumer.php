@@ -33,7 +33,7 @@
                                     <th>Nama Konsumen</th>
                                     <th>Alamat</th>
                                     <th>No. Telp</th>
-                                    <th>Aksi</th>
+                                    <th width="10%">Aksi</th>
                                 </tr>
                             </thead>
                         </table>
@@ -142,6 +142,8 @@
                 jQuery("#compose .modal-title").html("Tambah Konsumen");
                 jQuery("#compose form").attr("action", "<?= base_url("consumer/insert"); ?>");
                 jQuery("#compose form input,textarea").val("");
+                jQuery("#compose form").find('input, select, textarea').prop('disabled', false).removeClass('bg-white')
+                jQuery("#compose").find('.btn-confirm').removeClass('d-none')
                 jQuery("#compose").modal("toggle");
             })
 
@@ -160,6 +162,29 @@
                     jQuery("#compose form textarea[name=description]").val(data.description);
                     jQuery("#compose form select[name=tipe]").val(data.tipe);
 
+                    jQuery("#compose form").find('input, select, textarea').prop('disabled', false).removeClass('bg-white')
+                    jQuery("#compose").find('.btn-confirm').removeClass('d-none')
+                    jQuery("#compose").modal("toggle");
+                })
+            })
+
+            $("body").on("click", ".btn-detail", function() {
+                var id = jQuery(this).attr("data-id");
+                jQuery("#compose .modal-title").html("Detail Konsumen");
+
+                jQuery.getJSON("<?= base_url("consumer/get"); ?>/" + id, function(data) {
+                    jQuery("#compose form").attr("action", "<?= base_url("consumer/edit"); ?>/" + id);
+                    jQuery("#compose form input[name=code]").val(data.code);
+                    jQuery("#compose form input[name=birthplace]").val(data.birthplace);
+                    jQuery("#compose form input[name=birthdate]").val(data.birthdate);
+                    jQuery("#compose form input[name=name]").val(data.name);
+                    jQuery("#compose form input[name=telephone]").val(data.telephone);
+                    jQuery("#compose form textarea[name=address]").val(data.address);
+                    jQuery("#compose form textarea[name=description]").val(data.description);
+                    jQuery("#compose form select[name=tipe]").val(data.tipe);
+
+                    jQuery("#compose form").find('input, select, textarea').prop('disabled', true).addClass('bg-white')
+                    jQuery("#compose").find('.btn-confirm').addClass('d-none')
                     jQuery("#compose").modal("toggle");
                 })
             })

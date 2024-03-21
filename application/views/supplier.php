@@ -10,7 +10,7 @@
                 <div class="page-header float-right">
                     <div class="page-title">
                         <ol class="breadcrumb text-right">
-                            <li><a href="<?=base_url('dashboard');?>">Dashboard</a></li>
+                            <li><a href="<?= base_url('dashboard'); ?>">Dashboard</a></li>
                             <li class="active">Supplier</li>
                         </ol>
                     </div>
@@ -54,7 +54,7 @@
                         <form>
                             <div class="form-group">
                                 <label>Nama Supplier</label>
-                                <input type="text" name="name" class="form-control"/>
+                                <input type="text" name="name" class="form-control" />
                             </div>
                             <div class="form-group">
                                 <label>Alamat</label>
@@ -62,7 +62,7 @@
                             </div>
                             <div class="form-group">
                                 <label>No. Telp</label>
-                                <input type="text" name="telephone" class="form-control"/>
+                                <input type="text" name="telephone" class="form-control" />
                             </div>
                             <div class="form-group">
                                 <label>Keterangan</label>
@@ -102,34 +102,56 @@
             $("#data").DataTable({
                 "processing": true,
                 "serverSide": true,
-                "autoWidth":true,
+                "autoWidth": true,
                 "order": [],
-                "ajax": {"url": "<?=base_url("supplier/json");?>"}
+                "ajax": {
+                    "url": "<?= base_url("supplier/json"); ?>"
+                }
             });
 
-            $(".btn-add").on("click",function() {
+            $(".btn-add").on("click", function() {
                 jQuery("#compose .modal-title").html("Tambah Supplier");
-                jQuery("#compose form").attr("action","<?=base_url("supplier/insert");?>");
+                jQuery("#compose form").attr("action", "<?= base_url("supplier/insert"); ?>");
                 jQuery("#compose form input,textarea").val("");
+                jQuery("#compose form").find('input, select, textarea').prop('disabled', false).removeClass('bg-white')
+                jQuery("#compose").find('.btn-confirm').removeClass('d-none')
                 jQuery("#compose").modal("toggle");
             })
 
-            $("body").on("click",".btn-edit",function(){
+            $("body").on("click", ".btn-edit", function() {
                 var id = jQuery(this).attr("data-id");
                 jQuery("#compose .modal-title").html("Edit Supplier");
 
-                jQuery.getJSON("<?=base_url("supplier/get");?>/"+id,function(data){
-                    jQuery("#compose form").attr("action","<?=base_url("supplier/edit");?>/"+id);
+                jQuery.getJSON("<?= base_url("supplier/get"); ?>/" + id, function(data) {
+                    jQuery("#compose form").attr("action", "<?= base_url("supplier/edit"); ?>/" + id);
                     jQuery("#compose form input[name=name]").val(data.name);
                     jQuery("#compose form input[name=telephone]").val(data.telephone);
                     jQuery("#compose form textarea[name=address]").val(data.address);
                     jQuery("#compose form textarea[name=description]").val(data.description);
 
+                    jQuery("#compose form").find('input, select, textarea').prop('disabled', false).removeClass('bg-white')
+                    jQuery("#compose").find('.btn-confirm').removeClass('d-none')
                     jQuery("#compose").modal("toggle");
                 })
             })
 
-            $(".btn-confirm").on("click",function() {
+            $("body").on("click", ".btn-detail", function() {
+                var id = jQuery(this).attr("data-id");
+                jQuery("#compose .modal-title").html("Detail Supplier");
+
+                jQuery.getJSON("<?= base_url("supplier/get"); ?>/" + id, function(data) {
+                    jQuery("#compose form input[name=name]").val(data.name);
+                    jQuery("#compose form input[name=telephone]").val(data.telephone);
+                    jQuery("#compose form textarea[name=address]").val(data.address);
+                    jQuery("#compose form textarea[name=description]").val(data.description);
+
+                    jQuery("#compose form").find('input, select, textarea').prop('disabled', true).addClass('bg-white')
+                    jQuery("#compose").find('.btn-confirm').addClass('d-none')
+                    jQuery("#compose").modal("toggle");
+                })
+            })
+
+            $(".btn-confirm").on("click", function() {
                 var form = {
                     "name": jQuery("#compose input[name=name]").val(),
                     "address": jQuery("#compose textarea[name=address]").val(),
@@ -144,9 +166,9 @@
                     method: "POST",
                     data: form,
                     dataType: "json",
-                    success: function(data){
-                        if(data.status) {
-                            jQuery("#data").DataTable().ajax.reload(null,true);
+                    success: function(data) {
+                        if (data.status) {
+                            jQuery("#data").DataTable().ajax.reload(null, true);
                             jQuery("#compose").modal("toggle");
                             Swal.fire(
                                 "Berhasil",
@@ -165,9 +187,9 @@
             })
 
             function deleteData(id) {
-                jQuery.getJSON("<?=base_url("supplier/delete");?>/"+id,function(data){
-                    if(data.status) {
-                        jQuery("#data").DataTable().ajax.reload(null,true);
+                jQuery.getJSON("<?= base_url("supplier/delete"); ?>/" + id, function(data) {
+                    if (data.status) {
+                        jQuery("#data").DataTable().ajax.reload(null, true);
                         jQuery("#delete").modal("toggle");
                         Swal.fire(
                             "Berhasil",
@@ -178,12 +200,12 @@
                 });
             }
 
-            $('body').on("click",".btn-delete",function() {
-                    var id = jQuery(this).attr("data-id");
-                    var name = jQuery(this).attr("data-name");
-                    jQuery("#delete .modal-body").html("Anda yakin ingin menghapus <b>"+name+"</b>");
-                    jQuery("#delete").modal("toggle");
+            $('body').on("click", ".btn-delete", function() {
+                var id = jQuery(this).attr("data-id");
+                var name = jQuery(this).attr("data-name");
+                jQuery("#delete .modal-body").html("Anda yakin ingin menghapus <b>" + name + "</b>");
+                jQuery("#delete").modal("toggle");
 
-                    jQuery("#delete .btn-del-confirm").attr("onclick","deleteData("+id+")");
+                jQuery("#delete .btn-del-confirm").attr("onclick", "deleteData(" + id + ")");
             })
         </script>

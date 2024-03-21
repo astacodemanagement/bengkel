@@ -49,12 +49,15 @@ class Sparepart_sales extends CI_Controller {
  
     
     
-    public function json() {
+    public function json()
+    {
+        $this->datatables->setSelect("transactions.*,consumers.name");
         $this->datatables->setTable("transactions");
+        $this->datatables->setJoin("consumers", "consumers.id = transactions.customer_id","left");
         $this->datatables->setWhere("type","sparepart");
         $this->datatables->setColumn([
             '<index>',
-            '<get-customer_id>',
+            '<get-name>',
             '[reformat_date=<get-date>]',
             '[rupiah=<get-total>]',
             '<div class="text-center">
@@ -62,7 +65,7 @@ class Sparepart_sales extends CI_Controller {
             </div>'
         ]);
         $this->datatables->setOrdering(["id","date","total",NULL]);
-        $this->datatables->setSearchField("date");
+        $this->datatables->setSearchField(["date","name"]);
         $this->datatables->generate();
     }
 }

@@ -207,6 +207,24 @@
             </div>
         </div>
 
+        <div id="detailServiceModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Detail Services</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modalServiceName">Nama: </p>
+                        <p id="modalServicePrice">Harga Service : </p>
+                        <p id="modalServiceJenisMobil">Jenis Mobil: </p>
+                        <p id="modalServiceKeterangan">Keterangan: </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
         <!-- Tambahkan di bagian head atau sebelum penutup tag body -->
         <!-- Pada bagian head atau sebelum penutup tag body -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
@@ -335,26 +353,39 @@
             }
 
             function detailData(data) {
-    // Set modal content
-    document.getElementById('modalName').innerHTML = 'Nama : ' + data.name;
-    document.getElementById('modalLokasi').innerHTML = 'Lokasi : ' + data.location;
-    document.getElementById('modalKeterangan').innerHTML = 'Keterangan : ' + data.description;
+                // Set modal content
+                document.getElementById('modalName').innerHTML = 'Nama : ' + data.name;
+                document.getElementById('modalLokasi').innerHTML = 'Lokasi : ' + data.location;
+                document.getElementById('modalKeterangan').innerHTML = 'Keterangan : ' + data.description;
 
-    // Format prices with thousand separators
-    document.getElementById('modalPrice').innerHTML = 'Harga Beli : ' + 'Rp. ' + formatNumber(parseInt(data.price));
-    document.getElementById('modalPrice1').innerHTML = 'Harga Jual 1 : ' + 'Rp. ' + formatNumber(parseInt(data.price1));
-    document.getElementById('modalPrice2').innerHTML = 'Harga Jual 2 : ' + 'Rp. ' + formatNumber(parseInt(data.price2));
+                // Format prices with thousand separators
+                document.getElementById('modalPrice').innerHTML = 'Harga Beli : ' + 'Rp. ' + formatNumber(parseInt(data.price));
+                document.getElementById('modalPrice1').innerHTML = 'Harga Jual 1 : ' + 'Rp. ' + formatNumber(parseInt(data.price1));
+                document.getElementById('modalPrice2').innerHTML = 'Harga Jual 2 : ' + 'Rp. ' + formatNumber(parseInt(data.price2));
 
-    document.getElementById('modalImage').src = data.gambar;
+                document.getElementById('modalImage').src = data.gambar;
 
-    // Show the modal
-    $('#detailModal').modal('show');
-}
+                // Show the modal
+                $('#detailModal').modal('show');
+            }
 
-// Function to format number with thousand separators
-function formatNumber(number) {
-    return number.toLocaleString('id-ID'); // Adjust 'id-ID' based on your desired locale
-}
+            function detailDataService(data) {
+                // Set modal content
+                document.getElementById('modalServiceName').innerHTML = 'Nama : ' + data.name;
+                document.getElementById('modalServiceKeterangan').innerHTML = 'Keterangan : ' + data.description;
+
+                // Format prices with thousand separators
+                document.getElementById('modalServicePrice').innerHTML = 'Harga Service : ' + 'Rp. ' + formatNumber(parseInt(data.price));
+                document.getElementById('modalServiceJenisMobil').innerHTML = 'Jenis Mobil : ' + data.jenismobil;
+
+                // Show the modal
+                $('#detailServiceModal').modal('show');
+            }
+
+            // Function to format number with thousand separators
+            function formatNumber(number) {
+                return number.toLocaleString('id-ID'); // Adjust 'id-ID' based on your desired locale
+            }
 
 
 

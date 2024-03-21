@@ -172,6 +172,10 @@
                         </div>
                         <div class="card-body">
                             <div style="border-bottom: 1px dashed #aaa" class="d-flex py-2">
+                                <span class="pt-1">Diskon</span>
+                                <span class="ml-auto"><input type="number" class="form-control text-right diskon"></span>
+                            </div>
+                            <div style="border-bottom: 1px dashed #aaa" class="d-flex py-2">
                                 <span>Total</span>
                                 <span class="total ml-auto">Rp. 0</span>
                             </div>
@@ -240,7 +244,23 @@
             </div>
         </div>
 
+        <div id="detailServiceModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Detail Services</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modalServiceName">Nama: </p>
+                        <p id="modalServicePrice">Harga Service : </p>
+                        <p id="modalServiceJenisMobil">Jenis Mobil: </p>
+                        <p id="modalServiceKeterangan">Keterangan: </p>
+                    </div>
 
+                </div>
+            </div>
+        </div>
 
         <!-- Tambahkan di bagian head atau sebelum penutup tag body -->
         <!-- Pada bagian head atau sebelum penutup tag body -->
@@ -333,6 +353,7 @@
             var SparepartCart = [];
             var MekanikCart = [];
             var total = 0;
+            var discount = 0;
             var totalMechanicCost = 0;
             var type = "";
 
@@ -393,6 +414,19 @@
 
                 // Show the modal
                 $('#detailModal').modal('show');
+            }
+
+            function detailDataService(data) {
+                // Set modal content
+                document.getElementById('modalServiceName').innerHTML = 'Nama : ' + data.name;
+                document.getElementById('modalServiceKeterangan').innerHTML = 'Keterangan : ' + data.description;
+
+                // Format prices with thousand separators
+                document.getElementById('modalServicePrice').innerHTML = 'Harga Service : ' + 'Rp. ' + formatNumber(parseInt(data.price));
+                document.getElementById('modalServiceJenisMobil').innerHTML = 'Jenis Mobil : ' + data.jenismobil;
+
+                // Show the modal
+                $('#detailServiceModal').modal('show');
             }
 
             // Function to format number with thousand separators
@@ -457,7 +491,8 @@
                     countMechanicCost = (countMechanicCost + item.cost);
                 })
 
-                total = countTotal;
+                discount = $('.diskon').val() === '' ? 0 : parseFloat($('.diskon').val())
+                total = countTotal - discount;
                 totalMechanicCost = countMechanicCost;
 
                 if (data1.length) {
@@ -552,6 +587,8 @@
 
             function reset() {
                 jQuery("#customerContainer input,#customerContainer textarea").val("");
+                $('.diskon').val('')
+                
                 ServiceCart = [];
                 SparepartCart = [];
 
@@ -623,6 +660,7 @@
 
                 var form = {};
                 form["total"] = total;
+                form["discount"] = discount;
                 form["mechanical_costs"] = totalMechanicCost;
                 form["sparepart"] = itemSparepart;
                 form["mechanic"] = itemMekanik;
@@ -675,5 +713,9 @@
                         }
                     }
                 });
+            })
+
+            $('.diskon').on('change keyup keydown', function() {
+                refreshServiceCart(ServiceCart, SparepartCart, MekanikCart);
             })
         </script>
