@@ -46,12 +46,12 @@
         <tbody>
             <?php
             $i = 0;
-            $grand_total = 0;
+            $totalBagiHasil = 0;
             foreach ($fetch as $row) :
                 $i++;
 
-                $hasilBagi = $row->total * 0.8;
-                $grand_total += $hasilBagi;
+                $hasilBagi = ($row->mechanic_cost * 20)/100;
+                $totalBagiHasil += $hasilBagi;
             ?>
 
                 <tr>
@@ -69,7 +69,7 @@
         <tfoot>
             <tr>
                 <td colspan="6">Total</td>
-                <td style="text-align:center"><?= rupiah($grand_total); ?></td>
+                <td style="text-align:center"><?= rupiah($totalBagiHasil); ?></td>
             </tr>
         </tfoot>
     </table>

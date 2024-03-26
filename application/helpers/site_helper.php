@@ -98,3 +98,9 @@ function waktuAbsen($waktu)
 {
     return date('H:i', strtotime($waktu));
 }
+
+function bagiHasilMekanik($cost)
+{
+    $bagiHasil = ($cost * 20)/100;
+    return "Rp " . number_format($bagiHasil);
+}

@@ -10,7 +10,7 @@
                 <div class="page-header float-right">
                     <div class="page-title">
                         <ol class="breadcrumb text-right">
-                            <li><a href="<?=base_url("dashboard");?>">Dashboard</a></li>
+                            <li><a href="<?= base_url("dashboard"); ?>">Dashboard</a></li>
                             <li class="active">History Service</li>
                         </ol>
                     </div>
@@ -20,6 +20,21 @@
 
         <div class="content mt-3">
             <div class="card">
+                <div class="card-header">
+                    <form class="date form-inline">
+                        <input type="text" name="start" class="form-control start-date" placeholder="YYYY-MM-DD" value="<?= $this->input->get('start_date') ?>" autocomplete="off">
+                        <span class="mx-2">-</span>
+                        <input type="text" name="end" class="form-control end-date" placeholder="YYYY-MM-DD" value="<?= $this->input->get('end_date') ?>" autocomplete="off">
+
+                        <button type="button" class="btn btn-primary btn-sm ml-2 btn-filter" style="border-radius: 1rem;">
+                            <i class="fa fa-filter"></i> Filter
+                        </button>
+
+                        <button type="button" class="btn btn-danger btn-sm ml-2 btn-reset" style="border-radius: 1rem;">
+                            <i class="fa fa-refresh"></i> Reset
+                        </button>
+                    </form>
+                </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-bordered" id="data">
@@ -94,48 +109,63 @@
         </div>
 
         <script>
+            const elem = document.querySelector('.date');
+            const datepicker = new DateRangePicker(elem, {
+                format: "yyyy-mm-dd"
+            });
+
             $("#table-detail").DataTable({
                 "processing": true,
                 "serverSide": true,
                 autoWidth: false,
-                info:false,
-                filter:false,
-                lengthChange:false,
-                paging:false,
-                "ajax": {"url": "<?=base_url("service_sales/json_details");?>/"}
-                });
+                info: false,
+                filter: false,
+                lengthChange: false,
+                paging: false,
+                "ajax": {
+                    "url": "<?= base_url("service_sales/json_details"); ?>/"
+                }
+            });
 
-            $("body").on("click",".btn-view",function(){
+            $("body").on("click", ".btn-view", function() {
                 var id = jQuery(this).attr("data-id");
                 var total = jQuery(this).attr("data-total");
 
-                jQuery("#details .total").html("Rp "+total.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
-                jQuery("#table-detail").DataTable().ajax.url("<?=base_url("service_sales/json_details");?>/"+id).load();
+                jQuery("#details .total").html("Rp " + total.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
+                jQuery("#table-detail").DataTable().ajax.url("<?= base_url("service_sales/json_details"); ?>/" + id).load();
                 jQuery("#details").modal("toggle");
 
             })
 
-            $("#data").DataTable({
+            let datatable = $("#data").DataTable({
                 "processing": true,
                 "serverSide": true,
-                "autoWidth":true,
-                "order": [[0,"desc"]],
-                "ajax": {"url": "<?=base_url("service_sales/json");?>"}
+                "autoWidth": true,
+                "order": [
+                    [0, "desc"]
+                ],
+                "ajax": {
+                    "url": "<?= base_url("service_sales/json"); ?>",
+                    data: function(d) {
+                        d.start_date = $('.start-date').val()
+                        d.end_date = $('.end-date').val()
+                    }
+                }
             });
 
-            $('body').on("click",".btn-delete",function() {
+            $('body').on("click", ".btn-delete", function() {
                 var id = jQuery(this).attr("data-id");
 
                 jQuery("#delete .modal-body").html("Anda yakin ingin menghapus penjualan?");
                 jQuery("#delete").modal("toggle");
 
-                jQuery("#delete .btn-del-confirm").attr("onclick","deleteData("+id+")");
+                jQuery("#delete .btn-del-confirm").attr("onclick", "deleteData(" + id + ")");
             })
 
             function deleteData(id) {
-                jQuery.getJSON("<?=base_url("service_sales/delete");?>/"+id,function(data){
-                    if(data.status) {
-                        jQuery("#data").DataTable().ajax.reload(null,true);
+                jQuery.getJSON("<?= base_url("service_sales/delete"); ?>/" + id, function(data) {
+                    if (data.status) {
+                        jQuery("#data").DataTable().ajax.reload(null, true);
                         jQuery("#delete").modal("toggle");
                         Swal.fire(
                             "Berhasil",
@@ -145,4 +175,15 @@
                     }
                 });
             }
+
+            $('.btn-filter').on('click', function() {
+                datatable.ajax.reload()
+            })
+
+            $('.btn-reset').on('click', function() {
+                $('.start-date').val('')
+                $('.end-date').val('')
+
+                datatable.ajax.reload()
+            })
         </script>

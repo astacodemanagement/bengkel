@@ -22,9 +22,9 @@
             <div class="card">
                 <div class="card-header">
                     <form class="date form-inline">
-                        <input type="date" name="start_date" id="start_date" class="form-control form-control datepicker" placeholder="Start Date" value="<?= $this->input->get('start_date') ?>">
+                        <input type="text" name="start_date" class="form-control start-date" placeholder="YYYY-MM-DD" value="<?= $this->input->get('start_date') ?>" autocomplete="off">
                         <span class="mx-2">-</span>
-                        <input type="date" name="end_date" id="end_date" class="form-control form-control datepicker" placeholder="End Date" value="<?= $this->input->get('end_date') ?>">
+                        <input type="text" name="end_date" class="form-control end-date" placeholder="YYYY-MM-DD" value="<?= $this->input->get('end_date') ?>" autocomplete="off">
 
                         <div style="margin-left:10px;">
                             <select id="selectedUser" name="user" class="form-control form-control-sm select2 user">
@@ -35,19 +35,19 @@
                             </select>
                         </div>
 
-                        <button type="submit" class="btn btn-primary btn-sm ml-3 btn-filter" style="border-radius: 1rem;">
+                        <button type="button" class="btn btn-primary btn-sm ml-2 btn-filter" style="border-radius: 1rem;">
                             <i class="fa fa-filter"></i> Filter
                         </button>
 
-                        <button type="button" onclick="location.href='<?= base_url('report/salary') ?>'" class="btn btn-primary btn-sm ml-3 btn-reset" style="border-radius: 1rem;">
+                        <button type="button" class="btn btn-danger btn-sm ml-2 btn-reset" style="border-radius: 1rem;">
                             <i class="fa fa-refresh"></i> Reset
                         </button>
 
-                        <button type="button" class="btn btn-primary btn-sm ml-3 btn-print" style="border-radius: 1rem;">
+                        <button type="button" class="btn btn-primary btn-sm ml-2 btn-print" style="border-radius: 1rem;">
                             <i class="fa fa-print"></i> Export PDF
                         </button>
 
-                        <button type="button" class="btn btn-success btn-sm ml-3 btn-excel" style="border-radius: 1rem;">
+                        <button type="button" class="btn btn-success btn-sm ml-2 btn-excel" style="border-radius: 1rem;">
                             <i class="fa fa-file-excel-o"></i> Export Excel
                         </button>
                     </form>
@@ -97,13 +97,19 @@
                                     <?php endforeach; ?>
                                 </tbody>
                                 <!-- Baris tambahan untuk total hasil bagi -->
-                                <tfoot>
+                                <!-- <tfoot>
                                     <tr>
                                         <td colspan="5"></td>
                                         <td>Total</td>
                                         <td><b><?= number_format($totalHasilBagi, 0, ',', '.') ?></b></td>
                                         <td></td>
                                     </tr>
+                                </tfoot> -->
+                                <tfoot>
+                                    <td colspan="5"></td>
+                                    <td>Total</td>
+                                    <td></td>
+                                    <td></td>
                                 </tfoot>
                             </table>
 
@@ -148,12 +154,29 @@
             <script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
             <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
+            <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
             <script>
                 $(document).ready(function() {
+                    const elem = document.querySelector('.date');
+                    const datepicker = new DateRangePicker(elem, {
+                        format: "yyyy-mm-dd"
+                    });
+
                     let dataTable = $("#data").DataTable({
                         "processing": true,
+                        "serverSide": true,
                         "autoWidth": true,
-                        "order": [],
+                        "order": [
+                            [0, "desc"]
+                        ],
+                        "ajax": {
+                            "url": "<?= base_url("report/salary_datatable"); ?>",
+                            data: function(d) {
+                                d.start_date = $('.start-date').val()
+                                d.end_date = $('.end-date').val()
+                                d.user_id = $('.user').val()
+                            }
+                        },
                         "columnDefs": [{
                                 'targets': 0,
                                 'className': "text-center"
@@ -173,7 +196,37 @@
                         ],
                         buttons: [{
                             extend: 'excel'
-                        }]
+                        }],
+                        footerCallback: function(row, data, start, end, display) {
+                            let api = this.api();
+
+                            // Remove the formatting to get integer data for summation
+                            let intVal = function(i) {
+                                return typeof i === 'string' ?
+                                    i.replace(/[\$,\$Rp ]/g, '') * 1 :
+                                    typeof i === 'number' ?
+                                    i :
+                                    0;
+                            };
+
+                            // Total over all pages
+                            total = api
+                                .column(6)
+                                .data()
+                                .reduce((a, b) => intVal(a) + intVal(b), 0);
+
+                            // Total over this page
+                            pageTotal = api
+                                .column(6, {
+                                    page: 'current'
+                                })
+                                .data()
+                                .reduce((a, b) => intVal(a) + intVal(b), 0);
+
+                            // Update footer
+                            api.column(6).footer().innerHTML =
+                                'Rp ' + numeral(total).format('0,0')
+                        }
                     });
 
                     $(".btn-excel").on("click", function() {
@@ -224,6 +277,18 @@
                         // $('#phone').val(data.phone)
                     });
 
+                    $('.btn-filter').on('click', function() {
+                        dataTable.ajax.reload()
+                    })
+
+                    $('.btn-reset').on('click', function() {
+                        $('.start-date').val('')
+                        $('.end-date').val('')
+                        $('.user').val('').change()
+
+                        dataTable.ajax.reload()
+                    })
+
                 });
             </script>
 
@@ -235,7 +300,7 @@
                 $(document).ready(function() {
 
                     // Event klik pada tombol detail
-                    $('.btn-detail').on('click', function() {
+                    $('.dataTable').on('click', '.btn-detail', function() {
                         var transactionId = $(this).data('id');
 
                         // Kirim data ke server untuk detail
@@ -281,56 +346,56 @@
                     });
 
                     // Event klik pada tombol filter
-                    $('.btn-filter').on('click', function() {
-                        // Ambil nilai dari input filter
-                        var start_date = $('#start_date').val();
-                        var end_date = $('#end_date').val();
-                        var user_id = $('[name="user"]').val();
+                    // $('.btn-filter').on('click', function() {
+                    //     // Ambil nilai dari input filter
+                    //     var start_date = $('#start_date').val();
+                    //     var end_date = $('#end_date').val();
+                    //     var user_id = $('[name="user"]').val();
 
-                        // Kirim data ke server untuk filtering
-                        $.ajax({
-                            url: '<?= base_url("report/filterTransactions") ?>',
-                            type: 'POST',
-                            data: {
-                                start_date: start_date,
-                                end_date: end_date,
-                                user_id: user_id
-                            },
-                            success: function(response) {
-                                // Replace the content of tbody with the updated transactions
-                                $('#data tbody').html(response);
+                    //     // Kirim data ke server untuk filtering
+                    //     $.ajax({
+                    //         url: '<?= base_url("report/filterTransactions") ?>',
+                    //         type: 'POST',
+                    //         data: {
+                    //             start_date: start_date,
+                    //             end_date: end_date,
+                    //             user_id: user_id
+                    //         },
+                    //         success: function(response) {
+                    //             // Replace the content of tbody with the updated transactions
+                    //             $('#data tbody').html(response);
 
-                                // Reinitialize DataTables after updating the content
-                                $('#data').DataTable();
-                            },
-                            error: function() {
-                                console.error('Error fetching data');
-                            }
-                        });
-                    });
+                    //             // Reinitialize DataTables after updating the content
+                    //             $('#data').DataTable();
+                    //         },
+                    //         error: function() {
+                    //             console.error('Error fetching data');
+                    //         }
+                    //     });
+                    // });
 
                     // Event klik pada tombol reset
-                    $('.btn-reset').on('click', function() {
-                        // Reset nilai input filter
-                        $('#start_date').val('');
-                        $('#end_date').val('');
-                        $('#selectedUser').val(null).trigger('change'); // Reset Select2
-                        // Kirim data ke server untuk reset
-                        $.ajax({
-                            url: '<?= base_url("report/resetTransactions") ?>',
-                            type: 'POST',
-                            success: function(response) {
-                                // Replace the content of tbody with the original transactions
-                                $('#data tbody').html(response);
+                    // $('.btn-reset').on('click', function() {
+                    //     // Reset nilai input filter
+                    //     $('#start_date').val('');
+                    //     $('#end_date').val('');
+                    //     $('#selectedUser').val(null).trigger('change'); // Reset Select2
+                    //     // Kirim data ke server untuk reset
+                    //     $.ajax({
+                    //         url: '<?= base_url("report/resetTransactions") ?>',
+                    //         type: 'POST',
+                    //         success: function(response) {
+                    //             // Replace the content of tbody with the original transactions
+                    //             $('#data tbody').html(response);
 
-                                // Reinitialize DataTables after updating the content
-                                $('#data').DataTable();
-                            },
-                            error: function() {
-                                console.error('Error fetching data');
-                            }
-                        });
-                    });
+                    //             // Reinitialize DataTables after updating the content
+                    //             $('#data').DataTable();
+                    //         },
+                    //         error: function() {
+                    //             console.error('Error fetching data');
+                    //         }
+                    //     });
+                    // });
                 });
             </script>
 

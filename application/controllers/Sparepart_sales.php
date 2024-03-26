@@ -55,6 +55,12 @@ class Sparepart_sales extends CI_Controller {
         $this->datatables->setTable("transactions");
         $this->datatables->setJoin("consumers", "consumers.id = transactions.customer_id","left");
         $this->datatables->setWhere("type","sparepart");
+
+        if ($this->input->get('start_date') and $this->input->get('end_date')) {
+            $this->datatables->setWhere("DATE(date) >=", $this->input->get('start_date'));
+            $this->datatables->setWhere("DATE(date) <=", $this->input->get('end_date'));
+        } 
+
         $this->datatables->setColumn([
             '<index>',
             '<get-name>',

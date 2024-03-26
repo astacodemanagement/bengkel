@@ -20,6 +20,21 @@
 
         <div class="content mt-3">
             <div class="card">
+                <div class="card-header">
+                    <form class="date form-inline">
+                        <input type="text" name="start" class="form-control start-date" placeholder="YYYY-MM-DD" value="<?= $this->input->get('start_date') ?>" autocomplete="off">
+                        <span class="mx-2">-</span>
+                        <input type="text" name="end" class="form-control end-date" placeholder="YYYY-MM-DD" value="<?= $this->input->get('end_date') ?>" autocomplete="off">
+
+                        <button type="button" class="btn btn-primary btn-sm ml-2 btn-filter" style="border-radius: 1rem;">
+                            <i class="fa fa-filter"></i> Filter
+                        </button>
+
+                        <button type="button" class="btn btn-danger btn-sm ml-2 btn-reset" style="border-radius: 1rem;">
+                            <i class="fa fa-refresh"></i> Reset
+                        </button>
+                    </form>
+                </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-bordered" id="data">
@@ -54,7 +69,6 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Nama Barang</th>
-                                        
                                         <th>Harga</th>
                                         <th>Qty</th>
                                         <th>Sub</th>
@@ -74,6 +88,11 @@
         </div>
 
         <script>
+            const elem = document.querySelector('.date');
+            const datepicker = new DateRangePicker(elem, {
+                format: "yyyy-mm-dd"
+            });
+
             $("#table-detail").DataTable({
                 "processing": true,
                 "serverSide": true,
@@ -100,7 +119,7 @@
             })
 
 
-            $("#data").DataTable({
+            let datatable = $("#data").DataTable({
                 "processing": true,
                 "serverSide": true,
                 "autoWidth": true,
@@ -108,7 +127,22 @@
                     [0, "desc"]
                 ],
                 "ajax": {
-                    "url": "<?= base_url("sparepart_sales/json"); ?>"
+                    "url": "<?= base_url("sparepart_sales/json"); ?>",
+                    data: function(d) {
+                        d.start_date = $('.start-date').val()
+                        d.end_date = $('.end-date').val()
+                    }
                 }
             });
+
+            $('.btn-filter').on('click', function() {
+                datatable.ajax.reload()
+            })
+
+            $('.btn-reset').on('click', function() {
+                $('.start-date').val('')
+                $('.end-date').val('')
+
+                datatable.ajax.reload()
+            })
         </script>

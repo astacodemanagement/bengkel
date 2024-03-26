@@ -53,6 +53,12 @@ class Service_sales extends CI_Controller {
     public function json() {
         $this->datatables->setTable("transactions");
         $this->datatables->setWhere("type","service");
+
+        if ($this->input->get('start_date') and $this->input->get('end_date')) {
+            $this->datatables->setWhere("DATE(date) >=", $this->input->get('start_date'));
+            $this->datatables->setWhere("DATE(date) <=", $this->input->get('end_date'));
+        } 
+        
         $this->datatables->setColumn([
             '<index>',
             '[reformat_date=<get-date>]',

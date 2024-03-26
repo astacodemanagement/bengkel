@@ -93,6 +93,41 @@ class Report extends CI_Controller
         $this->load->view('footer', $push);
     }
 
+    public function salary_datatable()
+    {
+        $this->datatables->setTable("transactions");
+        $this->datatables->setSelect('transactions.*, users.name as mechanic_name, mechanic_details.cost as mechanic_cost');
+        $this->datatables->setWhere('transactions.type', 'service');
+        $this->datatables->setJoin('mechanic_details', 'mechanic_details.transaction_id = transactions.id', 'inner');
+        $this->datatables->setJoin('users','users.id = mechanic_details.user_id', 'inner');
+
+        if ($this->input->get('start_date') and $this->input->get('end_date')) {
+            $this->datatables->setWhere("DATE(transactions.date) >=", $this->input->get('start_date'));
+            $this->datatables->setWhere("DATE(transactions.date) <=", $this->input->get('end_date'));
+        }
+        if ($this->input->get('user_id')) {
+            $this->datatables->setWhere("users.id", $this->input->get('user_id'));
+        }
+
+        $this->datatables->setColumn([
+            '<index>',
+            '<get-mechanic_name>',
+            '[reformat_date=<get-date>]',
+            '<get-code>',
+            '<get-car_type>',
+            '[rupiah=<get-total>]',
+            '[bagiHasilMekanik=<get-mechanic_cost>]',
+            '<div class="text-center">
+                <a style="color: rgb(242, 236, 236)" href="#" class="btn btn-sm btn-primary btn-detail" data-toggle="modal" data-target="#modal-detail" data-id="<get-id>" style="color: black">
+                    <i class="fa fa-eye"></i> Detail
+                </a>
+            </div>'
+        ]);
+        $this->datatables->setOrdering(["id", "date", NULL]);
+        $this->datatables->setSearchField(['mechanic_name', 'date', 'code']);
+        $this->datatables->generate();
+    }
+
     public function getUserMekanikData()
     {
         $term = $this->input->get('term');

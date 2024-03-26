@@ -20,7 +20,6 @@ class Dashboard extends CI_Controller {
 
 	public function index()
 	{
-
         $push = [
             "pageTitle" => "Dashboard",
             "dataAdmin" => $this->dataAdmin,

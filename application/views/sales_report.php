@@ -27,9 +27,9 @@
     <div class="card">
         <div class="card-header">
             <div class="date form-inline">
-                <input type="text" name="start" class="form-control form-control-sm" placeholder="YYYY-MM-DD">
+                <input type="text" name="start" class="form-control form-control-sm" placeholder="YYYY-MM-DD" autocomplete="off">
                 <span class="mx-2">-</span>
-                <input type="text" name="end" class="form-control form-control-sm" placeholder="YYYY-MM-DD">
+                <input type="text" name="end" class="form-control form-control-sm" placeholder="YYYY-MM-DD" autocomplete="off">
                 <button type="button" class="btn btn-primary btn-sm ml-3 btn-print" style="border-radius: 1rem;"><i class="fa fa-print"></i> Export PDF</button>
                 <button type="button" class="btn btn-success btn-sm ml-3 btn-excel" style="border-radius: 1rem;"><i class="fa fa-file-excel-o"></i> Export Excel</button>
             </div>
