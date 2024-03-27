@@ -31,15 +31,25 @@ class Services extends CI_Controller {
 		$this->load->view('footer',$push);
     }
     
-    public function json() {
+    public function json()
+    {
+        $actionDatatable = '';
+        
+        if (hasPermission('jasa', 'edit')) {
+            $actionDatatable .= '<button type="button" class="btn btn-primary btn-sm btn-edit" title="Edit Data" data-id="<get-id>" data-name="<get-name>" data-price="<get-price>" data-jenismobil="<get-jenismobil>" data-description="<get-description>"><i class="fa fa-edit"></i></button>';
+        }
+
+        if (hasPermission('jasa', 'delete')) {
+            $actionDatatable .= '<button type="button" class="btn btn-danger btn-sm btn-delete ml-1" data-id="<get-id>" data-name="<get-name>" title="Delete Data"><i class="fa fa-trash"></i></button>';
+        }
+
         $this->load->model("datatables");
         $this->datatables->setTable("products");
         $this->datatables->setColumn([
             '<index>',
             '<get-name>',
             '[rupiah=<get-price>]',
-            '<div class="text-center"><button type="button" class="btn btn-primary btn-sm btn-edit" title="Edit Data" data-id="<get-id>" data-name="<get-name>" data-price="<get-price>" data-jenismobil="<get-jenismobil>" data-description="<get-description>"><i class="fa fa-edit"></i></button>
-            <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="<get-id>" data-name="<get-name>" title="Delete Data"><i class="fa fa-trash"></i></button></div>'
+            '<div class="text-center">'. $actionDatatable .'</div>'
         ]);
         $this->datatables->setOrdering(["id","name","price",NULL]);
         $this->datatables->setWhere("type","service");

@@ -21,7 +21,9 @@
         <div class="content mt-3">
             <div class="card">
                 <div class="card-header">
-                    <button type="button" class="btn btn-sm btn-success btn-add" style="border-radius: 1rem;"><i class="fa fa-plus"></i> Tambah User</button>
+                    <?php if (hasPermission('karyawan', 'add')): ?>
+                        <button type="button" class="btn btn-sm btn-success btn-add" style="border-radius: 1rem;"><i class="fa fa-plus"></i> Tambah User</button>
+                    <?php endif ?>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -116,25 +118,21 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Tanggal masuk</label>
-                                        <input type="date" name="joindate"  id="joindate" class="form-control" />
+                                        <input type="date" name="joindate" id="joindate" class="form-control" />
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Username</label>
-                                        <input type="text" name="username"  id="username" class="form-control" />
+                                        <input type="text" name="username" id="username" class="form-control" />
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Password</label>
-                                        <input type="text" name="password" id="password" class="form-control" autocomplete="off"/>
+                                        <input type="text" name="password" id="password" class="form-control" autocomplete="off" />
                                     </div>
                                 </div>
-
-
-
-
                             </div>
                         </form>
                     </div>
@@ -173,10 +171,15 @@
                 "serverSide": true,
                 "autoWidth": true,
                 "order": [],
+                "searching" : allowSearching(),
                 "ajax": {
                     "url": "<?= base_url("user/json"); ?>"
                 }
             });
+
+            function allowSearching() {
+                return <?= hasPermission('karyawan', 'search') ? 'true' : 'false' ?>
+            }
 
             $(".btn-add").on("click", function() {
                 jQuery("#compose .modal-title").html("Tambah User");
@@ -221,7 +224,7 @@
                     "address": jQuery("#compose textarea[name=address]").val(),
                     "level": jQuery("#compose select[name=level]").val()
 
-                
+
                 }
 
                 var action = jQuery("#compose form").attr("action");

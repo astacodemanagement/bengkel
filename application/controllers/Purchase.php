@@ -23,6 +23,9 @@ class Purchase extends CI_Controller
 
     public function index()
     {
+        if(!hasPermission('pembelian stok', 'index')) {
+            show_error('Access Denied');
+        }
 
         $push = [
             "pageTitle" => "Pembelian Stock",
@@ -46,6 +49,10 @@ class Purchase extends CI_Controller
 
     public function new()
     {
+        if (!hasPermission('pembelian stok', 'add')) {
+            show_error('Access Denied');
+        }
+
         $push = [
             "pageTitle" => "Tambah Pembelian Stock",
             "dataAdmin" => $this->dataAdmin,
@@ -59,6 +66,20 @@ class Purchase extends CI_Controller
 
     public function json()
     {
+        $actionDatatable = '';
+
+        if (hasPermission('pembelian stok', 'detail')) {
+            $actionDatatable .= '<button type="button" class="btn btn-sm btn-warning btn-view" title="Lihat Data" data-id="<get-id>"><i class="fa fa-eye"></i></button>';
+        }
+
+        if (hasPermission('pembelian stok', 'edit')) {
+            $actionDatatable .= '<a href="[base_url=purchase/print/<get-id>]" class="btn btn-primary btn-sm ml-1" title="Print Data"><i class="fa fa-print"></i></a>';
+        }
+
+        if (hasPermission('pembelian stok', 'delete')) {
+            $actionDatatable .= '<a href="#" class="btn btn-danger btn-sm btn-delete ml-1" title="Delete Data" data-id="<get-id>" data-href="<?= base_url("purchase/delete"); ?><i class="fa fa-trash"></i></a>';
+        }
+
         $this->load->model("datatables");
         $this->datatables->setSelect("purchase.*,suppliers.name");
         $this->datatables->setTable("purchase");
@@ -68,13 +89,7 @@ class Purchase extends CI_Controller
             '[reformat_date=<get-date>]',
             '<get-name>',
             '[rupiah=<get-total>]',
-            '<div class="text-center">
-                <button type="button" class="btn btn-sm btn-warning btn-view" title="Lihat Data" data-id="<get-id>"><i class="fa fa-eye"></i></button>
-                <a href="[base_url=purchase/print/<get-id>]" class="btn btn-primary btn-sm" title="Print Data"><i class="fa fa-print"></i></a>
-                <a href="#" class="btn btn-danger btn-sm btn-delete" title="Delete Data" data-id="<get-id>" data-href="<?= base_url("purchase/delete"); ?><i class="fa fa-trash"></i></a>
-
-
-            </div>'
+            '<div class="text-center">'. $actionDatatable .'</div>'
         ]);
         $this->datatables->setOrdering(["id", "date", "name", "total", NULL]);
         $this->datatables->setSearchField("name");

@@ -21,7 +21,9 @@
         <div class="content mt-3">
             <div class="card">
                 <div class="card-header">
-                    <button type="button" class="btn btn-sm btn-success btn-add" style="border-radius: 1rem;"><i class="fa fa-plus"></i> Tambah Supplier</button>
+                    <?php if (hasPermission('supplier', 'add')) : ?>
+                        <button type="button" class="btn btn-sm btn-success btn-add" style="border-radius: 1rem;"><i class="fa fa-plus"></i> Tambah Supplier</button>
+                    <?php endif ?>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -104,10 +106,15 @@
                 "serverSide": true,
                 "autoWidth": true,
                 "order": [],
+                "searching": allowSearching(),
                 "ajax": {
                     "url": "<?= base_url("supplier/json"); ?>"
                 }
             });
+
+            function allowSearching() {
+                return <?= hasPermission('supplier', 'search') ? 'true' : 'false' ?>
+            }
 
             $(".btn-add").on("click", function() {
                 jQuery("#compose .modal-title").html("Tambah Supplier");

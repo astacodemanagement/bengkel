@@ -21,7 +21,9 @@
         <div class="content mt-3">
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-success btn-sm btn-show-add" data-toggle="modal" data-target="#compose" style="border-radius: 1rem;"><i class="fa fa-plus"></i> Tambah Sparepart</button>
+                    <?php if (hasPermission('sparepart', 'add')): ?>
+                        <button class="btn btn-success btn-sm btn-show-add" data-toggle="modal" data-target="#compose" style="border-radius: 1rem;"><i class="fa fa-plus"></i> Tambah Sparepart</button>
+                    <?php endif ?>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -147,11 +149,15 @@
                 "serverSide": true,
                 "autoWidth": true,
                 "order": [],
+                "searching": allowSearching(),
                 "ajax": {
                     "url": "<?= base_url("spare/json"); ?>"
                 }
             });
 
+            function allowSearching() {
+                return <?= hasPermission('sparepart', 'search') ? 'true' : 'false' ?>
+            }
 
             $('.btn-submit').on("click", function() {
                 // var form = {
@@ -286,7 +292,7 @@
                 var showGambar = '';
 
                 if (gambar != '') {
-                    showGambar = `<img src="${gambar}" style="height:240px" />`
+                    showGambar = `<img src="<?= base_url('uploads/sparepart/') ?>/${gambar}" style="height:240px" />`
                 }
 
                 jQuery("#compose .modal-title").html("Detail Sparepart");

@@ -30,6 +30,9 @@ class Transaction extends CI_Controller
 
     public function index()
     {
+        if (!hasPermission('transaksi', 'index')) {
+            show_error('Access Denied');
+        }
 
         $push = [
             "pageTitle" => "Transaksi",
@@ -69,7 +72,7 @@ class Transaction extends CI_Controller
 
         $push = [
             "id" => NULL,
-            "code" => $this->generateTransactionCode(),
+            "code" => $this->generateTransactionCode(isset($data['date']) ? $data['date'] : date('Y-m-d')),
             "type" => $action,
             "total" => $data['total'],
             "discount" => $data['discount'],
@@ -244,18 +247,18 @@ class Transaction extends CI_Controller
         $this->datatables->generate();
     }
 
-    private function generateTransactionCode()
+    private function generateTransactionCode($date)
     {
-        $transaction = $this->db->order_by('id', 'desc')->get('transactions')->row();
-        $initialCode = 'TRX';
-        $codeLength = 10;
-        $code = '0000000001';
+        $transaction = $this->db->order_by('id', 'desc')->get_where('transactions', ['DATE(date)' => $date])->row();
+        $codeLength = 4;
+        $code = '0001';
+        $userCode = user() ? substr(user()->code, -3) : 000;
 
         if ($transaction) {
             $transactionCode = preg_replace('/[^0-9]/', '', $transaction->code);
-            $code = $transactionCode + 1;
+            $code = substr($transactionCode, -4) + 1;
         }
 
-        return $initialCode . sprintf('%0' . $codeLength . 'd', $code);
+        return date('Ymd', strtotime($date)) . $userCode . sprintf('%0' . $codeLength . 'd', $code);
     }
 }

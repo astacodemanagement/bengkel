@@ -119,7 +119,7 @@
     </div>
     <div class="row mt-4">
         <div class="col-6">
-            <div class="card">
+            <div class="card h-100">
                 <div class="card-header">
                     Income
                 </div>
@@ -128,7 +128,7 @@
             </div>
         </div>
         <div class="col-6">
-            <div class="card">
+            <div class="card h-100">
                 <div class="card-header">
                     Stock Menipis
                 </div>
@@ -149,7 +149,7 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row mt-4">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">

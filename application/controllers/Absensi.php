@@ -25,6 +25,10 @@ class Absensi extends CI_Controller
 
     public function index()
     {
+        if (!hasPermission('absensi', 'index')) {
+            show_error('Access Denied');
+        }
+
         $uangHarian = $this->shop_info->get_shop_uang_harian();
         $push = [
             "pageTitle" => "Absensi",

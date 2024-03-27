@@ -35,6 +35,16 @@ class User extends CI_Controller
 
     public function json()
     {
+        $actionDatatable = '';
+        
+        if (hasPermission('karyawan', 'edit')) {
+            $actionDatatable .= '<button type="button" class="btn btn-primary btn-sm btn-edit" data-id="<get-id>" title="Edit Data"><i class="fa fa-edit"></i></button>';
+        }
+
+        if (hasPermission('karyawan', 'delete')) {
+            $actionDatatable .= '<button type="button" class="btn btn-danger btn-sm btn-delete" data-id="<get-id>" data-name="<get-name>" title="Delete Data"><i class="fa fa-trash"></i></button>';
+        }
+                            
         $this->load->model("datatables");
         $this->datatables->setTable("users");
         $this->datatables->setColumn([
@@ -44,8 +54,7 @@ class User extends CI_Controller
             '<get-address>',
             '<get-telephone>',
             '<div class="text-center">
-                <button type="button" class="btn btn-primary btn-sm btn-edit" data-id="<get-id>" title="Edit Data"><i class="fa fa-edit"></i></button>
-                <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="<get-id>" data-name="<get-name>" title="Delete Data"><i class="fa fa-trash"></i></button>
+            '. $actionDatatable .'
             </div>'
         ]);
         

@@ -36,7 +36,6 @@ if (!isset($authPage)) {
         #dataTable_filter input {
             margin-left: -17px;
         }
-        
     </style>
 
 </head>
@@ -80,80 +79,13 @@ if (!isset($authPage)) {
                     <br>
                     <img src="<?= bengkelLogo(); ?>" alt="" style="border-radius:1rem;">
                     <a class="navbar-brand" href="<?= base_url(); ?>"><?= $this->shop_info->get_shop_name(); ?></a>
-                    
+
                     <a class="navbar-brand hidden" href="<?= base_url(); ?>">B</a>
                 </div>
 
                 <div id="main-menu" class="main-menu collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li>
-                            <a href="<?= base_url("dashboard"); ?>"> <i class="menu-icon fa fa-bank"></i>Dashboard </a>
-                        </li>
-
-                        <h3 class="menu-title">Master Data</h3>
-                        <li>
-                            <a href="<?= base_url("user"); ?>"> <i class="menu-icon fa fa-users"></i>Data Karyawan </a>
-                        </li>
-                        <li>
-                            <a href="<?= base_url("supplier"); ?>"> <i class="menu-icon fa fa-address-book"></i>Data Supplier </a>
-                        </li>
-                        <li>
-                            <a href="<?= base_url("consumer"); ?>"> <i class="menu-icon fa fa-user-circle-o"></i>Data Konsumen </a>
-                        </li>
-                        <li>
-                            <a href="<?= base_url("spare"); ?>"> <i class="menu-icon fa fa-server"></i>Data Sparepart </a>
-                        </li>
-                        <li>
-                            <a href="<?= base_url("services"); ?>"> <i class="menu-icon fa fa-gavel"></i>Data Jasa </a>
-                        </li>
-
-
-                        <h3 class="menu-title">Transaksi</h3>
-
-                        <li>
-                            <a href="<?= base_url("purchase"); ?>"> <i class="menu-icon fa fa-folder-open"></i>Pembelian Stock </a>
-                        </li>
-                        <h3 class="menu-title"></h3>
-                        <li>
-                            <a href="<?= base_url("estimation"); ?>"> <i class="menu-icon fa fa-dollar"></i>Estimasi Biaya</a>
-                        </li>
-                        <li>
-                            <a href="<?= base_url("transaction"); ?>"> <i class="menu-icon fa fa-fax"></i>Tambah Transaksi</a>
-                        </li>
-                        <li>
-                            <a href="<?= base_url("sparepart_sales"); ?>"> <i class="menu-icon fa fa-commenting"></i>History Jual Sparepart</a>
-                        </li>
-                        <li>
-                            <a href="<?= base_url("service_sales"); ?>"> <i class="menu-icon fa fa-wechat"></i>History Service</a>
-                        </li>
-                        <li>
-                            <a href="<?= base_url("absensi"); ?>"> <i class="menu-icon fa fa-users"></i>Absensi</a>
-                        </li>
-                        <!-- ----------------------------------- -->
-                         
-                        <h3 class="menu-title">Laporan</h3>
-                        <li>
-                            <a href="<?= base_url("report/salary"); ?>"> <i class="menu-icon fa fa-file-word-o"></i>Laporan Salary</a>
-                        </li>
-                        <li>
-                            <a href="<?= base_url("report/sales"); ?>"> <i class="menu-icon fa fa-file-word-o"></i>Laporan Penjualan</a>
-                        </li>
-                        <li>
-                            <a href="<?= base_url("report/service"); ?>"> <i class="menu-icon fa fa-file-word-o"></i>Laporan Service</a>
-                        </li>
-                        <li>
-                            <a href="<?= base_url("report/purchase"); ?>"> <i class="menu-icon fa fa-file-word-o"></i>Laporan Pembelian</a>
-                        </li>
-                        <h3 class="menu-title">Setting</h3>
-                        <li>
-                            <a href=""> <i class="menu-icon fa fa-cogs"></i>Pengaturan Umum</a>
-                        </li>
-                        <li>
-                            <a href="<?= base_url("auth/logout"); ?>"> <i class="menu-icon fa fa-sign-out"></i>Logout</a>
-                        </li>
-
-
-                        
+                        <?php $this->load->view('layouts/menu') ?>
                     </ul>
                 </div><!-- /.navbar-collapse -->
             </nav>

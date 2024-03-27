@@ -72,7 +72,7 @@ class Service_sales extends CI_Controller {
             </div>'
         ]);
         $this->datatables->setOrdering(["id","date","customer","plat","total",NULL]);
-        $this->datatables->setSearchField("date");
+        $this->datatables->setSearchField(["customer_name", "plat", "car_type"]);
         $this->datatables->generate();
     }
 

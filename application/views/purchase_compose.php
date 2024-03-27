@@ -105,10 +105,15 @@
                 autoWidth: false,
                 "processing": true,
                 "serverSide": true,
+                "searching": allowSearching(),
                 "ajax": {
                     "url": "<?= base_url("purchase/json_product"); ?>"
                 }
             });
+
+            function allowSearching() {
+                return <?= hasPermission('pembelian stok', 'search') ? 'true' : 'false' ?>
+            }
 
             $(".btn-add-row").on("click", function() {
 

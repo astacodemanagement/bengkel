@@ -25,6 +25,9 @@ class Report extends CI_Controller
 
     public function purchase()
     {
+        if (!hasPermission('laporan pembelian', 'index')) {
+            show_error('Access Denied');
+        }
 
         $push = [
             "pageTitle" => "Laporan Pembelian",
@@ -38,6 +41,10 @@ class Report extends CI_Controller
 
     public function sales()
     {
+        if (!hasPermission('laporan penjualan', 'index')) {
+            show_error('Access Denied');
+        }
+
         $push = [
             "pageTitle" => "Laporan Penjualan",
             "dataAdmin" => $this->dataAdmin
@@ -50,6 +57,10 @@ class Report extends CI_Controller
 
     public function service()
     {
+        if (!hasPermission('laporan service', 'index')) {
+            show_error('Access Denied');
+        }
+
         $push = [
             "pageTitle" => "Laporan Service",
             "dataAdmin" => $this->dataAdmin
@@ -62,6 +73,10 @@ class Report extends CI_Controller
 
     public function salary()
     {
+        if (!hasPermission('absensi', 'index')) {
+            show_error('Access Denied');
+        }
+
         $startDate = $this->input->get('start_date');
         $endDate = $this->input->get('end_date');
         $user = $this->input->get('user');

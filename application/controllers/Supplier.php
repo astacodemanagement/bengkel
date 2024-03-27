@@ -31,7 +31,22 @@ class Supplier extends CI_Controller {
 		$this->load->view('footer',$push);
     }
     
-    public function json() {
+    public function json()
+    {
+        $actionDatatable = '';
+
+        if (hasPermission('supplier', 'detail')) {
+            $actionDatatable .= '<button type="button" class="btn btn-secondary btn-sm btn-detail" title="Detail Data" data-id="<get-id>"><i class="fa fa-eye"></i></button>';
+        }
+
+        if (hasPermission('supplier', 'edit')) {
+            $actionDatatable .= '<button type="button" class="btn btn-primary btn-sm btn-edit ml-1" title="Edit Data" data-id="<get-id>"><i class="fa fa-edit"></i></button>';
+        }
+
+        if (hasPermission('supplier', 'delete')) {
+            $actionDatatable .= '<button type="button" class="btn btn-danger btn-sm btn-delete ml-1" data-id="<get-id>" data-name="<get-name>" title="Delete Data"><i class="fa fa-trash"></i></button>';
+        }
+
         $this->load->model("datatables");
         $this->datatables->setTable("suppliers");
         $this->datatables->setColumn([
@@ -39,11 +54,7 @@ class Supplier extends CI_Controller {
             '<get-name>',
             '<get-address>',
             '<get-telephone>',
-            '<div class="text-center">
-            <button type="button" class="btn btn-secondary btn-sm btn-detail" title="Detail Data" data-id="<get-id>"><i class="fa fa-eye"></i></button>
-            <button type="button" class="btn btn-primary btn-sm btn-edit" title="Edit Data" data-id="<get-id>"><i class="fa fa-edit"></i></button>
-            <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="<get-id>" data-name="<get-name>" title="Delete Data"><i class="fa fa-trash"></i></button>
-            </div>'
+            '<div class="text-center">' . $actionDatatable . '</div>'
         ]);
         $this->datatables->setOrdering(["id","name","address","telephone",NULL]);
         $this->datatables->setSearchField("name");

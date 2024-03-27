@@ -124,3 +124,189 @@ function hitungUmur($tanggalLahir)
 
     return '';
 }
+
+function user()
+{
+    $CI = &get_instance();
+
+    return $CI->db->get_where('users', ['id' => $CI->session->userdata('auth')['id']])->row();
+}
+
+function userRole()
+{
+    return user() ? user()->level : null;
+}
+
+function isSuperadmin()
+{
+    return userRole() == 'Superadmin' ? true : false;
+}
+
+function isAdmin()
+{
+    return userRole() == 'Admin' ? true : false;
+}
+
+function isKasir()
+{
+    return userRole() == 'Kasir' ? true : false;
+}
+
+function userRoleInitial()
+{
+    if (isSuperadmin()) {
+        return 's';
+    }
+    if (isAdmin()) {
+        return 'a';
+    }
+    if (isKasir()) {
+        return 'k';
+    }
+}
+
+function hasPermission($menu, $action)
+{
+    $userRole = userRoleInitial();
+
+    return $userRole != 's' ? in_array($userRole, roleMenu()[$menu][$action]) ? true : false : true;
+}
+
+function roleMenu()
+{
+    /**
+     * a = Admin
+     * k = Kasir
+     * Super admin semua role menu
+     */
+    return [
+        'karyawan' => [
+            'index' => ['a', 'k'],
+            'add' => ['a', 'k'],
+            'edit' => [],
+            'delete' => [],
+            'detail' => [],
+            'search' => []
+        ],
+        'supplier' => [
+            'index' => ['a'],
+            'add' => ['a'],
+            'edit' => ['a'],
+            'delete' => ['a'],
+            'detail' => ['a'],
+            'search' => ['a', 'k']
+        ],
+        'konsumen' => [
+            'index' => ['a', 'k'],
+            'add' => ['a', 'k'],
+            'edit' => [],
+            'delete' => [],
+            'detail' => ['a', 'k'],
+            'search' => []
+        ],
+        'sparepart' => [
+            'index' => ['a'],
+            'add' => ['a'],
+            'edit' => [],
+            'delete' => [],
+            'detail' => [],
+            'search' => ['a', 'k']
+        ],
+        'jasa' => [
+            'index' => ['a', 'k'],
+            'add' => ['a', 'k'],
+            'edit' => [],
+            'delete' => [],
+            'detail' => ['a', 'k'],
+            'search' => ['a', 'k']
+        ],
+        'pembelian stok' => [
+            'index' => ['a'],
+            'add' => ['a'],
+            'edit' => ['a'],
+            'delete' => ['a'],
+            'detail' => ['a'],
+            'search' => ['a']
+        ],
+        'estimasi biaya' => [
+            'index' => ['a', 'k'],
+            'add' => ['a', 'k'],
+            'edit' => ['a', 'k'],
+            'delete' => ['a', 'k'],
+            'detail' => ['a', 'k'],
+            'search' => ['a', 'k']
+        ],
+        'transaksi' => [
+            'index' => ['k'],
+            'add' => ['k'],
+            'edit' => ['k'],
+            'delete' => ['k'],
+            'detail' => ['k'],
+            'search' => ['k']
+        ],
+        'history jual sparepart' => [
+            'index' => ['a', 'k'],
+            'add' => ['a', 'k'],
+            'edit' => ['a', 'k'],
+            'delete' => ['a', 'k'],
+            'detail' => ['a', 'k'],
+            'search' => ['a', 'k']
+        ],
+        'history service' => [
+            'index' => ['a', 'k'],
+            'add' => ['a', 'k'],
+            'edit' => ['a', 'k'],
+            'delete' => ['a', 'k'],
+            'detail' => ['a', 'k'],
+            'search' => ['a', 'k']
+        ],
+        'absensi' => [
+            'index' => ['k'],
+            'add' => ['k'],
+            'edit' => ['k'],
+            'delete' => ['k'],
+            'detail' => ['k'],
+            'search' => ['k']
+        ],
+        'laporan salary' => [
+            'index' => ['k'],
+            'add' => ['k'],
+            'edit' => ['k'],
+            'delete' => ['k'],
+            'detail' => ['k'],
+            'search' => ['k']
+        ],
+        'laporan penjualan' => [
+            'index' => [],
+            'add' => [],
+            'edit' => [],
+            'delete' => [],
+            'detail' => [],
+            'search' => []
+        ],
+        'laporan service' => [
+            'index' => [],
+            'add' => [],
+            'edit' => [],
+            'delete' => [],
+            'detail' => [],
+            'search' => []
+        ],
+        'laporan pembelian' => [
+            'index' => ['a'],
+            'add' => ['a'],
+            'edit' => ['a'],
+            'delete' => ['a'],
+            'detail' => ['a'],
+            'search' => ['a']
+        ],
+        'pengaturan umum' => [
+            'index' => [],
+            'add' => [],
+            'edit' => [],
+            'delete' => [],
+            'detail' => [],
+            'search' => []
+        ]
+    ];
+}

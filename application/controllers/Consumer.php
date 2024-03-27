@@ -20,7 +20,6 @@ class Consumer extends CI_Controller {
 
 	public function index()
 	{
-
         $push = [
             "pageTitle" => "Konsumen",
             "dataAdmin" => $this->dataAdmin 
@@ -32,6 +31,20 @@ class Consumer extends CI_Controller {
     }
     
     public function json() {
+        $actionDatatable = '';
+
+        if (hasPermission('konsumen', 'detail')) {
+            $actionDatatable .= '<button type="button" class="btn btn-secondary btn-sm btn-detail" title="Edit Data" data-id="<get-id>"><i class="fa fa-eye"></i></button>';
+        }
+
+        if (hasPermission('konsumen', 'edit')) {
+            $actionDatatable .= '<button type="button" class="btn btn-primary btn-sm btn-edit ml-1" title="Edit Data" data-id="<get-id>"><i class="fa fa-edit"></i></button>';
+        }
+
+        if (hasPermission('konsumen', 'delete')) {
+            $actionDatatable .= '<button type="button" class="btn btn-danger btn-sm btn-delete" data-id="<get-id>" data-name="<get-name>" title="Delete Data"><i class="fa fa-trash"></i></button>';
+        }
+
         $this->load->model("datatables");
         $this->datatables->setTable("consumers");
         $this->datatables->setColumn([
@@ -40,11 +53,7 @@ class Consumer extends CI_Controller {
             '<get-name>',
             '<get-address>',
             '<get-telephone>',
-            '<div class="text-center">
-            <button type="button" class="btn btn-secondary btn-sm btn-detail" title="Edit Data" data-id="<get-id>"><i class="fa fa-eye"></i></button>
-            <button type="button" class="btn btn-primary btn-sm btn-edit" title="Edit Data" data-id="<get-id>"><i class="fa fa-edit"></i></button>
-            <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="<get-id>" data-name="<get-name>" title="Delete Data"><i class="fa fa-trash"></i></button>
-            </div>'
+            '<div class="text-center">' . $actionDatatable . '</div>'
         ]);
         $this->datatables->setOrdering(["id","name","address","telephone",NULL]);
         $this->datatables->setSearchField("name");

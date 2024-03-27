@@ -10,7 +10,7 @@
                 <div class="page-header float-right">
                     <div class="page-title">
                         <ol class="breadcrumb text-right">
-                            <li><a href="<?=base_url("dashboard");?>">Dashboard</a></li>
+                            <li><a href="<?= base_url("dashboard"); ?>">Dashboard</a></li>
                             <li class="active">Services</li>
                         </ol>
                     </div>
@@ -21,7 +21,9 @@
         <div class="content mt-3">
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-success btn-sm btn-show-add" data-toggle="modal" data-target="#compose" style="border-radius: 1rem;"><i class="fa fa-plus"></i> Tambah Service</button>
+                    <?php if (hasPermission('jasa', 'add')) : ?>
+                        <button class="btn btn-success btn-sm btn-show-add" data-toggle="modal" data-target="#compose" style="border-radius: 1rem;"><i class="fa fa-plus"></i> Tambah Service</button>
+                    <?php endif ?>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -89,7 +91,7 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" >Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         <button type="button" class="btn btn-primary btn-del-confirm">Hapus</button>
                     </div>
                 </div>
@@ -97,78 +99,54 @@
         </div>
 
         <script>
-                $(".btn-show-add").on("click",function(){
-                    jQuery("input[name=name]").val("");
-                    jQuery("input[name=price]").val("");
-                    jQuery("input[name=jenismobil]").val("");
-                    jQuery("textarea[name=description]").val("");
-                    jQuery("#compose .modal-title").html("Tambah Service");
-                    jQuery("#compose-form").attr("action","<?=base_url("services/insert");?>");
-                });
+            $(".btn-show-add").on("click", function() {
+                jQuery("input[name=name]").val("");
+                jQuery("input[name=price]").val("");
+                jQuery("input[name=jenismobil]").val("");
+                jQuery("textarea[name=description]").val("");
+                jQuery("#compose .modal-title").html("Tambah Service");
+                jQuery("#compose-form").attr("action", "<?= base_url("services/insert"); ?>");
+            });
 
-                $("#data").DataTable({
-                    "processing": true,
-                    "serverSide": true,
-                    "autoWidth":true,
-                    "order": [],
-                    "ajax": {"url": "<?=base_url("services/json");?>"}
-                });
+            $("#data").DataTable({
+                "processing": true,
+                "serverSide": true,
+                "autoWidth": true,
+                "order": [],
+                "searching": allowSearching(),
+                "ajax": {
+                    "url": "<?= base_url("services/json"); ?>"
+                }
+            });
 
+            function allowSearching() {
+                return <?= hasPermission('jasa', 'search') ? 'true' : 'false' ?>
+            }
 
-                $('.btn-submit').on("click",function(){
-                    var form = {
-                        "name": jQuery("input[name=name]").val(),
-                        "jenismobil": jQuery("input[name=jenismobil]").val(),
-                        "description": jQuery("textarea[name=description]").val(),
-                        "price": jQuery("input[name=price]").val()
-                    }
+            $('.btn-submit').on("click", function() {
+                var form = {
+                    "name": jQuery("input[name=name]").val(),
+                    "jenismobil": jQuery("input[name=jenismobil]").val(),
+                    "description": jQuery("textarea[name=description]").val(),
+                    "price": jQuery("input[name=price]").val()
+                }
 
-                    var action = jQuery("#compose-form").attr("action");
+                var action = jQuery("#compose-form").attr("action");
 
-                    jQuery.ajax({
-                        url: action,
-                        method: "POST",
-                        data: form,
-                        dataType: "json",
-                        success: function(data){
-                            if(data.status) {
-                                jQuery("input[name=name]").val("");
-                                jQuery("input[name=price]").val("");
-                                jQuery("input[name=jenismobil]").val("");
-                                jQuery("textarea[name=description]").val("");
-    
-                                jQuery("#compose").modal('toggle');
-                                jQuery("#data").DataTable().ajax.reload(null,true);
-                                Swal.fire(
-                                    'Berhasil',
-                                    data.msg,
-                                    'success'
-                                )
-                            } else {
-                                Swal.fire(
-                                    'Gagal',
-                                    data.msg,
-                                    'error'
-                                )
-                            }
-                        }
-                    });
-                });
+                jQuery.ajax({
+                    url: action,
+                    method: "POST",
+                    data: form,
+                    dataType: "json",
+                    success: function(data) {
+                        if (data.status) {
+                            jQuery("input[name=name]").val("");
+                            jQuery("input[name=price]").val("");
+                            jQuery("input[name=jenismobil]").val("");
+                            jQuery("textarea[name=description]").val("");
 
-                $('body').on("click",".btn-delete",function() {
-                    var id = jQuery(this).attr("data-id");
-                    var name = jQuery(this).attr("data-name");
-                    jQuery("#delete .modal-body").html("Anda yakin ingin menghapus <b>"+name+"</b>");
-                    jQuery("#delete").modal("toggle");
-
-                    jQuery("#delete .btn-del-confirm").attr("onclick","deleteData("+id+")");
-                })
-
-                function deleteData(id) {
-                    jQuery.getJSON("<?=base_url();?>services/delete/"+id,function(data){
-                        if(data.status) {
-                            jQuery("#delete").modal("toggle");
-                            jQuery("#data").DataTable().ajax.reload(null,true);
+                            jQuery("#compose").modal('toggle');
+                            jQuery("#data").DataTable().ajax.reload(null, true);
                             Swal.fire(
                                 'Berhasil',
                                 data.msg,
@@ -181,24 +159,53 @@
                                 'error'
                             )
                         }
-                    })
-                }
-
-                $("body").on("click",".btn-edit",function(){
-                    var id = jQuery(this).attr("data-id");
-                    var name = jQuery(this).attr("data-name");
-                    var price = jQuery(this).attr("data-price");
-                    var jenismobil = jQuery(this).attr("data-jenismobil");
-                    var description = jQuery(this).attr("data-description");
-
-                    jQuery("#compose .modal-title").html("Edit Service");
-                    jQuery("#compose-form").attr("action","<?=base_url();?>services/update/"+id);
-                    jQuery("input[name=name]").val(name);
-                    jQuery("input[name=price]").val(price);
-                    jQuery("input[name=jenismobil]").val(jenismobil);
-                    jQuery("textarea[name=description]").val(description);
-
-                    jQuery("#compose").modal("toggle");
+                    }
                 });
+            });
 
+            $('body').on("click", ".btn-delete", function() {
+                var id = jQuery(this).attr("data-id");
+                var name = jQuery(this).attr("data-name");
+                jQuery("#delete .modal-body").html("Anda yakin ingin menghapus <b>" + name + "</b>");
+                jQuery("#delete").modal("toggle");
+
+                jQuery("#delete .btn-del-confirm").attr("onclick", "deleteData(" + id + ")");
+            })
+
+            function deleteData(id) {
+                jQuery.getJSON("<?= base_url(); ?>services/delete/" + id, function(data) {
+                    if (data.status) {
+                        jQuery("#delete").modal("toggle");
+                        jQuery("#data").DataTable().ajax.reload(null, true);
+                        Swal.fire(
+                            'Berhasil',
+                            data.msg,
+                            'success'
+                        )
+                    } else {
+                        Swal.fire(
+                            'Gagal',
+                            data.msg,
+                            'error'
+                        )
+                    }
+                })
+            }
+
+            $("body").on("click", ".btn-edit", function() {
+                var id = jQuery(this).attr("data-id");
+                var name = jQuery(this).attr("data-name");
+                var price = jQuery(this).attr("data-price");
+                var jenismobil = jQuery(this).attr("data-jenismobil");
+                var description = jQuery(this).attr("data-description");
+
+                jQuery("#compose .modal-title").html("Edit Service");
+                jQuery("#compose-form").attr("action", "<?= base_url(); ?>services/update/" + id);
+                jQuery("input[name=name]").val(name);
+                jQuery("input[name=price]").val(price);
+                jQuery("input[name=jenismobil]").val(jenismobil);
+                jQuery("textarea[name=description]").val(description);
+
+                jQuery("#compose").modal("toggle");
+            });
         </script>
