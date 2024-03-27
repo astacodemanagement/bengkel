@@ -104,3 +104,23 @@ function bagiHasilMekanik($cost)
     $bagiHasil = ($cost * 20)/100;
     return "Rp " . number_format($bagiHasil);
 }
+
+function hitungUmur($tanggalLahir)
+{
+    if ($tanggalLahir != null | $tanggalLahir != '') {
+        $tanggalLahir = new DateTime($tanggalLahir);
+        $hariIni = new DateTime("today");
+        
+        if ($tanggalLahir > $hariIni) { 
+            $thn = "0";
+            $bln = "0";
+            $tgl = "0";
+        }
+
+        $thn = $hariIni->diff($tanggalLahir)->y;
+
+        return $thn ." Tahun ";
+    }
+
+    return '';
+}
