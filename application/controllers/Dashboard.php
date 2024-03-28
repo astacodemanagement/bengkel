@@ -86,9 +86,50 @@ class Dashboard extends CI_Controller {
             '[hitungUmur=<get-birthdate>]'
         ]);
         $this->datatables->setOrdering(["id","name",NULL]);
-        $this->datatables->setWhere("DAY(birthdate)", date('d'));
-        $this->datatables->setWhere("MONTH(birthdate)", date('m'));
+
+        if ($this->input->get('start_month') && $this->input->get('end_month')) {
+            $startMonth = date('m', strtotime($this->input->get('start_month')));
+            $endMonth = date('m', strtotime($this->input->get('end_month')));
+
+            $this->datatables->setWhere("MONTH(birthdate) >= ", $startMonth);
+            $this->datatables->setWhere("MONTH(birthdate) <= ", $endMonth);
+        } else {
+            $this->datatables->setWhere("DAY(birthdate)", date('d'));
+            $this->datatables->setWhere("MONTH(birthdate)", date('m'));
+        }
+
         $this->datatables->setSearchField(["name","kode"]);
+        $this->datatables->generate();
+    }
+
+    public function datatable_pendapatan_hari_ini()
+    {
+        $this->datatables->setTable("transactions");
+        $this->datatables->setColumn([
+            '<index>',
+            '<get-code>',
+            '[rupiah=<get-total>]'
+        ]);
+        $this->datatables->setOrdering(["id","name",NULL]);
+        $this->datatables->setWhere("DATE(date)", date('Y-m-d'));
+        $this->datatables->setSearchField(["kode"]);
+        $this->datatables->generate();
+    }
+
+    public function datatable_income()
+    {
+        $this->datatables->setTable("transactions");
+        $this->datatables->setSelect("transactions.*,consumers.name");
+        $this->datatables->setJoin("consumers", "consumers.id = transactions.customer_id", "left");
+        $this->datatables->setColumn([
+            '<index>',
+            '<get-code>',
+            '<get-name>',
+            '[rupiah=<get-total>]'
+        ]);
+        $this->datatables->setOrdering(["id","name",NULL]);
+        $this->datatables->setWhere("DATE(date)", date('Y-m-d'));
+        $this->datatables->setSearchField(["kode"]);
         $this->datatables->generate();
     }
 
@@ -97,7 +138,17 @@ class Dashboard extends CI_Controller {
         $this->datatables->setTable("absensi");
         $this->datatables->setSelect("absensi.*,users.name");
         $this->datatables->setJoin("users", "users.id = absensi.user_id", "inner");
-        $this->datatables->setWhere("tanggal", date('Y-m-d'));
+        
+        if ($this->input->get('start_month') && $this->input->get('end_month')) {
+            $startMonth = date('Y-m-01', strtotime($this->input->get('start_month')));
+            $endMonth = date('Y-m-t', strtotime($this->input->get('end_month')));
+
+            $this->datatables->setWhere("tanggal >= ", $startMonth);
+            $this->datatables->setWhere("tanggal <= ", $endMonth);
+        } else {
+            $this->datatables->setWhere("tanggal", date('Y-m-d'));
+        }
+
         $this->datatables->setColumn([
             '<div class="text-center"><index></div>',
             '<div class="text-center"><get-name></div>',
@@ -111,11 +162,6 @@ class Dashboard extends CI_Controller {
         $this->datatables->generate();
     }
 
-    public function datatableIncome()
-    {
-
-    }
-
     public function datatable_stok_menipis()
     {
         $this->datatables->setTable("products");
@@ -123,17 +169,93 @@ class Dashboard extends CI_Controller {
             '<index>',
             '<get-kode>',
             '<get-name>',
-            '<get-description>',
-            '<get-stock>',
-            '<div class="text-center">
-                <button type="button" class="btn btn-secondary btn-sm btn-detail" title="Detail Data" data-id="<get-id>" data-kode="<get-kode>" data-name="<get-name>" data-price="<get-price>" data-price1="<get-price1>" data-price2="<get-price2>" data-price3="<get-price3>" data-location="<get-location>" data-description="<get-description>" data-gambar="[showSparepartImage=<get-gambar>]"><i class="fa fa-eye"></i></button>
-            </div>'
+            '<get-stock>'
         ]);
         $this->datatables->setOrdering(["id","name","price","stock",NULL]);
         $this->datatables->setWhere("type","sparepart");
         $this->datatables->setWhere("stock >","0");
         $this->datatables->setWhere("stock <=","5");
         $this->datatables->setSearchField(["name","description","kode"]);
+        $this->datatables->generate();
+    }
+
+    public function datatable_stok_habis()
+    {
+        $this->datatables->setTable("products");
+        $this->datatables->setColumn([
+            '<index>',
+            '<get-kode>',
+            '<get-name>'
+        ]);
+        $this->datatables->setOrdering(["id","name","price","stock",NULL]);
+        $this->datatables->setWhere("type","sparepart");
+        $this->datatables->setWhere("stock","0");
+        $this->datatables->setSearchField(["name","description","kode"]);
+        $this->datatables->generate();
+    }
+
+    // public function datatable_sparepart_terlaris()
+    // {
+    //     $this->datatables->setTable("details");
+    //     $this->datatables->setSelect("products.*, SUM(qty) as qty");
+    //     $this->datatables->setJoin("products", "products.id = details.product_id", "inner");
+    //     $this->datatables->setWhere("products.type", "sparepart");
+    //     $this->datatables->setGroup("product_id");
+    //     $this->datatables->setColumn([
+    //         '<index>',
+    //         '<get-kode>',
+    //         '<get-name>',
+    //         '<get-qty>'
+    //     ]);
+    //     $this->datatables->setSearchField(["name","kode"]);
+    //     $this->datatables->generate();
+    // }
+
+    public function datatable_servis_selesai()
+    {
+        $this->datatables->setTable("details");
+        $this->datatables->setSelect("products.*, DATE(transactions.date) as date, transactions.total, transactions.code");
+        $this->datatables->setJoin("products", "products.id = details.product_id", "inner");
+        $this->datatables->setJoin("transactions", "transactions.id = details.transaction_id", "inner");
+        $this->datatables->setWhere("products.type", "service");
+        
+        if ($this->input->get('start_month') && $this->input->get('end_month')) {
+            $startMonth = date('Y-m-01', strtotime($this->input->get('start_month')));
+            $endMonth = date('Y-m-t', strtotime($this->input->get('end_month')));
+
+            $this->datatables->setWhere("DATE(date) >= ", $startMonth);
+            $this->datatables->setWhere("DATE(date) <= ", $endMonth);
+        } else {
+            $this->datatables->setWhere("DATE(date)", date('Y-m-d'));
+        }
+
+        $this->datatables->setColumn([
+            '<index>',
+            '<get-date>',
+            '<get-code>',
+            '<get-name>',
+            '[rupiah=<get-total>]'
+        ]);
+        $this->datatables->setOrdering(["index", "date", "code", "name", "total"]);
+        $this->datatables->setSearchField(["code", "name", "date", "total"]);
+        $this->datatables->generate();
+    }
+
+    public function datatable_item_terjual()
+    {
+        $this->datatables->setTable("details");
+        $this->datatables->setSelect("products.*, SUM(qty) as qty");
+        $this->datatables->setJoin("products", "products.id = details.product_id", "inner");
+        $this->datatables->setWhere("products.type", "sparepart");
+        $this->datatables->setGroup("product_id");
+        $this->datatables->setColumn([
+            '<index>',
+            '<get-kode>',
+            '<get-name>',
+            '<get-qty>'
+        ]);
+        $this->datatables->setOrdering(["index", "kode", "name", "qty"]);
+        $this->datatables->setSearchField(["kode", "name", "qty"]);
         $this->datatables->generate();
     }
     

@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker.min.css" integrity="sha512-34s5cpvaNG3BknEWSuOncX28vz97bRI59UnVtEEpFX536A7BtZSJHsDyFoCl8S7Dt2TPzcrCEoHBGeM4SUBDBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <div class="breadcrumbs">
     <div class="col-sm-4">
         <div class="page-header float-left">
@@ -74,8 +75,155 @@
             </div>
         </div>
     </div>
+    <div class="form-inline">
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i class="fa fa-calendar"></i></span>
+                </div>
+                <input type="text" class="form-control start-monthrange">
+                <input type="hidden" class="form-control filter-start-month" value="<?= date('Y-m-d') ?>">
+            </div>
+        </div>
+        <div class="form-group mx-sm-3">
+            -
+        </div>
+        <div class="form-group mr-sm-3">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i class="fa fa-calendar"></i></span>
+                </div>
+                <input type="text" class="form-control end-monthrange">
+                <input type="hidden" class="form-control filter-end-month" value="<?= date('Y-m-d') ?>">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-filter"><i class="fa fa-filter"></i> Filter</button>
+    </div>
     <div class="row">
-        <div class="col-6">
+        <div class="col-6 mt-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    Pendapatan Hari Ini
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table pendapatan-hari-ini-datatable w-100">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Kode Transaksi</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 mt-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    Service Selesai
+                </div>
+                <div class="card-body">
+                    <table class="table servis-selesai-datatable">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Tanggal</th>
+                                <th>Kode Tarnsaksi</th>
+                                <th>Servis</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 mt-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    Item Terjual
+                </div>
+                <div class="card-body">
+                    <table class="table item-terjual-datatable">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Kode</th>
+                                <th>Nama Produk</th>
+                                <th>Jumlah Terjual</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 mt-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    Item Terlaris
+                </div>
+                <div class="card-body">
+                    <table class="table item-terlaris-datatable">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Kode</th>
+                                <th>Nama Produk</th>
+                                <th>Jumlah Terjual</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <?php if (isSuperadmin() | isAdmin()): ?>
+            <div class="col-6 mt-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        Stock Menipis
+                    </div>
+                    <div class="card-body">
+                        <table class="table stok-menipis-datatable">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Kode</th>
+                                    <th>Nama Produk</th>
+                                    <th>Stok</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        <?php endif ?>
+
+        <div class="col-6 mt-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    Stock Habis
+                </div>
+                <div class="card-body">
+                    <table class="table stok-habis-datatable">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Kode</th>
+                                <th>Nama Produk</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 mt-4">
             <div class="card h-100">
                 <div class="card-header">
                     Konsumen Ulang Tahun
@@ -95,7 +243,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-6">
+        <div class="col-6 mt-4">
             <div class="card h-100">
                 <div class="card-header">
                     Pegawai Absen
@@ -116,38 +264,28 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row mt-4">
-        <div class="col-6">
-            <div class="card h-100">
-                <div class="card-header">
-                    Income
-                </div>
-                <div class="card-body">
-                </div>
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="card h-100">
-                <div class="card-header">
-                    Stock Menipis
-                </div>
-                <div class="card-body">
-                    <table class="table stok-datatable">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Kode</th>
-                                <th>Nama</th>
-                                <th>Deskripsi</th>
-                                <th>Stok</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                    </table>
+        
+        <?php if (isSuperadmin()): ?>
+            <div class="col-6 mt-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        Income
+                    </div>
+                    <div class="card-body">
+                        <table class="table income-datatable">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Kode Transaksi</th>
+                                    <th>Nama Konsumen</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
+        <?php endif ?>
     </div>
     <div class="row mt-4">
         <div class="col-12">
@@ -251,7 +389,29 @@
         </div>
     </div>
 </div>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js" integrity="sha512-LsnSViqQyaXpD4mBBdRYeP6sRwJiJveh2ZIbW41EBrNmKxgr/LFZIiWT6yr+nycvhvauz8c2nYMhrP80YhG7Cw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
+    $('.start-monthrange').datepicker({
+        format: "MM yyyy",
+        startView: "months", 
+        minViewMode: "months",
+        setDate: new Date(),
+        autoclose: true
+    }).on('changeDate', function (e) {
+        $('.filter-start-month').val(e.format(0,"yyyy-mm-dd"))
+    }).datepicker("setDate",'now')
+
+    $('.end-monthrange').datepicker({
+        format: "MM yyyy",
+        startView: "months", 
+        minViewMode: "months",
+        setDate: new Date(),
+        autoclose: true
+    }).on('changeDate', function (e) {
+        $('.filter-end-month').val(e.format(0,"yyyy-mm-dd"))
+    }).datepicker("setDate",'now')
+
     var ctx1 = document.getElementById('myChart1').getContext('2d');
     var ctx2 = document.getElementById('myChart2').getContext('2d');
     var myChart1 = new Chart(ctx1, {
@@ -299,7 +459,18 @@
         }
     });
 
-    $(".absensi-datatable").DataTable({
+    let pendapatanDatatable = $(".pendapatan-hari-ini-datatable").DataTable({
+        "processing": true,
+        "serverSide": true,
+        "autoWidth": true,
+        "order": [],
+        "ajax": {
+            "async": false,
+            "url": "<?= base_url("dashboard/datatable_pendapatan_hari_ini"); ?>",
+        }
+    })
+
+    let absensiDatatable = $(".absensi-datatable").DataTable({
         "processing": true,
         "serverSide": true,
         "autoWidth": true,
@@ -307,10 +478,25 @@
         "ajax": {
             "async": false,
             "url": "<?= base_url("dashboard/datatable_pegawai_absen"); ?>",
+            "data": function (d) {
+                d.start_month = $('.filter-start-month').val()
+                d.end_month = $('.filter-end-month').val()
+            }
         }
     })
     
-    $(".stok-datatable").DataTable({
+    let incomeDatatable = $(".income-datatable").DataTable({
+        "processing": true,
+        "serverSide": true,
+        "autoWidth": true,
+        "order": [],
+        "ajax": {
+            "async": false,
+            "url": "<?= base_url("dashboard/datatable_income"); ?>",
+        }
+    })
+    
+    let stokMenipisDatatable = $(".stok-menipis-datatable").DataTable({
         "processing": true,
         "serverSide": true,
         "autoWidth": true,
@@ -321,7 +507,7 @@
         }
     })
     
-    $(".konsumen-ultah-datatable").DataTable({
+    let konsumentUltahDatatable = $(".konsumen-ultah-datatable").DataTable({
         "processing": true,
         "serverSide": true,
         "autoWidth": true,
@@ -329,7 +515,69 @@
         "ajax": {
             "async": false,
             "url": "<?= base_url("dashboard/datatable_konsumen_ultah"); ?>",
+            "data": function (d) {
+                d.start_month = $('.filter-start-month').val()
+                d.end_month = $('.filter-end-month').val()
+            }
         }
+    })
+    
+    let serviceSelesaiDatatable = $(".servis-selesai-datatable").DataTable({
+        "processing": true,
+        "serverSide": true,
+        "autoWidth": true,
+        "order": [],
+        "ajax": {
+            "async": false,
+            "url": "<?= base_url("dashboard/datatable_servis_selesai"); ?>",
+            "data": function (d) {
+                d.start_month = $('.filter-start-month').val()
+                d.end_month = $('.filter-end-month').val()
+            }
+        }
+    })
+    
+    let itemTerjualDatatable = $(".item-terjual-datatable").DataTable({
+        "processing": true,
+        "serverSide": true,
+        "autoWidth": true,
+        "order": [],
+        "ajax": {
+            "async": false,
+            "url": "<?= base_url("dashboard/datatable_item_terjual"); ?>",
+        }
+    })
+    
+    let itemTerlarisDatatable = $(".item-terlaris-datatable").DataTable({
+        "processing": true,
+        "serverSide": true,
+        "autoWidth": true,
+        "order": [
+            [3, 'desc'],
+        ],
+        "ajax": {
+            "async": false,
+            "url": "<?= base_url("dashboard/datatable_item_terjual"); ?>",
+        }
+    })
+    
+    let stockHabisDatatable = $(".stok-habis-datatable").DataTable({
+        "processing": true,
+        "serverSide": true,
+        "autoWidth": true,
+        "order": [],
+        "ajax": {
+            "async": false,
+            "url": "<?= base_url("dashboard/datatable_stok_habis"); ?>",
+        }
+    })
+
+    $('.btn-filter').on('click', function(){
+        absensiDatatable.ajax.reload()
+        incomeDatatable.ajax.reload()
+        konsumentUltahDatatable.ajax.reload()
+        serviceSelesaiDatatable.ajax.reload()
+        itemTerjualDatatable.ajax.reload()
     })
 
     $("body").on("click", ".btn-detail", function() {
